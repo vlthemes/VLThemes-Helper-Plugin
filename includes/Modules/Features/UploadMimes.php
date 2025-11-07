@@ -1,0 +1,59 @@
+<?php
+
+namespace VLT\Helper\Modules\Features;
+
+use VLT\Helper\Modules\BaseModule;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Upload MIME Types Module
+ *
+ * Extends allowed upload MIME types for WordPress
+ * Adds support for SVG and other file formats
+ */
+class UploadMimes extends BaseModule {
+
+	/**
+	 * Module name
+	 *
+	 * @var string
+	 */
+	protected $name = 'upload_mimes';
+
+	/**
+	 * Module version
+	 *
+	 * @var string
+	 */
+	protected $version = '1.0.0';
+
+	/**
+	 * Register module
+	 */
+	public function register() {
+		// Extend allowed MIME types
+		add_filter( 'upload_mimes', [ $this, 'extend_mime_types' ] );
+	}
+
+	/**
+	 * Extend allowed MIME types
+	 *
+	 * @param array $mimes Existing MIME types.
+	 * @return array Modified MIME types.
+	 */
+	public function extend_mime_types( $mimes ) {
+		// Add SVG support
+		$mimes['svg'] = 'image/svg+xml';
+
+		// Add JSON support
+		$mimes['json'] = 'application/json';
+
+		// Add WebP support
+		$mimes['webp'] = 'image/webp';
+
+		return apply_filters( 'vlt_helper_upload_mimes', $mimes );
+	}
+}

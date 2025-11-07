@@ -60,8 +60,8 @@ class Dashboard {
 	 * Constructor
 	 */
 	private function __construct() {
-		$this->dashboard_path = VLT_HELPER_PATH . 'includes/Dashboard/';
-		$this->dashboard_url  = VLT_HELPER_URL . 'includes/Dashboard/';
+		$this->dashboard_path = VLT_HELPER_PATH . 'includes/Admin/';
+		$this->dashboard_url  = VLT_HELPER_URL . 'includes/Admin/';
 
 		$this->init_hooks();
 	}
@@ -129,7 +129,6 @@ class Dashboard {
 		$svg = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 912 1019"><path fill="#aaaaaa" d="M402.516 12.75c29.362-16.993 76.942-17.007 106.328 0l349.352 202.168c29.362 16.992 53.164 58.287 53.164 92.169v404.598c0 33.912-23.778 75.163-53.164 92.169L508.844 1006.02c-29.362 17-76.942 17.01-106.328 0L53.164 803.854C23.802 786.862 0 745.567 0 711.685V307.087c0-33.912 23.778-75.163 53.164-92.169L402.516 12.749Zm40.494 742.748-1.091 2.594-57.07-138.51-.017.041-115.211-279.689h-114.75l172.125 418.158H441.93l1.08-2.594Zm31.538-75.675 172.453-413.794-114.535.137-111.15 266.109 53.233 147.547-.001.001Zm73.75-4.412c4.767 23.66 14.546 41.762 29.337 54.306 21.826 18.511 52.818 27.766 93.233 27.766 40.415 0 77.812-5.517 77.812-5.517l-16.119-76.465s-23.119 3.039-41.457 1.664c-18.338-1.375-30.437-6.419-36.605-11.878-6.168-5.458-11.881-17.691-11.881-30.506V449.094l-94.32 226.317ZM677.86 364.532l-34.054 81.711h88.755v-81.711H677.86Z"/></svg>';
 		return 'data:image/svg+xml;base64,' . base64_encode( $svg );
 	}
-
 
 	/**
 	 * Add admin menu
@@ -234,7 +233,7 @@ class Dashboard {
 		wp_enqueue_style(
 			'vlt-dashboard',
 			$this->dashboard_url . 'css/dashboard.css',
-			array(),
+			[],
 			VLT_HELPER_VERSION
 		);
 
@@ -306,6 +305,7 @@ class Dashboard {
 	 */
 	private function render_template( $template ) {
 		$template_file = $this->dashboard_path . 'templates/' . $template . '.php';
+
 		$theme         = wp_get_theme();
 		$theme_name    = $theme->get( 'Name' );
 

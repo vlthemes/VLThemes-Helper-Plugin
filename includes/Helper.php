@@ -49,6 +49,36 @@ class Helper {
 		$this->load_textdomain();
 		$this->load_base_module();
 		$this->init_modules();
+		$this->init_hooks();
+	}
+
+	/**
+	 * Initialize hooks
+	 */
+	private function init_hooks() {
+		// Enqueue admin scripts
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+		add_action( 'customize_controls_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ] );
+	}
+
+	/**
+	 * Enqueue admin scripts and styles
+	 */
+	public function enqueue_admin_scripts() {
+		wp_enqueue_script(
+			'vlt-helper-admin',
+			VLT_HELPER_URL . 'assets/js/admin.js',
+			[], // 'customize-controls'
+			VLT_HELPER_VERSION,
+			true
+		);
+
+		wp_enqueue_style(
+			'vlt-helper-admin',
+			VLT_HELPER_URL . 'assets/css/admin.css',
+			[],
+			VLT_HELPER_VERSION
+		);
 	}
 
 	/**

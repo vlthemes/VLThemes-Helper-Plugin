@@ -73,6 +73,12 @@ class Elementor extends BaseModule {
 		add_action( 'elementor/elements/categories_registered', [ $this, 'register_categories' ] );
 		add_action( 'elementor/theme/register_locations', [ $this, 'register_locations' ] );
 		add_filter( 'elementor/icons_manager/additional_tabs', [ $this, 'add_icon_tabs' ] );
+
+		// Hide promo widgets
+		add_filter( 'elementor/editor/localize_settings', [ $this, 'hide_promo_widgets' ], 20 );
+
+		// Register extension controls for containers and widgets
+		$this->register_element_extensions();
 	}
 
 	/**
@@ -216,6 +222,21 @@ class Elementor extends BaseModule {
 	}
 
 	/**
+	 * Hide Elementor Pro promo widgets
+	 *
+	 * Removes promotion widgets when Elementor Pro is not installed
+	 *
+	 * @param array $settings Elementor settings.
+	 * @return array Modified settings.
+	 */
+	public function hide_promo_widgets( $settings ) {
+		if ( ! class_exists( 'ElementorPro\Plugin' ) && ! empty( $settings['promotionWidgets'] ) ) {
+			$settings['promotionWidgets'] = [];
+		}
+		return $settings;
+	}
+
+	/**
 	 * Add custom icon tabs
 	 *
 	 * @param array $settings Icon settings.
@@ -334,6 +355,895 @@ class Elementor extends BaseModule {
 				'ver'           => VLT_HELPER_VERSION,
 			],
 		];
+	}
+
+	/**
+	 * Register element extensions
+	 *
+	 * Adds custom controls and attributes to Elementor elements
+	 */
+	private function register_element_extensions() {
+		// Register controls for containers
+		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_sticky_stretch_controls' ], 10, 2 );
+		add_action( 'elementor/element/container/section_background/after_section_end', [ $this, 'register_jarallax_controls' ], 10, 2 );
+		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_aos_controls' ], 10, 2 );
+		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_element_parallax_controls' ], 10, 2 );
+
+		// Register controls for common widgets
+		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_element_parallax_controls' ], 10, 2 );
+		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_sticky_stretch_controls' ], 10, 2 );
+		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_aos_controls' ], 10, 2 );
+
+		// Render for containers
+		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_sticky_stretch_attributes' ] );
+		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_jarallax_attributes' ] );
+		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_aos_attributes' ] );
+		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_element_parallax_attributes' ] );
+
+		// Render for common widgets
+		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_sticky_stretch_attributes' ] );
+		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_aos_attributes' ] );
+		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_element_parallax_attributes' ] );
+	}
+
+	/**
+	 * Get Elementor breakpoints
+	 *
+	 * @return array Available breakpoints.
+	 */
+	private function get_elementor_breakpoints() {
+		$breakpoints_manager = \Elementor\Plugin::$instance->breakpoints;
+		$breakpoints = $breakpoints_manager->get_active_breakpoints();
+
+		$options = [];
+		foreach ( $breakpoints as $breakpoint_key => $breakpoint ) {
+			$options[ $breakpoint_key ] = $breakpoint->get_label();
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Register Sticky & Stretch controls
+	 *
+	 * Adds sticky column, stretch, and padding controls for containers
+	 * Functionality is provided by Sticky and Stretch modules
+	 *
+	 * @param object $element Elementor element instance.
+	 * @param array  $args    Element arguments.
+	 */
+	public function register_sticky_stretch_controls( $element, $args ) {
+		// Get available breakpoints from Elementor
+		$breakpoints = $this->get_elementor_breakpoints();
+
+		// Get default reset devices (mobile and mobile_extra if exists)
+		$default_reset_devices = [ 'mobile' ];
+		if ( isset( $breakpoints['mobile_extra'] ) ) {
+			$default_reset_devices[] = 'mobile_extra';
+		}
+
+		$element->start_controls_section(
+			'vlt_section_sticky_stretch',
+			[
+				'label' => esc_html__( 'VLT Sticky & Stretch', 'vlt-helper' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
+			]
+		);
+
+		// Sticky Column
+		$element->add_control(
+			'vlt_sticky_column',
+			[
+				'label'        => esc_html__( 'Sticky Column', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'has-sticky-column',
+				'prefix_class' => '',
+				'separator'    => 'before',
+			]
+		);
+
+		$element->add_control(
+			'vlt_sticky_settings_popover',
+			[
+				'label'     => esc_html__( 'Sticky Settings', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [ 'vlt_sticky_column' => 'has-sticky-column' ],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_sticky_column_reset_offset',
+			[
+				'label'        => esc_html__( 'Reset Offset', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'has-sticky-column-reset-offset',
+				'prefix_class' => '',
+				'condition'    => [ 'vlt_sticky_column' => 'has-sticky-column' ],
+			]
+		);
+
+		$element->end_popover();
+
+		// Stretch
+		$element->add_control(
+			'vlt_stretch_enabled',
+			[
+				'label'        => esc_html__( 'Stretch', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'yes',
+				'prefix_class' => '',
+				'separator'    => 'before',
+			]
+		);
+
+		$element->add_control(
+			'vlt_stretch_settings_popover',
+			[
+				'label'     => esc_html__( 'Stretch Settings', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [ 'vlt_stretch_enabled' => 'yes' ],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_stretch_side',
+			[
+				'label'        => esc_html__( 'Side', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SELECT,
+				'default'      => 'to-left',
+				'options'      => [
+					'to-left'      => esc_html__( 'Left', 'vlt-helper' ),
+					'to-right'     => esc_html__( 'Right', 'vlt-helper' ),
+					'to-container' => esc_html__( 'Container', 'vlt-helper' ),
+				],
+				'prefix_class' => 'has-stretch-block-',
+				'condition'    => [ 'vlt_stretch_enabled' => 'yes' ],
+			]
+		);
+
+		$element->add_control(
+			'vlt_stretch_reset_on_devices',
+			[
+				'label'       => esc_html__( 'Reset On Device', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::SELECT2,
+				'multiple'    => true,
+				'label_block' => true,
+				'default'     => $default_reset_devices,
+				'options'     => $breakpoints,
+				'condition'   => [ 'vlt_stretch_enabled' => 'yes' ],
+			]
+		);
+
+		$element->end_popover();
+
+		// Padding to Container
+		$element->add_control(
+			'vlt_padding_to_container',
+			[
+				'label'        => esc_html__( 'Padding to Container', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'yes',
+				'prefix_class' => '',
+				'separator'    => 'before',
+			]
+		);
+
+		$element->add_control(
+			'vlt_padding_settings_popover',
+			[
+				'label'     => esc_html__( 'Padding Settings', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [ 'vlt_padding_to_container' => 'yes' ],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_padding_to_container_side',
+			[
+				'label'        => esc_html__( 'Side', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SELECT,
+				'default'      => 'to-left',
+				'options'      => [
+					'to-left'  => esc_html__( 'Left', 'vlt-helper' ),
+					'to-right' => esc_html__( 'Right', 'vlt-helper' ),
+				],
+				'prefix_class' => 'has-padding-block-',
+				'condition'    => [ 'vlt_padding_to_container' => 'yes' ],
+			]
+		);
+
+		$element->add_control(
+			'vlt_padding_to_container_reset_on_devices',
+			[
+				'label'       => esc_html__( 'Reset On Device', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::SELECT2,
+				'multiple'    => true,
+				'label_block' => true,
+				'default'     => $default_reset_devices,
+				'options'     => $breakpoints,
+				'condition'   => [ 'vlt_padding_to_container' => 'yes' ],
+			]
+		);
+
+		$element->end_popover();
+
+		// Equal Height
+		$element->add_control(
+			'vlt_equal_height_widgets',
+			[
+				'label'        => esc_html__( 'Equal Height', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'yes',
+				'prefix_class' => 'has-equal-height-block-',
+				'separator'    => 'before',
+			]
+		);
+
+		$element->end_controls_section();
+	}
+
+	/**
+	 * Render Sticky & Stretch attributes
+	 *
+	 * @param object $widget Elementor widget instance.
+	 */
+	public function render_sticky_stretch_attributes( $widget ) {
+		$settings = $widget->get_settings_for_display();
+
+		// Stretch reset on devices
+		if ( isset( $settings['vlt_stretch_reset_on_devices'] ) ) {
+			$widget->add_render_attribute(
+				'_wrapper',
+				'data-reset-on-devices',
+				wp_json_encode( $settings['vlt_stretch_reset_on_devices'] )
+			);
+		}
+
+		// Padding to container reset on devices
+		if ( isset( $settings['vlt_padding_to_container_reset_on_devices'] ) ) {
+			$widget->add_render_attribute(
+				'_wrapper',
+				'data-reset-padding-to-container-on-devices',
+				wp_json_encode( $settings['vlt_padding_to_container_reset_on_devices'] )
+			);
+		}
+	}
+
+	/**
+	 * Register Jarallax parallax controls
+	 *
+	 * @param object $element Elementor element.
+	 * @param array  $args    Element arguments.
+	 */
+	public function register_jarallax_controls( $element, $args ) {
+		$element->start_controls_section(
+			'vlt_section_jarallax',
+			[
+				'label' => esc_html__( 'VLT Jarallax Background', 'vlt-helper' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$element->add_control(
+			'vlt_jarallax_enabled',
+			[
+				'label'        => esc_html__( 'Enable', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'jarallax',
+				'prefix_class' => '',
+			]
+		);
+
+		$element->add_control(
+			'vlt_jarallax_settings_popover',
+			[
+				'label'     => esc_html__( 'Jarallax Settings', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [ 'vlt_jarallax_enabled' => 'jarallax' ],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_jarallax_speed',
+			[
+				'label'      => esc_html__( 'Speed', 'vlt-helper' ),
+				'type'       => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => [ 'px' ],
+				'range'      => [
+					'px' => [
+						'min'  => -1,
+						'max'  => 2,
+						'step' => 0.1,
+					],
+				],
+				'default' => [
+					'size' => 0.9,
+				],
+			]
+		);
+
+		$element->add_control(
+			'vlt_jarallax_type',
+			[
+				'label'   => esc_html__( 'Type', 'vlt-helper' ),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'options' => [
+					''               => esc_html__( 'Scroll', 'vlt-helper' ),
+					'scale'          => esc_html__( 'Scale', 'vlt-helper' ),
+					'opacity'        => esc_html__( 'Opacity', 'vlt-helper' ),
+					'scroll-opacity' => esc_html__( 'Scroll + Opacity', 'vlt-helper' ),
+					'scale-opacity'  => esc_html__( 'Scale + Opacity', 'vlt-helper' ),
+				],
+			]
+		);
+
+		$element->add_control(
+			'vlt_jarallax_img_size',
+			[
+				'label'   => esc_html__( 'Image Size', 'vlt-helper' ),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'options' => [
+					''        => esc_html__( 'Default', 'vlt-helper' ),
+					'auto'    => esc_html__( 'Auto', 'vlt-helper' ),
+					'cover'   => esc_html__( 'Cover', 'vlt-helper' ),
+					'contain' => esc_html__( 'Contain', 'vlt-helper' ),
+				],
+			]
+		);
+
+		$element->add_control(
+			'vlt_jarallax_img_position',
+			[
+				'label'   => esc_html__( 'Image Position', 'vlt-helper' ),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'options' => [
+					''              => esc_html__( 'Default', 'vlt-helper' ),
+					'center center' => esc_html__( 'Center Center', 'vlt-helper' ),
+					'center left'   => esc_html__( 'Center Left', 'vlt-helper' ),
+					'center right'  => esc_html__( 'Center Right', 'vlt-helper' ),
+					'top center'    => esc_html__( 'Top Center', 'vlt-helper' ),
+					'top left'      => esc_html__( 'Top Left', 'vlt-helper' ),
+					'top right'     => esc_html__( 'Top Right', 'vlt-helper' ),
+					'bottom center' => esc_html__( 'Bottom Center', 'vlt-helper' ),
+					'bottom left'   => esc_html__( 'Bottom Left', 'vlt-helper' ),
+					'bottom right'  => esc_html__( 'Bottom Right', 'vlt-helper' ),
+					'custom'        => esc_html__( 'Custom', 'vlt-helper' ),
+				],
+			]
+		);
+
+		$element->add_control(
+			'vlt_jarallax_img_position_custom',
+			[
+				'label'       => esc_html__( 'Custom Position', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'placeholder' => '50% 50%',
+				'condition'   => [
+					'vlt_jarallax_img_position' => 'custom',
+				],
+			]
+		);
+
+		$element->add_control(
+			'vlt_jarallax_video_url',
+			[
+				'label'       => esc_html__( 'Video URL', 'vlt-helper' ),
+				'description' => esc_html__( 'YouTube, Vimeo or local video. Use "mp4:" prefix for self-hosted.', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'placeholder' => 'https://www.youtube.com/watch?v=...',
+			]
+		);
+
+		$element->end_popover();
+
+		$element->end_controls_section();
+
+		// Allow themes to add custom Jarallax controls
+		do_action( 'vlt_helper_elementor_jarallax_controls', $element, $args );
+	}
+
+	/**
+	 * Render Jarallax attributes
+	 *
+	 * @param object $widget Elementor widget instance.
+	 */
+	public function render_jarallax_attributes( $widget ) {
+		$settings = $widget->get_settings_for_display();
+
+		if ( empty( $settings['vlt_jarallax_enabled'] ) || $settings['vlt_jarallax_enabled'] !== 'jarallax' ) {
+			return;
+		}
+
+		// Add jarallax class and speed
+		if ( ! empty( $settings['vlt_jarallax_speed']['size'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-jarallax', '' );
+			$widget->add_render_attribute( '_wrapper', 'data-speed', $settings['vlt_jarallax_speed']['size'] );
+		}
+
+		// Add video URL
+		if ( ! empty( $settings['vlt_jarallax_video_url'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-jarallax-video', $settings['vlt_jarallax_video_url'] );
+		}
+
+		// Add type
+		if ( ! empty( $settings['vlt_jarallax_type'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-type', $settings['vlt_jarallax_type'] );
+		}
+
+		// Add image size
+		if ( ! empty( $settings['vlt_jarallax_img_size'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-img-size', $settings['vlt_jarallax_img_size'] );
+		}
+
+		// Add image position
+		$position = $settings['vlt_jarallax_img_position'] ?? '';
+		if ( $position === 'custom' ) {
+			$position = $settings['vlt_jarallax_img_position_custom'] ?? '';
+		}
+
+		if ( ! empty( $position ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-img-position', $position );
+		}
+	}
+
+	/**
+	 * Register AOS animation controls
+	 *
+	 * @param object $element Elementor element.
+	 * @param array  $args    Element arguments.
+	 */
+	public function register_aos_controls( $element, $args ) {
+		$element->start_controls_section(
+			'vlt_section_aos_animation',
+			[
+				'label' => esc_html__( 'VLT Entrance Animation', 'vlt-helper' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
+			]
+		);
+
+		$element->add_control(
+			'vlt_aos_animation',
+			[
+				'label'   => esc_html__( 'Entrance Animation', 'vlt-helper' ),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'options' => $this->get_aos_animations(),
+				'default' => 'none',
+			]
+		);
+
+		$element->add_control(
+			'vlt_aos_settings_popover',
+			[
+				'label'     => esc_html__( 'Animation Settings', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [ 'vlt_aos_animation!' => 'none' ],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_aos_duration',
+			[
+				'label'       => esc_html__( 'Duration (seconds)', 'vlt-helper' ),
+				'description' => esc_html__( 'Animation duration in seconds', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::SLIDER,
+				'size_units'  => [ 'px' ],
+				'range'       => [
+					'px' => [
+						'min'  => 0,
+						'max'  => 3,
+						'step' => 0.1,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 0.8,
+				],
+			]
+		);
+
+		$element->add_control(
+			'vlt_aos_delay',
+			[
+				'label'       => esc_html__( 'Delay (seconds)', 'vlt-helper' ),
+				'description' => esc_html__( 'Delay before animation starts in seconds', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::SLIDER,
+				'size_units'  => [ 'px' ],
+				'range'       => [
+					'px' => [
+						'min'  => 0,
+						'max'  => 3,
+						'step' => 0.1,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 0,
+				],
+			]
+		);
+
+		$element->add_control(
+			'vlt_aos_offset',
+			[
+				'label'       => esc_html__( 'Offset (px)', 'vlt-helper' ),
+				'description' => esc_html__( 'Distance from bottom of viewport to start', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'min'         => -500,
+				'max'         => 500,
+				'step'        => 10,
+			]
+		);
+
+		$element->add_control(
+			'vlt_aos_once',
+			[
+				'label'       => esc_html__( 'Animate Once', 'vlt-helper' ),
+				'description' => esc_html__( 'Animate only once while scrolling down', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::SWITCHER,
+				'default'     => 'yes',
+			]
+		);
+
+		$element->end_popover();
+
+		$element->end_controls_section();
+
+		// Allow themes to add custom AOS controls
+		do_action( 'vlt_helper_elementor_aos_controls', $element, $args );
+	}
+
+	/**
+	 * Render AOS attributes
+	 *
+	 * @param object $widget Elementor widget instance.
+	 */
+	public function render_aos_attributes( $widget ) {
+		$settings = $widget->get_settings_for_display();
+
+		if ( empty( $settings['vlt_aos_animation'] ) || $settings['vlt_aos_animation'] === 'none' ) {
+			return;
+		}
+
+		// Add animation
+		$widget->add_render_attribute( '_wrapper', 'data-aos', $settings['vlt_aos_animation'] );
+
+		// Add duration (convert seconds to milliseconds)
+		if ( ! empty( $settings['vlt_aos_duration']['size'] ) ) {
+			$duration_ms = $settings['vlt_aos_duration']['size'] * 1000;
+			$widget->add_render_attribute( '_wrapper', 'data-aos-duration', $duration_ms );
+		}
+
+		// Add delay (convert seconds to milliseconds)
+		if ( ! empty( $settings['vlt_aos_delay']['size'] ) ) {
+			$delay_ms = $settings['vlt_aos_delay']['size'] * 1000;
+			$widget->add_render_attribute( '_wrapper', 'data-aos-delay', $delay_ms );
+		}
+
+		// Add offset
+		if ( isset( $settings['vlt_aos_offset'] ) && $settings['vlt_aos_offset'] !== '' ) {
+			$widget->add_render_attribute( '_wrapper', 'data-aos-offset', $settings['vlt_aos_offset'] );
+		}
+
+		// Add once
+		if ( ! empty( $settings['vlt_aos_once'] ) ) {
+			$once_value = $settings['vlt_aos_once'] === 'yes' ? 'true' : 'false';
+			$widget->add_render_attribute( '_wrapper', 'data-aos-once', $once_value );
+		}
+	}
+
+	/**
+	 * Get AOS animations list
+	 *
+	 * @return array Array of animations.
+	 */
+	private function get_aos_animations() {
+		return apply_filters( 'vlt_helper_elementor_aos_animations', [
+			'none'          => esc_html__( 'None', 'vlt-helper' ),
+			'fade'          => esc_html__( 'Fade', 'vlt-helper' ),
+			'fade-up'       => esc_html__( 'Fade Up', 'vlt-helper' ),
+			'fade-down'     => esc_html__( 'Fade Down', 'vlt-helper' ),
+			'fade-left'     => esc_html__( 'Fade Left', 'vlt-helper' ),
+			'fade-right'    => esc_html__( 'Fade Right', 'vlt-helper' ),
+			'fade-up-right' => esc_html__( 'Fade Up Right', 'vlt-helper' ),
+			'fade-up-left'  => esc_html__( 'Fade Up Left', 'vlt-helper' ),
+			'fade-down-right' => esc_html__( 'Fade Down Right', 'vlt-helper' ),
+			'fade-down-left' => esc_html__( 'Fade Down Left', 'vlt-helper' ),
+			'flip-up'       => esc_html__( 'Flip Up', 'vlt-helper' ),
+			'flip-down'     => esc_html__( 'Flip Down', 'vlt-helper' ),
+			'flip-left'     => esc_html__( 'Flip Left', 'vlt-helper' ),
+			'flip-right'    => esc_html__( 'Flip Right', 'vlt-helper' ),
+			'slide-up'      => esc_html__( 'Slide Up', 'vlt-helper' ),
+			'slide-down'    => esc_html__( 'Slide Down', 'vlt-helper' ),
+			'slide-left'    => esc_html__( 'Slide Left', 'vlt-helper' ),
+			'slide-right'   => esc_html__( 'Slide Right', 'vlt-helper' ),
+			'zoom-in'       => esc_html__( 'Zoom In', 'vlt-helper' ),
+			'zoom-in-up'    => esc_html__( 'Zoom In Up', 'vlt-helper' ),
+			'zoom-in-down'  => esc_html__( 'Zoom In Down', 'vlt-helper' ),
+			'zoom-in-left'  => esc_html__( 'Zoom In Left', 'vlt-helper' ),
+			'zoom-in-right' => esc_html__( 'Zoom In Right', 'vlt-helper' ),
+			'zoom-out'      => esc_html__( 'Zoom Out', 'vlt-helper' ),
+			'zoom-out-up'   => esc_html__( 'Zoom Out Up', 'vlt-helper' ),
+			'zoom-out-down' => esc_html__( 'Zoom Out Down', 'vlt-helper' ),
+			'zoom-out-left' => esc_html__( 'Zoom Out Left', 'vlt-helper' ),
+			'zoom-out-right' => esc_html__( 'Zoom Out Right', 'vlt-helper' ),
+		] );
+	}
+
+	/**
+	 * Register Element Parallax controls
+	 *
+	 * Adds parallax controls to Elementor containers and widgets
+	 * Controls are defined here, but functionality is in ElementParallax module
+	 *
+	 * @param object $element Elementor element instance.
+	 * @param array  $args    Element arguments.
+	 */
+	public function register_element_parallax_controls( $element, $args ) {
+		$element->start_controls_section(
+			'vlt_section_element_parallax',
+			[
+				'label' => esc_html__( 'VLT Element Parallax', 'vlt-helper' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
+			]
+		);
+
+		$element->add_control(
+			'vlt_parallax_enabled',
+			[
+				'label'        => esc_html__( 'Enable Parallax', 'vlt-helper' ),
+				'type'         => \Elementor\Controls_Manager::SWITCHER,
+				'return_value' => 'yes',
+				'default'      => '',
+			]
+		);
+
+		// Horizontal Scroll Popover
+		$element->add_control(
+			'vlt_parallax_horizontal_popover',
+			[
+				'label'     => esc_html__( 'Horizontal Scroll', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [
+					'vlt_parallax_enabled' => 'yes',
+				],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_parallax_x',
+			[
+				'label'       => esc_html__( 'Parallax X (px)', 'vlt-helper' ),
+				'description' => esc_html__( 'Distance to move horizontally during scroll', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::SLIDER,
+				'size_units'  => [ 'px' ],
+				'range'       => [
+					'px' => [
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 5,
+					],
+				],
+				'default'     => [
+					'unit' => 'px',
+					'size' => 0,
+				],
+			]
+		);
+
+		$element->end_popover();
+
+		// Vertical Scroll Popover
+		$element->add_control(
+			'vlt_parallax_vertical_popover',
+			[
+				'label'     => esc_html__( 'Vertical Scroll', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [
+					'vlt_parallax_enabled' => 'yes',
+				],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_parallax_y',
+			[
+				'label'       => esc_html__( 'Parallax Y (px)', 'vlt-helper' ),
+				'description' => esc_html__( 'Distance to move vertically during scroll', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::SLIDER,
+				'size_units'  => [ 'px' ],
+				'range'       => [
+					'px' => [
+						'min'  => -500,
+						'max'  => 500,
+						'step' => 5,
+					],
+				],
+				'default'     => [
+					'unit' => 'px',
+					'size' => 0,
+				],
+			]
+		);
+
+		$element->end_popover();
+
+		// Transparency Popover
+		$element->add_control(
+			'vlt_parallax_opacity_popover',
+			[
+				'label'     => esc_html__( 'Transparency', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [
+					'vlt_parallax_enabled' => 'yes',
+				],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_parallax_opacity_start',
+			[
+				'label'       => esc_html__( 'Opacity Start', 'vlt-helper' ),
+				'description' => esc_html__( 'Starting opacity value (0-1)', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'min'         => 0,
+				'max'         => 1,
+				'step'        => 0.1,
+			]
+		);
+
+		$element->add_control(
+			'vlt_parallax_opacity_end',
+			[
+				'label'       => esc_html__( 'Opacity End', 'vlt-helper' ),
+				'description' => esc_html__( 'Ending opacity value (0-1)', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'min'         => 0,
+				'max'         => 1,
+				'step'        => 0.1,
+			]
+		);
+
+		$element->end_popover();
+
+		// Scale Popover
+		$element->add_control(
+			'vlt_parallax_scale_popover',
+			[
+				'label'     => esc_html__( 'Scale', 'vlt-helper' ),
+				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
+				'condition' => [
+					'vlt_parallax_enabled' => 'yes',
+				],
+			]
+		);
+
+		$element->start_popover();
+
+		$element->add_control(
+			'vlt_parallax_scale_start',
+			[
+				'label'       => esc_html__( 'Scale Start', 'vlt-helper' ),
+				'description' => esc_html__( 'Starting scale value (0.1-5)', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'min'         => 0.1,
+				'max'         => 5,
+				'step'        => 0.1,
+			]
+		);
+
+		$element->add_control(
+			'vlt_parallax_scale_end',
+			[
+				'label'       => esc_html__( 'Scale End', 'vlt-helper' ),
+				'description' => esc_html__( 'Ending scale value (0.1-5)', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::NUMBER,
+				'min'         => 0.1,
+				'max'         => 5,
+				'step'        => 0.1,
+			]
+		);
+
+		$element->end_popover();
+
+		// Parent Selector
+		$element->add_control(
+			'vlt_parallax_parent',
+			[
+				'label'       => esc_html__( 'Parent Selector', 'vlt-helper' ),
+				'description' => esc_html__( 'CSS selector of parent element to use as trigger (e.g., .parent-class)', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'label_block' => true,
+				'separator'   => 'before',
+				'condition'   => [
+					'vlt_parallax_enabled' => 'yes',
+				],
+			]
+		);
+
+		$element->end_controls_section();
+	}
+
+	/**
+	 * Render Element Parallax attributes
+	 *
+	 * @param object $widget Elementor widget instance.
+	 */
+	public function render_element_parallax_attributes( $widget ) {
+		$settings = $widget->get_settings_for_display();
+
+		if ( empty( $settings['vlt_parallax_enabled'] ) || $settings['vlt_parallax_enabled'] !== 'yes' ) {
+			return;
+		}
+
+		// Add parallax class
+		$widget->add_render_attribute( '_wrapper', 'class', 'vlt-element-parallax' );
+
+		// Parent selector
+		if ( ! empty( $settings['vlt_parallax_parent'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-element-parallax-parent', $settings['vlt_parallax_parent'] );
+		}
+
+		// Parallax X and Y
+		$y = isset( $settings['vlt_parallax_y']['size'] ) && is_numeric( $settings['vlt_parallax_y']['size'] ) ? $settings['vlt_parallax_y']['size'] : 0;
+		$x = isset( $settings['vlt_parallax_x']['size'] ) && is_numeric( $settings['vlt_parallax_x']['size'] ) ? $settings['vlt_parallax_x']['size'] : 0;
+
+		if ( $y !== 0 || $x !== 0 ) {
+			$widget->add_render_attribute( '_wrapper', 'data-element-parallax', "{$y} {$x}" );
+		}
+
+		// Opacity
+		$opacity_start = $settings['vlt_parallax_opacity_start'] ?? null;
+		$opacity_end   = $settings['vlt_parallax_opacity_end'] ?? null;
+
+		if ( is_numeric( $opacity_start ) || is_numeric( $opacity_end ) ) {
+			$opacity_val = '';
+			if ( is_numeric( $opacity_start ) && is_numeric( $opacity_end ) ) {
+				$opacity_val = "{$opacity_start} {$opacity_end}";
+			} elseif ( is_numeric( $opacity_start ) ) {
+				$opacity_val = (string) $opacity_start;
+			} elseif ( is_numeric( $opacity_end ) ) {
+				$opacity_val = (string) $opacity_end;
+			}
+
+			if ( $opacity_val !== '' ) {
+				$widget->add_render_attribute( '_wrapper', 'data-element-opacity', $opacity_val );
+			}
+		}
+
+		// Scale
+		$scale_start = $settings['vlt_parallax_scale_start'] ?? null;
+		$scale_end   = $settings['vlt_parallax_scale_end'] ?? null;
+
+		if ( is_numeric( $scale_start ) || is_numeric( $scale_end ) ) {
+			$scale_val = '';
+			if ( is_numeric( $scale_start ) && is_numeric( $scale_end ) ) {
+				$scale_val = "{$scale_start} {$scale_end}";
+			} elseif ( is_numeric( $scale_start ) ) {
+				$scale_val = (string) $scale_start;
+			} elseif ( is_numeric( $scale_end ) ) {
+				$scale_val = (string) $scale_end;
+			}
+
+			if ( $scale_val !== '' ) {
+				$widget->add_render_attribute( '_wrapper', 'data-element-scale', $scale_val );
+			}
+		}
 	}
 
 	/**

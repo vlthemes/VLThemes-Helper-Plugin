@@ -99,10 +99,13 @@ export default class ContainerExtensionsModule {
 			const currentDevice = this.getCurrentDevice();
 
 			// Find fake container for offset calculation
-			const fakeContainer = document.querySelector('.vlt-fake-container');
-			const offset = fakeContainer
-				? fakeContainer.getBoundingClientRect().left + parseFloat(getComputedStyle(fakeContainer).paddingLeft)
-				: 0;
+			const fakeContainer = document.querySelector('.container');
+			if (!fakeContainer) {
+				fakeContainer = document.createElement('div');
+				fakeContainer.className = 'container';
+				document.body.appendChild(fakeContainer);
+			}
+			const offset = fakeContainer.getBoundingClientRect().left + parseFloat(getComputedStyle(fakeContainer).paddingLeft);
 
 			// Reset on specific devices
 			if (resetOnDevice.includes(currentDevice)) {

@@ -396,24 +396,24 @@ class Elementor extends BaseModule {
 	 */
 	private function register_element_extensions() {
 		// Register controls for containers
-		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_sticky_stretch_controls' ], 10, 2 );
+		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_layout_extensions_controls' ], 10, 2 );
 		add_action( 'elementor/element/container/section_background/after_section_end', [ $this, 'register_jarallax_controls' ], 10, 2 );
 		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_aos_controls' ], 10, 2 );
 		add_action( 'elementor/element/container/section_layout/after_section_end', [ $this, 'register_element_parallax_controls' ], 10, 2 );
 
 		// Register controls for common widgets
 		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_element_parallax_controls' ], 10, 2 );
-		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_sticky_stretch_controls' ], 10, 2 );
+		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_layout_extensions_controls' ], 10, 2 );
 		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_aos_controls' ], 10, 2 );
 
 		// Render for containers
-		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_sticky_stretch_attributes' ] );
+		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_layout_extensions_attributes' ] );
 		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_jarallax_attributes' ] );
 		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_aos_attributes' ] );
 		add_action( 'elementor/frontend/container/before_render', [ $this, 'render_element_parallax_attributes' ] );
 
 		// Render for common widgets
-		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_sticky_stretch_attributes' ] );
+		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_layout_extensions_attributes' ] );
 		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_aos_attributes' ] );
 		add_action( 'elementor/frontend/widget/before_render', [ $this, 'render_element_parallax_attributes' ] );
 	}
@@ -444,7 +444,7 @@ class Elementor extends BaseModule {
 	 * @param object $element Elementor element instance.
 	 * @param array  $args    Element arguments.
 	 */
-	public function register_sticky_stretch_controls( $element, $args ) {
+	public function register_layout_extensions_controls( $element, $args ) {
 		// Get available breakpoints from Elementor
 		$breakpoints = $this->get_elementor_breakpoints();
 
@@ -455,9 +455,9 @@ class Elementor extends BaseModule {
 		}
 
 		$element->start_controls_section(
-			'vlt_section_sticky_stretch',
+			'vlt_section_layout_extensions',
 			[
-				'label' => esc_html__( 'VLT Sticky & Stretch', 'vlt-helper' ),
+				'label' => esc_html__( 'VLT Layout Extensions', 'vlt-helper' ),
 				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
 			]
 		);
@@ -651,7 +651,7 @@ class Elementor extends BaseModule {
 	 *
 	 * @param object $widget Elementor widget instance.
 	 */
-	public function render_sticky_stretch_attributes( $widget ) {
+	public function render_layout_extensions_attributes( $widget ) {
 		$settings = $widget->get_settings_for_display();
 
 		// Stretch reset on devices

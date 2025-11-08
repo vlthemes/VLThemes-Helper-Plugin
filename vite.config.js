@@ -6,11 +6,9 @@ import { copyFileSync } from 'fs';
 export default defineConfig({
 	build: {
 		rollupOptions: {
-			input: resolve(__dirname, 'assets/extensions/elementor/elementor.js'),
+			input: resolve(__dirname, 'assets/extensions/elementor/main.js'),
 			output: {
 				entryFileNames: 'elementor-bundle.js',
-				chunkFileNames: 'chunks/[name]-[hash].js',
-				assetFileNames: 'assets/[name].[ext]',
 			},
 		},
 		outDir: './assets/extensions/elementor',

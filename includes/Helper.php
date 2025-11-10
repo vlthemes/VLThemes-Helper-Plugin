@@ -103,23 +103,24 @@ class Helper {
 		// ===================================
 		// VENDORS
 		// ===================================
-		wp_register_script( 'vlt-gsap', $this->plugin_assets_dir . 'vendors/js/gsap.js', [], VLT_HELPER_VERSION, true );
-		wp_register_script( 'vlt-scrolltrigger', $this->plugin_assets_dir . 'vendors/js/gsap-scrolltrigger.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
-		wp_register_script( 'vlt-scrolltoplugin', $this->plugin_assets_dir . 'vendors/js/gsap-scrolltoplugin.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
-		wp_register_script( 'vlt-textplugin', $this->plugin_assets_dir . 'vendors/js/gsap-textplugin.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
-		wp_register_script( 'vlt-observer', $this->plugin_assets_dir . 'vendors/js/gsap-observer.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
-		wp_register_script( 'vlt-draggable', $this->plugin_assets_dir . 'vendors/js/gsap-raggable.js', [ 'vlt-gsap' ], VLT_HELPER_VERSION, true );
+		wp_register_script( 'gsap', $this->plugin_assets_dir . 'vendors/js/gsap.js', [], VLT_HELPER_VERSION, true );
+		wp_register_script( 'scrolltrigger', $this->plugin_assets_dir . 'vendors/js/gsap-scrolltrigger.js', [ 'gsap' ], VLT_HELPER_VERSION, true );
 
-		wp_register_script( 'vlt-jarallax', $this->plugin_assets_dir .'vendors/js/jarallax.js', [], VLT_HELPER_VERSION, true );
-		wp_register_script( 'vlt-jarallax-video', $this->plugin_assets_dir .'vendors/js/jarallax-video.js', [], VLT_HELPER_VERSION, true );
-		wp_register_style( 'vlt-jarallax', $this->plugin_assets_dir . 'vendors/css/jarallax.css', [], VLT_HELPER_VERSION );
+		wp_register_script( 'scrolltoplugin', $this->plugin_assets_dir . 'vendors/js/gsap-scrolltoplugin.js', [ 'gsap' ], VLT_HELPER_VERSION, true );
+		wp_register_script( 'textplugin', $this->plugin_assets_dir . 'vendors/js/gsap-textplugin.js', [ 'gsap' ], VLT_HELPER_VERSION, true );
+		wp_register_script( 'observer', $this->plugin_assets_dir . 'vendors/js/gsap-observer.js', [ 'gsap' ], VLT_HELPER_VERSION, true );
+		wp_register_script( 'draggable', $this->plugin_assets_dir . 'vendors/js/gsap-draggable.js', [ 'gsap' ], VLT_HELPER_VERSION, true );
 
-		wp_register_script( 'vlt-aos', $this->plugin_assets_dir .'vendors/js/aos.js', [], VLT_HELPER_VERSION, true );
-		wp_register_style( 'vlt-aos', $this->plugin_assets_dir . 'vendors/css/aos.css', [], VLT_HELPER_VERSION );
+		wp_register_script( 'jarallax', $this->plugin_assets_dir .'vendors/js/jarallax.js', [], VLT_HELPER_VERSION, true );
+		wp_register_script( 'jarallax-video', $this->plugin_assets_dir .'vendors/js/jarallax-video.js', [], VLT_HELPER_VERSION, true );
+		wp_register_style( 'jarallax', $this->plugin_assets_dir . 'vendors/css/jarallax.css', [], VLT_HELPER_VERSION );
 
-		wp_register_script( 'vlt-sharer', $this->plugin_assets_dir . 'vendors/js/sharer.js', [], VLT_HELPER_VERSION, true );
+		wp_register_script( 'aos', $this->plugin_assets_dir .'vendors/js/aos.js', [], VLT_HELPER_VERSION, true );
+		wp_register_style( 'aos', $this->plugin_assets_dir . 'vendors/css/aos.css', [], VLT_HELPER_VERSION );
 
-		wp_register_style( 'vlt-font-socicons', $this->plugin_assets_dir . 'fonts/socicons/socicons.css', [], VLT_HELPER_VERSION );
+		wp_register_script( 'sharer', $this->plugin_assets_dir . 'vendors/js/sharer.js', [], VLT_HELPER_VERSION, true );
+
+		wp_register_style( 'socicons', $this->plugin_assets_dir . 'fonts/socicons/socicons.css', [], VLT_HELPER_VERSION );
 
 		// Allow themes/plugins to register additional assets
 		do_action( 'vlt_helper/register_assets' );

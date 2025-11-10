@@ -190,7 +190,7 @@ export default class ElementParallaxModule {
 					x: 0,
 					y: 0,
 					opacity: opacityStart ?? 1,
-					scale: scaleStart ?? 1
+					scale: scaleStart ?? 1,
 				}, {
 					...toProps,
 					immediateRender: false,

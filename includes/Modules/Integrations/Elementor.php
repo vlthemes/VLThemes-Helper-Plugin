@@ -73,11 +73,11 @@ class Elementor extends BaseModule {
 			'vlt-extension-elementor',
 			$this->assets_url . 'extensions/elementor/elementor-bundle.js',
 			[
-				'vlt-aos',
-				'vlt-gsap',
-				'vlt-scrolltrigger',
-				'vlt-jarallax',
-				'vlt-jarallax-video'
+				'aos',
+				'gsap',
+				'scrolltrigger',
+				'jarallax',
+				'jarallax-video'
 			],
 			VLT_HELPER_VERSION,
 			true
@@ -86,9 +86,9 @@ class Elementor extends BaseModule {
 		// ===================================
 		// STYLES
 		// ===================================
-		wp_enqueue_style( 'vlt-aos' );
-		wp_enqueue_style( 'vlt-jarallax' );
-		wp_enqueue_style( 'vlt-jarallax-video' );
+		wp_enqueue_style( 'aos' );
+		wp_enqueue_style( 'jarallax' );
+		wp_enqueue_style( 'jarallax-video' );
 	}
 
 	/**

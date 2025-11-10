@@ -89,8 +89,8 @@ class SocialIcons extends BaseModule {
 	 * Enqueue CSS and JS assets
 	 */
 	public function enqueue_assets() {
-		wp_enqueue_style( 'vlt-font-socicons' );
-		wp_enqueue_script( 'vlt-sharer' );
+		wp_enqueue_style( 'socicons' );
+		wp_enqueue_script( 'sharer' );
 	}
 
 	/**

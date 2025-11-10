@@ -71,7 +71,7 @@ export default defineConfig({
 					},
 					// Jarallax CSS
 					{
-						from: resolve(__dirname, 'node_modules/jarallax/dist/jarallax.min.css'),
+						from: resolve(__dirname, 'node_modules/jarallax/dist/jarallax.css'),
 						to: resolve(__dirname, './assets/vendors/css/jarallax.css'),
 					},
 					// Sharer

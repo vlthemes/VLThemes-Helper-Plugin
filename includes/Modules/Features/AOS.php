@@ -42,8 +42,8 @@ class AOS extends BaseModule {
 	 * Enqueue AOS CSS and JS
 	 */
 	public function enqueue_assets() {
-		wp_enqueue_style( 'vlt-aos' );
-		wp_enqueue_script( 'vlt-aos' );
+		wp_enqueue_style( 'aos' );
+		wp_enqueue_script( 'aos' );
 	}
 
 	/**
@@ -97,15 +97,15 @@ class AOS extends BaseModule {
 	}
 
 	/**
-	 * Build AOS data attributes string
+	 * Get AOS data attributes as array
 	 *
 	 * @param string $animation Animation name.
 	 * @param array  $args      Additional arguments (duration, delay, offset, once, etc.).
-	 * @return string Data attributes string.
+	 * @return array Data attributes array.
 	 */
-	public static function render_attrs( $animation, $args = [] ) {
+	public static function get_render_attrs( $animation, $args = [] ) {
 		if ( empty( $animation ) || $animation === 'none' ) {
-			return '';
+			return [];
 		}
 
 		$defaults = [
@@ -113,43 +113,53 @@ class AOS extends BaseModule {
 			'delay'    => '',
 			'offset'   => '',
 			'once'     => '',
-			'mirror'   => '',
-			'easing'   => '',
-			'anchor'   => '',
 		];
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$attrs = [ 'data-aos="' . esc_attr( $animation ) . '"' ];
+		$attrs = [
+			'data-aos' => esc_attr( $animation ),
+		];
 
 		if ( ! empty( $args['duration'] ) ) {
-			$attrs[] = 'data-aos-duration="' . esc_attr( $args['duration'] ) . '"';
+			$attrs['data-aos-duration'] = esc_attr( $args['duration'] * 1000 );
 		}
 
 		if ( ! empty( $args['delay'] ) ) {
-			$attrs[] = 'data-aos-delay="' . esc_attr( $args['delay'] ) . '"';
+			$attrs['data-aos-delay'] = esc_attr( $args['delay'] * 1000 );
 		}
 
 		if ( ! empty( $args['offset'] ) ) {
-			$attrs[] = 'data-aos-offset="' . esc_attr( $args['offset'] ) . '"';
+			$attrs['data-aos-offset'] = esc_attr( $args['offset'] );
 		}
 
 		if ( ! empty( $args['once'] ) ) {
-			$attrs[] = 'data-aos-once="' . esc_attr( $args['once'] ) . '"';
+			$attrs['data-aos-once'] = esc_attr( $args['once'] );
 		}
 
-		if ( ! empty( $args['mirror'] ) ) {
-			$attrs[] = 'data-aos-mirror="' . esc_attr( $args['mirror'] ) . '"';
-		}
-
-		if ( ! empty( $args['easing'] ) ) {
-			$attrs[] = 'data-aos-easing="' . esc_attr( $args['easing'] ) . '"';
-		}
-
-		if ( ! empty( $args['anchor'] ) ) {
-			$attrs[] = 'data-aos-anchor="' . esc_attr( $args['anchor'] ) . '"';
-		}
-
-		return implode( ' ', $attrs );
+		return $attrs;
 	}
+
+	/**
+	 * Build AOS data attributes string
+	 *
+	 * @param string $animation Animation name.
+	 * @param array  $args      Additional arguments (duration, delay, offset, once, etc.).
+	 * @return string Data attributes string.
+	 */
+	public static function render_attrs( $animation, $args = [] ) {
+		$attrs = self::get_render_attrs( $animation, $args );
+
+		if ( empty( $attrs ) ) {
+			return '';
+		}
+
+		$output = [];
+		foreach ( $attrs as $key => $value ) {
+			$output[] = sprintf( '%s="%s"', $key, $value );
+		}
+
+		return implode( ' ', $output );
+	}
+
 }

@@ -201,13 +201,13 @@ if ( ! function_exists( 'vlt_acf_populate_social_icons' ) ) {
 
 if ( ! function_exists( 'vlt_aos_get_animations' ) ) {
 	function vlt_aos_get_animations() {
-		return \VLT\Helper\Modules\AOS\AOS::get_animations();
+		return \VLT\Helper\Modules\Features\AOS::get_animations();
 	}
 }
 
 if ( ! function_exists( 'vlt_aos_render' ) ) {
 	function vlt_aos_render( $animation, $args = [] ) {
-		return \VLT\Helper\Modules\AOS\AOS::render_attrs( $animation, $args );
+		return \VLT\Helper\Modules\Features\AOS::render_attrs( $animation, $args );
 	}
 }
 

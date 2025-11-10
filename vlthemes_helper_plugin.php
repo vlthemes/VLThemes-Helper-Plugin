@@ -3,7 +3,7 @@
 /**
  * Plugin Name: VLThemes Helper Plugin
  * Plugin URI: https://vlthemes.me/
- * Description: VLThemes Elementor Helper Plugin expands the functionality of the theme. Adds new icons, widgets and much more.
+ * Description: VLThemes Helper Plugin expands the functionality of the theme. Adds new icons, widgets and much more.
  * Version: 1.0.0
  * Author: VLThemes
  * Author URI: https://themeforest.net/user/vlthemes

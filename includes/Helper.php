@@ -153,9 +153,11 @@ class Helper {
 			'Features\\UploadMimes',
 			'Features\\Widgets',
 			'Features\\CustomFonts',
+			'Features\\DemoImport',
 			'Features\\SocialIcons',
 			'Features\\PostViews',
 			'Features\\AOS',
+			'Features\\Breadcrumbs',
 			// Integrations
 			'Integrations\\Elementor',
 			'Integrations\\ContactForm7',

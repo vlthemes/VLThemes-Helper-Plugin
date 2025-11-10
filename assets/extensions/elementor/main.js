@@ -106,7 +106,7 @@ import ContainerExtensionsModule from './modules/container-extensions.js';
 
 		document.dispatchEvent(new CustomEvent('vlt.site-loaded'));
 
-		console.info('VLT Framework initialized');
+		console.info('VLT Helper initialized');
 	}
 
 	// Initialize when DOM is ready

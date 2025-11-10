@@ -9,6 +9,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+function vlt_has_helper_plugin() {
+	return class_exists( 'VLT\Helper\Helper' );
+}
+
+function vlt_helper_plugin_instance() {
+	if ( vlt_has_helper_plugin() ) {
+		return \VLT\Helper\Helper::instance();
+	}
+	return null;
+}
+
+// ========================================
+// Breadcrumbs
+// ========================================
+
+if ( ! function_exists( 'vlt_breadcrumbs' ) ) {
+	function vlt_breadcrumbs( $args = array() ) {
+		return \VLT\Helper\Modules\Features\Breadcrumbs::render( $args );
+	}
+}
+
 // ========================================
 // Social Icons Functions
 // ========================================

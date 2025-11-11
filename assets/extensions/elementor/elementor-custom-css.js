@@ -2,6 +2,8 @@
 	'use strict';
 
 	const initCustomCss = () => {
+		if (typeof elementor === 'undefined') return;
+
 		// Add page-level custom CSS
 		const addPageCustomCss = () => {
 			const customCSS = elementor.settings.page.model.get('vlt_custom_css');
@@ -11,7 +13,19 @@
 			const pageSelector = `.elementor-page-${elementor.config.document.id}`;
 			const processedCSS = customCSS.replace(/selector/g, pageSelector);
 
-			elementor.settings.page.controlsCSS.elements.$stylesheetElement.append(processedCSS);
+			// Remove existing style
+			const existingStyle = elementor.$previewContents.find('#vlt-custom-css-page');
+			if (existingStyle.length) {
+				existingStyle.remove();
+			}
+
+			// Add new style to preview
+			const styleElement = jQuery('<style>', {
+				id: 'vlt-custom-css-page',
+				text: processedCSS
+			});
+
+			elementor.$previewContents.find('head').append(styleElement);
 		};
 
 		// Add element-level custom CSS
@@ -28,15 +42,15 @@
 				? elementor.config.document.settings.cssWrapperSelector
 				: `.elementor-element.elementor-element-${model.get('id')}`;
 
-			return css + customCSS.replace(/selector/g, selector);
+			return css + '\n' + customCSS.replace(/selector/g, selector);
 		};
 
 		// Register hooks and events
 		elementor.hooks.addFilter('editor/style/styleText', addCustomCss);
-		elementor.settings.page.model.on('change', addPageCustomCss);
+		elementor.settings.page.model.on('change:vlt_custom_css', addPageCustomCss);
 		elementor.on('preview:loaded', addPageCustomCss);
 	};
 
-	window.addEventListener('load', initCustomCss);
+	jQuery(window).on('elementor:init', initCustomCss);
 
 })();

@@ -46,12 +46,15 @@ class CustomCssExtension extends BaseExtension {
 		// Register controls for common widgets
 		add_action( 'elementor/element/common/_section_style/after_section_end', [ $this, 'register_controls' ], 10, 2 );
 
+		// Register controls for page settings (all document types)
+		add_action( 'elementor/documents/register_controls', [ $this, 'register_page_settings_controls' ], 10, 1 );
+
 		// Register CSS hooks
 		add_action( 'elementor/element/parse_css', [ $this, 'add_post_css' ], 10, 2 );
 		add_action( 'elementor/css-file/post/parse', [ $this, 'add_page_settings_css' ] );
 
 		// Enqueue editor scripts
-		add_action( 'elementor/editor/before_enqueue_scripts', [ $this, 'enqueue_scripts_editor' ] );
+		add_action( 'elementor/editor/after_enqueue_scripts', [ $this, 'enqueue_scripts_editor' ] );
 	}
 
 	/**
@@ -61,10 +64,53 @@ class CustomCssExtension extends BaseExtension {
 		wp_enqueue_script(
 			'vlt-custom-css',
 			$this->assets_url . 'extensions/elementor/elementor-custom-css.js',
-			[],
+			[ 'elementor-editor' ],
 			VLT_HELPER_VERSION,
 			true
 		);
+	}
+
+	/**
+	 * Register Custom CSS controls for page settings
+	 *
+	 * @param object $document Elementor document instance.
+	 */
+	public function register_page_settings_controls( $document ) {
+		// Only add to pages and posts (not templates, sections, etc.)
+		if ( ! $document instanceof \Elementor\Core\DocumentTypes\PageBase && ! $document instanceof \Elementor\Modules\Library\Documents\Page ) {
+			return;
+		}
+
+		$document->start_controls_section(
+			'vlt_section_custom_css_page', [
+				'label' => esc_html__( 'VLT Custom CSS', 'vlt-helper' ),
+				'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,
+			]
+		);
+
+		$document->add_control(
+			'vlt_custom_css_description', [
+				'type'            => \Elementor\Controls_Manager::RAW_HTML,
+				'raw'             => __( 'Add custom CSS for this entire page. Use "selector" to target the page wrapper, or use any custom CSS selectors.', 'vlt-helper' ),
+				'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
+			]
+		);
+
+		$document->add_control(
+			'vlt_custom_css', [
+				'label'       => esc_html__( 'Custom CSS', 'vlt-helper' ),
+				'type'        => \Elementor\Controls_Manager::CODE,
+				'language'    => 'css',
+				'rows'        => 20,
+				'render_type' => 'ui',
+				'separator'   => 'none',
+			]
+		);
+
+		$document->end_controls_section();
+
+		// Allow themes to add custom controls
+		do_action( 'vlt_helper_elementor_custom_css_page_settings_controls', $document );
 	}
 
 	/**

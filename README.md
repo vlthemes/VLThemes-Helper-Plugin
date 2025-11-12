@@ -1,13 +1,12 @@
 # VLT Helper Plugin
 
-A comprehensive WordPress helper plugin that provides essential functionality for VLThemes projects. This plugin includes Elementor extensions, WooCommerce integration, custom fonts, social icons, SVG icons, and more.
+A comprehensive WordPress helper plugin that provides essential functionality for VLThemes projects. This plugin includes Elementor extensions, WooCommerce integration, custom fonts, social icons, and more.
 
 ## Features
 
 - 🎨 **Elementor Extensions** - Custom CSS, Jarallax parallax, AOS animations, custom attributes
 - 🛒 **WooCommerce Integration** - Enhanced WooCommerce functionality and utilities
 - 📝 **Custom Fonts** - Easy custom font management
-- 🔤 **SVG Icons** - SVG icon system with extensible registry
 - 👥 **Social Icons** - Social sharing and icon management with 300+ icons
 - 📊 **Post Views** - Track and display post view counts
 - 🍞 **Breadcrumbs** - Customizable breadcrumb navigation
@@ -249,9 +248,6 @@ add_filter('vlt_helper_register_custom_fonts', function($fonts) {
 
 ## Available Filters
 
-### SVG Icons
-- `vlt_helper_svg_icons` - Register custom SVG icons
-
 ### Social Icons
 - `vlt_helper_social_icons` - Modify social icons list
 - `vlt_helper_post_share_socials` - Customize enabled share buttons
@@ -295,14 +291,6 @@ add_filter('vlt_helper_register_custom_fonts', function($fonts) {
 ```php
 vlt_has_helper_plugin()           // Check if plugin is active
 vlt_helper_plugin_instance()      // Get plugin instance
-```
-
-### SVG Icons
-```php
-vlt_get_svg_icon($icon, $class)   // Get SVG icon markup
-vlt_svg_icon_exists($icon)        // Check if icon exists
-vlt_get_all_svg_icons()           // Get all icons
-vlt_get_svg_icon_names()          // Get icon names
 ```
 
 ### Social Icons
@@ -420,7 +408,6 @@ class MyModule extends BaseModule {
 - Elementor extensions (Custom CSS, Jarallax, AOS, Custom Attributes)
 - WooCommerce integration
 - Social icons with Sharer.js
-- SVG icons system
 - Post views tracking
 - Breadcrumbs
 - Custom fonts

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Base Module Class
  *
@@ -7,7 +8,7 @@
 
 namespace VLT\Helper\Modules;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -16,7 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * All modules should extend this class
  */
-abstract class BaseModule {
+abstract class BaseModule
+{
 
 	/**
 	 * Instance
@@ -44,22 +46,24 @@ abstract class BaseModule {
 	 *
 	 * @return BaseModule
 	 */
-	public static function instance() {
+	public static function instance()
+	{
 		$class = get_called_class();
 
-		if ( ! isset( self::$instances[ $class ] ) ) {
-			self::$instances[ $class ] = new $class();
+		if (! isset(self::$instances[$class])) {
+			self::$instances[$class] = new $class();
 		}
 
-		return self::$instances[ $class ];
+		return self::$instances[$class];
 	}
 
 	/**
 	 * Constructor
 	 */
-	protected function __construct() {
+	protected function __construct()
+	{
 		// Check if module can be registered before initializing
-		if ( ! $this->can_register() ) {
+		if (! $this->can_register()) {
 			return;
 		}
 
@@ -74,7 +78,8 @@ abstract class BaseModule {
 	 *
 	 * @return bool True if module can be registered, false otherwise.
 	 */
-	protected function can_register() {
+	protected function can_register()
+	{
 		return true; // By default, allow module to register
 	}
 
@@ -83,7 +88,8 @@ abstract class BaseModule {
 	 *
 	 * Override this method in child classes to add initialization logic
 	 */
-	protected function init() {
+	protected function init()
+	{
 		// Override in child class if needed
 	}
 
@@ -99,7 +105,8 @@ abstract class BaseModule {
 	 *
 	 * @return string
 	 */
-	public function get_name() {
+	public function get_name()
+	{
 		return $this->name;
 	}
 
@@ -108,7 +115,8 @@ abstract class BaseModule {
 	 *
 	 * @return string
 	 */
-	public function get_version() {
+	public function get_version()
+	{
 		return $this->version;
 	}
 }

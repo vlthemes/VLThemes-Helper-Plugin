@@ -4,7 +4,7 @@ namespace VLT\Helper\Modules\Integrations;
 
 use VLT\Helper\Modules\BaseModule;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -14,7 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Provides integration with Contact Form 7 plugin
  * Handles form modifications and helper functions
  */
-class ContactForm7 extends BaseModule {
+class ContactForm7 extends BaseModule
+{
 
 	/**
 	 * Module name
@@ -35,19 +36,21 @@ class ContactForm7 extends BaseModule {
 	 *
 	 * @return bool
 	 */
-	protected function can_register() {
-		return function_exists( 'wpcf7_add_form_tag' );
+	protected function can_register()
+	{
+		return function_exists('wpcf7_add_form_tag');
 	}
 
 	/**
 	 * Register module
 	 */
-	public function register() {
+	public function register()
+	{
 		// Disable automatic paragraph formatting
-		add_filter( 'wpcf7_autop_or_not', '__return_false' );
+		add_filter('wpcf7_autop_or_not', '__return_false');
 
 		// Allow themes to add custom CF7 modifications
-		do_action( 'vlt_helper_cf7_init' );
+		do_action('vlt_helper_cf7_init');
 	}
 
 	/**
@@ -57,26 +60,27 @@ class ContactForm7 extends BaseModule {
 	 *
 	 * @return array Array of form IDs and titles.
 	 */
-	public static function get_forms() {
+	public static function get_forms()
+	{
 		$options = [];
 
-		if ( ! class_exists( 'WPCF7_ContactForm' ) ) {
+		if (! class_exists('WPCF7_ContactForm')) {
 			return $options;
 		}
 
-		$wpcf7_form_list = get_posts( [
+		$wpcf7_form_list = get_posts([
 			'post_type'   => 'wpcf7_contact_form',
 			'numberposts' => -1,
-		] );
+		]);
 
-		$options[0] = esc_html__( 'Select a Contact Form', 'vlt-helper' );
+		$options[0] = esc_html__('Select a Contact Form', 'vlt-helper');
 
-		if ( ! empty( $wpcf7_form_list ) && ! is_wp_error( $wpcf7_form_list ) ) {
-			foreach ( $wpcf7_form_list as $post ) {
-				$options[ $post->ID ] = $post->post_title;
+		if (! empty($wpcf7_form_list) && ! is_wp_error($wpcf7_form_list)) {
+			foreach ($wpcf7_form_list as $post) {
+				$options[$post->ID] = $post->post_title;
 			}
 		} else {
-			$options[0] = esc_html__( 'Create a Form First', 'vlt-helper' );
+			$options[0] = esc_html__('Create a Form First', 'vlt-helper');
 		}
 
 		return $options;
@@ -89,8 +93,9 @@ class ContactForm7 extends BaseModule {
 	 * @param array $args    Additional arguments.
 	 * @return string Form HTML.
 	 */
-	public static function render_form( $form_id, $args = [] ) {
-		if ( ! function_exists( 'wpcf7_contact_form' ) || ! $form_id ) {
+	public static function render_form($form_id, $args = [])
+	{
+		if (! function_exists('wpcf7_contact_form') || ! $form_id) {
 			return '';
 		}
 
@@ -98,8 +103,8 @@ class ContactForm7 extends BaseModule {
 			'ajax' => true,
 		];
 
-		$args = wp_parse_args( $args, $defaults );
+		$args = wp_parse_args($args, $defaults);
 
-		return do_shortcode( '[contact-form-7 id="' . absint( $form_id ) . '"]' );
+		return do_shortcode('[contact-form-7 id="' . absint($form_id) . '"]');
 	}
 }

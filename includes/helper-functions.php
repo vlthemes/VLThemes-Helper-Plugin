@@ -1,20 +1,23 @@
 <?php
+
 /**
  * Global Helper Functions
  *
  * @package VLT Helper
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
-function vlt_has_helper_plugin() {
-	return class_exists( 'VLT\Helper\Helper' );
+function vlt_has_helper_plugin()
+{
+	return class_exists('VLT\Helper\Helper');
 }
 
-function vlt_helper_plugin_instance() {
-	if ( vlt_has_helper_plugin() ) {
+function vlt_helper_plugin_instance()
+{
+	if (vlt_has_helper_plugin()) {
 		return \VLT\Helper\Helper::instance();
 	}
 	return null;
@@ -24,9 +27,10 @@ function vlt_helper_plugin_instance() {
 // Breadcrumbs
 // ========================================
 
-if ( ! function_exists( 'vlt_breadcrumbs' ) ) {
-	function vlt_breadcrumbs( $args = array() ) {
-		return \VLT\Helper\Modules\Features\Breadcrumbs::render( $args );
+if (! function_exists('vlt_breadcrumbs')) {
+	function vlt_breadcrumbs($args = array())
+	{
+		return \VLT\Helper\Modules\Features\Breadcrumbs::render($args);
 	}
 }
 
@@ -34,18 +38,19 @@ if ( ! function_exists( 'vlt_breadcrumbs' ) ) {
 // Social Icons Functions
 // ========================================
 
-if ( ! function_exists( 'vlt_get_social_icons' ) ) {
+if (! function_exists('vlt_get_social_icons')) {
 	/**
 	 * Get social icons list
 	 *
 	 * @return array Array of social icons in format 'socicon-{network}' => 'Display Name'
 	 */
-	function vlt_get_social_icons() {
+	function vlt_get_social_icons()
+	{
 		return \VLT\Helper\Modules\Features\SocialIcons::get_social_icons();
 	}
 }
 
-if ( ! function_exists( 'vlt_get_post_share_buttons' ) ) {
+if (! function_exists('vlt_get_post_share_buttons')) {
 	/**
 	 * Get post share buttons HTML
 	 *
@@ -53,8 +58,9 @@ if ( ! function_exists( 'vlt_get_post_share_buttons' ) ) {
 	 * @param string   $style   Button style (e.g. 'style-1', 'style-2').
 	 * @return string Share buttons HTML markup.
 	 */
-	function vlt_get_post_share_buttons( $post_id = null, $style = 'style-1' ) {
-		return \VLT\Helper\Modules\Features\SocialIcons::get_post_share_buttons( $post_id, $style );
+	function vlt_get_post_share_buttons($post_id = null, $style = 'style-1')
+	{
+		return \VLT\Helper\Modules\Features\SocialIcons::get_post_share_buttons($post_id, $style);
 	}
 }
 
@@ -62,39 +68,42 @@ if ( ! function_exists( 'vlt_get_post_share_buttons' ) ) {
 // Post Views Functions
 // ========================================
 
-if ( ! function_exists( 'vlt_set_post_views' ) ) {
+if (! function_exists('vlt_set_post_views')) {
 	/**
 	 * Set/increment post views
 	 *
 	 * @param int $post_id Post ID.
 	 * @return void
 	 */
-	function vlt_set_post_views( $post_id ) {
-		\VLT\Helper\Modules\Features\PostViews::set_views( $post_id );
+	function vlt_set_post_views($post_id)
+	{
+		\VLT\Helper\Modules\Features\PostViews::set_views($post_id);
 	}
 }
 
-if ( ! function_exists( 'vlt_get_post_views' ) ) {
+if (! function_exists('vlt_get_post_views')) {
 	/**
 	 * Get post views count
 	 *
 	 * @param int $post_id Post ID.
 	 * @return string View count.
 	 */
-	function vlt_get_post_views( $post_id ) {
-		return \VLT\Helper\Modules\Features\PostViews::get_views( $post_id );
+	function vlt_get_post_views($post_id)
+	{
+		return \VLT\Helper\Modules\Features\PostViews::get_views($post_id);
 	}
 }
 
-if ( ! function_exists( 'vlt_reset_post_views' ) ) {
+if (! function_exists('vlt_reset_post_views')) {
 	/**
 	 * Reset post views to zero
 	 *
 	 * @param int $post_id Post ID.
 	 * @return void
 	 */
-	function vlt_reset_post_views( $post_id ) {
-		\VLT\Helper\Modules\Features\PostViews::reset_views( $post_id );
+	function vlt_reset_post_views($post_id)
+	{
+		\VLT\Helper\Modules\Features\PostViews::reset_views($post_id);
 	}
 }
 
@@ -102,18 +111,19 @@ if ( ! function_exists( 'vlt_reset_post_views' ) ) {
 // Contact Form 7 Functions
 // ========================================
 
-if ( ! function_exists( 'vlt_get_cf7_forms' ) ) {
+if (! function_exists('vlt_get_cf7_forms')) {
 	/**
 	 * Get list of Contact Form 7 forms
 	 *
 	 * @return array Array of form IDs and titles.
 	 */
-	function vlt_get_cf7_forms() {
+	function vlt_get_cf7_forms()
+	{
 		return \VLT\Helper\Modules\Integrations\ContactForm7::get_forms();
 	}
 }
 
-if ( ! function_exists( 'vlt_render_cf7_form' ) ) {
+if (! function_exists('vlt_render_cf7_form')) {
 	/**
 	 * Render Contact Form 7 by ID
 	 *
@@ -121,8 +131,9 @@ if ( ! function_exists( 'vlt_render_cf7_form' ) ) {
 	 * @param array $args    Additional arguments.
 	 * @return string Form HTML.
 	 */
-	function vlt_render_cf7_form( $form_id, $args = [] ) {
-		return \VLT\Helper\Modules\Integrations\ContactForm7::render_form( $form_id, $args );
+	function vlt_render_cf7_form($form_id, $args = [])
+	{
+		return \VLT\Helper\Modules\Integrations\ContactForm7::render_form($form_id, $args);
 	}
 }
 
@@ -130,18 +141,19 @@ if ( ! function_exists( 'vlt_render_cf7_form' ) ) {
 // Visual Portfolio Functions
 // ========================================
 
-if ( ! function_exists( 'vlt_get_vp_portfolios' ) ) {
+if (! function_exists('vlt_get_vp_portfolios')) {
 	/**
 	 * Get list of Visual Portfolio layouts
 	 *
 	 * @return array Array of portfolio IDs and titles.
 	 */
-	function vlt_get_vp_portfolios() {
+	function vlt_get_vp_portfolios()
+	{
 		return \VLT\Helper\Modules\Integrations\VisualPortfolio::get_portfolios();
 	}
 }
 
-if ( ! function_exists( 'vlt_render_vp_portfolio' ) ) {
+if (! function_exists('vlt_render_vp_portfolio')) {
 	/**
 	 * Render Visual Portfolio by ID
 	 *
@@ -149,8 +161,9 @@ if ( ! function_exists( 'vlt_render_vp_portfolio' ) ) {
 	 * @param array $args         Additional arguments.
 	 * @return string Portfolio HTML.
 	 */
-	function vlt_render_vp_portfolio( $portfolio_id, $args = [] ) {
-		return \VLT\Helper\Modules\Integrations\VisualPortfolio::render_portfolio( $portfolio_id, $args );
+	function vlt_render_vp_portfolio($portfolio_id, $args = [])
+	{
+		return \VLT\Helper\Modules\Integrations\VisualPortfolio::render_portfolio($portfolio_id, $args);
 	}
 }
 
@@ -158,7 +171,7 @@ if ( ! function_exists( 'vlt_render_vp_portfolio' ) ) {
 // ACF Functions
 // ========================================
 
-if ( ! function_exists( 'vlt_acf_populate_elementor_templates' ) ) {
+if (! function_exists('vlt_acf_populate_elementor_templates')) {
 	/**
 	 * Populate ACF field with Elementor templates
 	 *
@@ -166,32 +179,35 @@ if ( ! function_exists( 'vlt_acf_populate_elementor_templates' ) ) {
 	 * @param string|null $type  Template type (page, section, widget, etc.).
 	 * @return array Modified field with template choices.
 	 */
-	function vlt_acf_populate_elementor_templates( $field, $type = null ) {
-		return \VLT\Helper\Modules\Integrations\ACF::populate_elementor_templates( $field, $type );
+	function vlt_acf_populate_elementor_templates($field, $type = null)
+	{
+		return \VLT\Helper\Modules\Integrations\ACF::populate_elementor_templates($field, $type);
 	}
 }
 
-if ( ! function_exists( 'vlt_acf_populate_vp_saved_layouts' ) ) {
+if (! function_exists('vlt_acf_populate_vp_saved_layouts')) {
 	/**
 	 * Populate ACF field with Visual Portfolio saved layouts
 	 *
 	 * @param array $field ACF field array.
 	 * @return array Modified field with layout choices.
 	 */
-	function vlt_acf_populate_vp_saved_layouts( $field ) {
-		return \VLT\Helper\Modules\Integrations\ACF::populate_vp_saved_layouts( $field );
+	function vlt_acf_populate_vp_saved_layouts($field)
+	{
+		return \VLT\Helper\Modules\Integrations\ACF::populate_vp_saved_layouts($field);
 	}
 }
 
-if ( ! function_exists( 'vlt_acf_populate_social_icons' ) ) {
+if (! function_exists('vlt_acf_populate_social_icons')) {
 	/**
 	 * Populate ACF field with social icons
 	 *
 	 * @param array $field ACF field array.
 	 * @return array Modified field with icon choices.
 	 */
-	function vlt_acf_populate_social_icons( $field ) {
-		return \VLT\Helper\Modules\Integrations\ACF::populate_social_icons( $field );
+	function vlt_acf_populate_social_icons($field)
+	{
+		return \VLT\Helper\Modules\Integrations\ACF::populate_social_icons($field);
 	}
 }
 
@@ -199,15 +215,17 @@ if ( ! function_exists( 'vlt_acf_populate_social_icons' ) ) {
 // AOS
 // ========================================
 
-if ( ! function_exists( 'vlt_aos_get_animations' ) ) {
-	function vlt_aos_get_animations() {
+if (! function_exists('vlt_aos_get_animations')) {
+	function vlt_aos_get_animations()
+	{
 		return \VLT\Helper\Modules\Features\AOS::get_animations();
 	}
 }
 
-if ( ! function_exists( 'vlt_aos_render' ) ) {
-	function vlt_aos_render( $animation, $args = [] ) {
-		return \VLT\Helper\Modules\Features\AOS::render_attrs( $animation, $args );
+if (! function_exists('vlt_aos_render')) {
+	function vlt_aos_render($animation, $args = [])
+	{
+		return \VLT\Helper\Modules\Features\AOS::render_attrs($animation, $args);
 	}
 }
 
@@ -243,82 +261,73 @@ if ( ! function_exists( 'vlt_aos_render' ) ) {
 // });
 
 // ========================================
+// WooCommerce Functions
+// ========================================
+
+if (! function_exists('vlt_is_woocommerce_page')) {
+	/**
+	 * Check if current page is a WooCommerce page
+	 *
+	 * Determines if viewing cart, checkout, account pages, or WC endpoints.
+	 * More reliable than is_woocommerce() for specific page checks.
+	 *
+	 * @param string $page     Optional. Specific page type: 'cart', 'checkout', 'account', 'endpoint'.
+	 * @param string $endpoint Optional. Specific endpoint slug to check.
+	 * @return bool True if on specified WooCommerce page type.
+	 */
+	function vlt_is_woocommerce_page($page = '', $endpoint = '')
+	{
+		if (class_exists('VLT\Helper\Modules\Integrations\WooCommerce')) {
+			return \VLT\Helper\Modules\Integrations\WooCommerce::is_woocommerce_page($page, $endpoint);
+		}
+		return false;
+	}
+}
+
+// ========================================
 // Elementor Functions
 // ========================================
 
-if ( ! function_exists( 'vlt_get_elementor_templates' ) ) {
+if (! function_exists('vlt_get_elementor_templates')) {
 	/**
 	 * Get list of Elementor templates
 	 *
 	 * @param string|null $type Template type (page, section, widget, etc.).
 	 * @return array Array of template IDs and titles.
 	 */
-	function vlt_get_elementor_templates( $type = null ) {
-		return \VLT\Helper\Modules\Integrations\Elementor::get_elementor_templates( $type );
+	function vlt_get_elementor_templates($type = null)
+	{
+		return \VLT\Helper\Modules\Integrations\Elementor::get_elementor_templates($type);
 	}
 }
 
-if ( ! function_exists( 'vlt_render_elementor_template' ) ) {
+if (! function_exists('vlt_render_elementor_template')) {
 	/**
 	 * Render Elementor template
 	 *
 	 * @param int $template_id Template ID to render.
 	 * @return string Rendered template HTML.
 	 */
-	function vlt_render_elementor_template( $template_id ) {
-		return \VLT\Helper\Modules\Integrations\Elementor::render_template( $template_id );
+	function vlt_render_elementor_template($template_id)
+	{
+		return \VLT\Helper\Modules\Integrations\Elementor::render_template($template_id);
 	}
 }
 
-/**
- * ========================================
- * Elementor Widgets Registration
- * ========================================
- *
- * The plugin provides hooks for registering Elementor widgets from your theme:
- *
- * 1. 'vlt_helper_elementor_register_widgets' - Action to load widget FILES from theme
- * 2. 'vlt_helper_elementor_widget_classes' - Filter to register widget CLASSES
- *
- * All widget files should be in the theme directory.
- * The plugin only provides the registration mechanism.
- *
- * -------------------------------------------
- * USAGE EXAMPLE
- * -------------------------------------------
- *
- * @code
- * // Step 1: Load widget files from theme
- * add_action( 'vlt_helper_elementor_register_widgets', function() {
- *     $widgets = [
- *         'block_accordion.php',
- *         'block_button.php',
- *         'block_heading.php',
- *         'block_contact_form_7.php',
- *         // ... add all widget files you need
- *     ];
- *
- *     foreach ( $widgets as $widget_file ) {
- *         $file_path = get_template_directory() . '/elementor/widgets/' . $widget_file;
- *         if ( file_exists( $file_path ) ) {
- *             require_once $file_path;
- *         }
- *     }
- * } );
- *
- * // Step 2: Register widget classes
- * add_filter( 'vlt_helper_elementor_widget_classes', function( $classes ) {
- *     return [
- *         '\Elementor\Widget_VLThemes_Accordion',
- *         '\Elementor\Widget_VLThemes_Button',
- *         '\Elementor\Widget_VLThemes_Heading',
- *         '\Elementor\Widget_VLThemes_Contact_Form_7',
- *         // ... add all widget classes you need
- *     ];
- * } );
- * @endcode
- *
- * Note:
- * - Widget files should be placed in theme's 'elementor/widgets/' directory
- * - All examples should be placed in your theme's functions.php file
- */
+if (! function_exists('vlt_is_built_with_elementor')) {
+	/**
+	 * Check if current post/page is built with Elementor.
+	 *
+	 * Determines whether the current post was created using Elementor page builder.
+	 * Useful for conditional logic when displaying different layouts or styles.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @global WP_Post $post Current post object.
+	 * @return bool True if post is built with Elementor and Elementor is active, false otherwise.
+	 */
+	function vlt_is_built_with_elementor()
+	{
+		return \VLT\Helper\Modules\Integrations\Elementor::is_built_with_elementor();
+	}
+}

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Post Views Module
  *
@@ -9,7 +10,7 @@ namespace VLT\Helper\Modules\Features;
 
 use VLT\Helper\Modules\BaseModule;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -19,7 +20,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Tracks and displays post view counts
  * Automatically increments views when single post is viewed
  */
-class PostViews extends BaseModule {
+class PostViews extends BaseModule
+{
 
 	/**
 	 * Module name
@@ -45,9 +47,10 @@ class PostViews extends BaseModule {
 	/**
 	 * Register module
 	 */
-	public function register() {
+	public function register()
+	{
 		// Track post views on wp_head
-		add_action( 'wp_head', [ $this, 'track_post_views' ] );
+		add_action('wp_head', [$this, 'track_post_views']);
 
 		// Register helper functions
 		$this->register_functions();
@@ -56,28 +59,31 @@ class PostViews extends BaseModule {
 	/**
 	 * Register global helper functions
 	 */
-	private function register_functions() {
-		if ( ! function_exists( 'vlt_set_post_views' ) ) {
+	private function register_functions()
+	{
+		if (! function_exists('vlt_set_post_views')) {
 			/**
 			 * Set/increment post views
 			 *
 			 * @param int $post_id Post ID.
 			 * @return void
 			 */
-			function vlt_set_post_views( $post_id ) {
-				PostViews::set_views( $post_id );
+			function vlt_set_post_views($post_id)
+			{
+				PostViews::set_views($post_id);
 			}
 		}
 
-		if ( ! function_exists( 'vlt_get_post_views' ) ) {
+		if (! function_exists('vlt_get_post_views')) {
 			/**
 			 * Get post views count
 			 *
 			 * @param int $post_id Post ID.
 			 * @return string View count.
 			 */
-			function vlt_get_post_views( $post_id ) {
-				return PostViews::get_views( $post_id );
+			function vlt_get_post_views($post_id)
+			{
+				return PostViews::get_views($post_id);
 			}
 		}
 	}
@@ -88,17 +94,18 @@ class PostViews extends BaseModule {
 	 * @param int|null $post_id Post ID (optional).
 	 * @return void
 	 */
-	public function track_post_views( $post_id = null ) {
-		if ( ! is_single() ) {
+	public function track_post_views($post_id = null)
+	{
+		if (! is_single()) {
 			return;
 		}
 
-		if ( empty( $post_id ) ) {
+		if (empty($post_id)) {
 			global $post;
 			$post_id = $post->ID;
 		}
 
-		self::set_views( $post_id );
+		self::set_views($post_id);
 	}
 
 	/**
@@ -107,24 +114,25 @@ class PostViews extends BaseModule {
 	 * @param int $post_id Post ID.
 	 * @return void
 	 */
-	public static function set_views( $post_id ) {
-		if ( ! $post_id || ! get_post( $post_id ) ) {
+	public static function set_views($post_id)
+	{
+		if (! $post_id || ! get_post($post_id)) {
 			return;
 		}
 
-		$meta_key = apply_filters( 'vlt_helper_post_views_meta_key', 'views' );
-		$count    = get_post_meta( $post_id, $meta_key, true );
+		$meta_key = apply_filters('vlt_helper_post_views_meta_key', 'views');
+		$count    = get_post_meta($post_id, $meta_key, true);
 
-		if ( '' === $count ) {
+		if ('' === $count) {
 			$count = 0;
-			delete_post_meta( $post_id, $meta_key );
-			add_post_meta( $post_id, $meta_key, '0' );
+			delete_post_meta($post_id, $meta_key);
+			add_post_meta($post_id, $meta_key, '0');
 		} else {
 			$count++;
-			update_post_meta( $post_id, $meta_key, $count );
+			update_post_meta($post_id, $meta_key, $count);
 		}
 
-		do_action( 'vlt_helper_post_views_updated', $post_id, $count );
+		do_action('vlt_helper_post_views_updated', $post_id, $count);
 	}
 
 	/**
@@ -133,17 +141,18 @@ class PostViews extends BaseModule {
 	 * @param int $post_id Post ID.
 	 * @return string View count.
 	 */
-	public static function get_views( $post_id ) {
-		if ( ! $post_id || ! get_post( $post_id ) ) {
+	public static function get_views($post_id)
+	{
+		if (! $post_id || ! get_post($post_id)) {
 			return '0';
 		}
 
-		$meta_key = apply_filters( 'vlt_helper_post_views_meta_key', 'views' );
-		$count    = get_post_meta( $post_id, $meta_key, true );
+		$meta_key = apply_filters('vlt_helper_post_views_meta_key', 'views');
+		$count    = get_post_meta($post_id, $meta_key, true);
 
-		if ( '' === $count ) {
-			delete_post_meta( $post_id, $meta_key );
-			add_post_meta( $post_id, $meta_key, '0' );
+		if ('' === $count) {
+			delete_post_meta($post_id, $meta_key);
+			add_post_meta($post_id, $meta_key, '0');
 			return '0';
 		}
 
@@ -156,14 +165,15 @@ class PostViews extends BaseModule {
 	 * @param int $post_id Post ID.
 	 * @return void
 	 */
-	public static function reset_views( $post_id ) {
-		if ( ! $post_id || ! get_post( $post_id ) ) {
+	public static function reset_views($post_id)
+	{
+		if (! $post_id || ! get_post($post_id)) {
 			return;
 		}
 
-		$meta_key = apply_filters( 'vlt_helper_post_views_meta_key', 'views' );
-		update_post_meta( $post_id, $meta_key, '0' );
+		$meta_key = apply_filters('vlt_helper_post_views_meta_key', 'views');
+		update_post_meta($post_id, $meta_key, '0');
 
-		do_action( 'vlt_helper_post_views_reset', $post_id );
+		do_action('vlt_helper_post_views_reset', $post_id);
 	}
 }

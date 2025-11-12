@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Posts Widget Base Class
  *
@@ -7,14 +8,15 @@
 
 namespace VLT\Helper\Widgets;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
 /**
  * Abstract Posts Widget Base
  */
-abstract class PostsWidget extends \WP_Widget {
+abstract class PostsWidget extends \WP_Widget
+{
 
 	/**
 	 * Render post thumbnail
@@ -23,19 +25,20 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param string $size    Image size.
 	 * @param string $ratio   Aspect ratio class.
 	 */
-	protected function render_thumbnail( $post_id, $size = 'thumbnail', $ratio = '1x1' ) {
-		if ( ! has_post_thumbnail( $post_id ) ) {
+	protected function render_thumbnail($post_id, $size = 'thumbnail', $ratio = '1x1')
+	{
+		if (! has_post_thumbnail($post_id)) {
 			return;
 		}
-		?>
+?>
 		<div class="vlt-widget-post__thumbnail">
-			<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>">
-				<div class="vlt-aspect-ratio vlt-aspect-ratio--<?php echo esc_attr( $ratio ); ?>">
-					<?php echo get_the_post_thumbnail( $post_id, $size, [ 'loading' => 'lazy' ] ); ?>
+			<a href="<?php echo esc_url(get_permalink($post_id)); ?>">
+				<div class="vlt-aspect-ratio vlt-aspect-ratio--<?php echo esc_attr($ratio); ?>">
+					<?php echo get_the_post_thumbnail($post_id, $size, ['loading' => 'lazy']); ?>
 				</div>
 			</a>
 		</div>
-		<?php
+	<?php
 	}
 
 	/**
@@ -43,14 +46,15 @@ abstract class PostsWidget extends \WP_Widget {
 	 *
 	 * @param int $post_id Post ID.
 	 */
-	protected function render_title( $post_id ) {
-		?>
+	protected function render_title($post_id)
+	{
+	?>
 		<h6>
-			<a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>">
-				<?php echo esc_html( get_the_title( $post_id ) ); ?>
+			<a href="<?php echo esc_url(get_permalink($post_id)); ?>">
+				<?php echo esc_html(get_the_title($post_id)); ?>
 			</a>
 		</h6>
-		<?php
+	<?php
 	}
 
 	/**
@@ -60,27 +64,28 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param bool $show_date Show date.
 	 * @param bool $show_comments Show comments count.
 	 */
-	protected function render_meta( $post_id, $show_date = true, $show_comments = false ) {
-		?>
+	protected function render_meta($post_id, $show_date = true, $show_comments = false)
+	{
+	?>
 		<div class="vlt-widget-post__meta">
-			<?php if ( $show_date ) : ?>
+			<?php if ($show_date) : ?>
 				<div class="vlt-widget-post__meta-date">
-					<?php echo esc_html( get_the_date( '', $post_id ) ); ?>
+					<?php echo esc_html(get_the_date('', $post_id)); ?>
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $show_comments && comments_open( $post_id ) ) : ?>
+			<?php if ($show_comments && comments_open($post_id)) : ?>
 				<div class="vlt-widget-post__meta-comments">
 					<?php
 					printf(
-						esc_html( _n( '%s Comment', '%s Comments', get_comments_number( $post_id ), 'vlt-helper' ) ),
-						number_format_i18n( get_comments_number( $post_id ) )
+						esc_html(_n('%s Comment', '%s Comments', get_comments_number($post_id), 'vlt-helper')),
+						number_format_i18n(get_comments_number($post_id))
 					);
 					?>
 				</div>
 			<?php endif; ?>
 		</div>
-		<?php
+	<?php
 	}
 
 	/**
@@ -89,18 +94,19 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param int $post_id Post ID.
 	 * @param int $length  Excerpt length.
 	 */
-	protected function render_excerpt( $post_id, $length = 20 ) {
-		$excerpt = get_the_excerpt( $post_id );
-		if ( empty( $excerpt ) ) {
+	protected function render_excerpt($post_id, $length = 20)
+	{
+		$excerpt = get_the_excerpt($post_id);
+		if (empty($excerpt)) {
 			return;
 		}
 
-		$excerpt = wp_trim_words( $excerpt, $length, '...' );
-		?>
+		$excerpt = wp_trim_words($excerpt, $length, '...');
+	?>
 		<div class="vlt-widget-post__excerpt">
-			<?php echo esc_html( $excerpt ); ?>
+			<?php echo esc_html($excerpt); ?>
 		</div>
-		<?php
+	<?php
 	}
 
 	/**
@@ -108,15 +114,16 @@ abstract class PostsWidget extends \WP_Widget {
 	 *
 	 * @param \WP_Post $post Post object.
 	 */
-	protected function render_list_item( $post ) {
-		?>
+	protected function render_list_item($post)
+	{
+	?>
 		<div class="vlt-widget-post">
-			<?php $this->render_thumbnail( $post->ID, 'thumbnail', '1x1' ); ?>
+			<?php $this->render_thumbnail($post->ID, 'thumbnail', '1x1'); ?>
 			<div class="vlt-widget-post__content">
-				<?php $this->render_title( $post->ID ); ?>
+				<?php $this->render_title($post->ID); ?>
 			</div>
 		</div>
-		<?php
+	<?php
 	}
 
 	/**
@@ -124,17 +131,18 @@ abstract class PostsWidget extends \WP_Widget {
 	 *
 	 * @param \WP_Post $post Post object.
 	 */
-	protected function render_slider_item( $post ) {
-		?>
+	protected function render_slider_item($post)
+	{
+	?>
 		<div class="swiper-slide">
 			<article class="vlt-widget-post">
-				<?php $this->render_thumbnail( $post->ID, 'medium', '4x3' ); ?>
+				<?php $this->render_thumbnail($post->ID, 'medium', '4x3'); ?>
 				<div class="vlt-widget-post__content">
-					<?php $this->render_title( $post->ID ); ?>
+					<?php $this->render_title($post->ID); ?>
 				</div>
 			</article>
 		</div>
-		<?php
+<?php
 	}
 
 	/**
@@ -145,13 +153,14 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param mixed  $default Default value.
 	 * @return mixed Field value or default.
 	 */
-	protected function get_acf_field( $field, $widget_id, $default = null ) {
-		if ( ! function_exists( 'get_field' ) ) {
+	protected function get_acf_field($field, $widget_id, $default = null)
+	{
+		if (! function_exists('get_field')) {
 			return $default;
 		}
 
-		$value = get_field( $field, 'widget_' . $widget_id );
-		return ! empty( $value ) ? $value : $default;
+		$value = get_field($field, 'widget_' . $widget_id);
+		return ! empty($value) ? $value : $default;
 	}
 
 	/**
@@ -160,14 +169,15 @@ abstract class PostsWidget extends \WP_Widget {
 	 * @param array $args Widget args.
 	 * @return bool
 	 */
-	protected function check_acf_availability( $args ) {
-		if ( function_exists( 'get_field' ) ) {
+	protected function check_acf_availability($args)
+	{
+		if (function_exists('get_field')) {
 			return true;
 		}
 
-		if ( current_user_can( 'manage_options' ) ) {
+		if (current_user_can('manage_options')) {
 			echo $args['before_widget'];
-			echo '<p>' . esc_html__( 'Advanced Custom Fields plugin is required for this widget.', 'vlt-helper' ) . '</p>';
+			echo '<p>' . esc_html__('Advanced Custom Fields plugin is required for this widget.', 'vlt-helper') . '</p>';
 			echo $args['after_widget'];
 		}
 

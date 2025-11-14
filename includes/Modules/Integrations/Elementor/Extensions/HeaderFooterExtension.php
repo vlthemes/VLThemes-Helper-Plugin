@@ -16,7 +16,7 @@ if (! defined('ABSPATH')) {
  *
  * @package VLT Helper
  */
-class HeaderFooterExtensions extends BaseExtension
+class HeaderFooterExtension extends BaseExtension
 {
 
 	/**
@@ -57,6 +57,9 @@ class HeaderFooterExtensions extends BaseExtension
 		// Admin columns
 		add_filter('manage_vlt_hfb_posts_columns', [$this, 'add_admin_columns']);
 		add_action('manage_vlt_hfb_posts_custom_column', [$this, 'render_admin_columns'], 10, 2);
+
+		// Admin scripts
+		add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
 
 		add_filter('single_template', [$this, 'load_canvas_template']);
 		add_action('template_redirect', [$this, 'block_template_frontend']);
@@ -141,6 +144,40 @@ class HeaderFooterExtensions extends BaseExtension
 			wp_redirect(site_url(), 301);
 			die;
 		}
+	}
+
+	/**
+	 * Enqueue admin scripts and localize data
+	 */
+	public function enqueue_admin_scripts()
+	{
+		// Only load on single vlt_hfb post edit pages
+		global $pagenow;
+		$screen = get_current_screen();
+
+		// Check if we're on post.php or post-new.php for vlt_hfb post type
+		if (!$screen || $screen->post_type !== 'vlt_hfb' || !in_array($pagenow, ['post.php', 'post-new.php'])) {
+			return;
+		}
+
+		// Register and enqueue HFB admin script
+		wp_enqueue_script(
+			'vlt-hfb-admin',
+			VLT_HELPER_URL . 'assets/js/hfb-admin.js',
+			[],
+			VLT_HELPER_VERSION,
+			true
+		);
+
+		// Localize script with admin data
+		wp_localize_script(
+			'vlt-hfb-admin',
+			'hfb_admin_data',
+			[
+				'hfb_edit_url'      => admin_url('edit.php?post_type=vlt_hfb'),
+				'hfb_view_all_text' => esc_html__('View All', 'vlt-helper'),
+			]
+		);
 	}
 
 	/**
@@ -262,6 +299,16 @@ class HeaderFooterExtensions extends BaseExtension
 							],
 						],
 					],
+				],
+				[
+					'key'          => 'field_vlt_hfb_note',
+					'label'        => esc_html__('Note', 'vlt-helper'),
+					'name'         => 'note',
+					'type'         => 'textarea',
+					'instructions' => esc_html__('This note is only visible in the admin area.', 'vlt-helper'),
+					'required'     => 0,
+					'rows'         => 4,
+					'placeholder'  => esc_html__('Add a note for this template...', 'vlt-helper'),
 				],
 			],
 			'location' => [
@@ -595,6 +642,7 @@ class HeaderFooterExtensions extends BaseExtension
 				$new_columns['template_type']  = esc_html__('Type', 'vlt-helper');
 				$new_columns['display_rules']  = esc_html__('Display Rules', 'vlt-helper');
 				$new_columns['exclude_rules']  = esc_html__('Exclude Rules', 'vlt-helper');
+				$new_columns['note']           = esc_html__('Note', 'vlt-helper');
 			}
 		}
 
@@ -673,6 +721,17 @@ class HeaderFooterExtensions extends BaseExtension
 					} else {
 						echo '—';
 					}
+				} else {
+					echo '—';
+				}
+				break;
+
+			case 'note':
+				$note = get_field('note', $post_id);
+				if (!empty($note)) {
+					echo '<div style="white-space: pre-wrap;">';
+					echo esc_html($note);
+					echo '</div>';
 				} else {
 					echo '—';
 				}

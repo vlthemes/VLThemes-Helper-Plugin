@@ -9,14 +9,14 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Header/Footer Builder Extension
+ * Template Parts Extension
  *
  * Provides template parts system for headers, footers, and 404 pages
  * with conditional display rules.
  *
  * @package VLT Helper
  */
-class HeaderFooterExtension extends BaseExtension
+class TemplatePartsExtension extends BaseExtension
 {
 
 	/**
@@ -24,7 +24,7 @@ class HeaderFooterExtension extends BaseExtension
 	 *
 	 * @var string
 	 */
-	protected $name = 'header_footer_builder';
+	protected $name = 'template_parts';
 
 	/**
 	 * Initialize extension
@@ -46,18 +46,18 @@ class HeaderFooterExtension extends BaseExtension
 		add_action('acf/init', [$this, 'register_acf_fields']);
 
 		// Populate ACF field choices
-		add_filter('acf/load_field/key=field_hfb_rule', [$this, 'populate_rule_choices']);
-		add_filter('acf/load_field/key=field_hfb_exclude_rule', [$this, 'populate_rule_choices']);
+		add_filter('acf/load_field/key=field_tp_rule', [$this, 'populate_rule_choices']);
+		add_filter('acf/load_field/key=field_tp_exclude_rule', [$this, 'populate_rule_choices']);
 
 		// Add template content filters
-		add_filter('vlt_hfb_header', [$this, 'get_header_content']);
-		add_filter('vlt_hfb_footer', [$this, 'get_footer_content']);
-		add_filter('vlt_hfb_404', [$this, 'get_404_content']);
+		add_filter('vlt_tp_header', [$this, 'get_header_content']);
+		add_filter('vlt_tp_footer', [$this, 'get_footer_content']);
+		add_filter('vlt_tp_404', [$this, 'get_404_content']);
 
 		// Admin columns
-		add_filter('manage_vlt_hfb_posts_columns', [$this, 'add_admin_columns']);
-		add_action('manage_vlt_hfb_posts_custom_column', [$this, 'render_admin_columns'], 10, 2);
-		add_filter('manage_edit-vlt_hfb_sortable_columns', [$this, 'make_columns_sortable']);
+		add_filter('manage_vlt_tp_posts_columns', [$this, 'add_admin_columns']);
+		add_action('manage_vlt_tp_posts_custom_column', [$this, 'render_admin_columns'], 10, 2);
+		add_filter('manage_edit-vlt_tp_sortable_columns', [$this, 'make_columns_sortable']);
 
 		// Add post states
 		add_filter('display_post_states', [$this, 'add_template_type_state'], 10, 2);
@@ -70,29 +70,29 @@ class HeaderFooterExtension extends BaseExtension
 		add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
 
 		// Register shortcode
-		add_shortcode('hfb_template', [$this, 'render_shortcode']);
+		add_shortcode('template_part', [$this, 'render_shortcode']);
 
 		add_filter('single_template', [$this, 'load_canvas_template']);
 		add_action('template_redirect', [$this, 'block_template_frontend']);
 	}
 
 	/**
-	 * Register vlt_hfb custom post type
+	 * Register vlt_tp custom post type
 	 */
 	public function register_post_type()
 	{
 		$labels = [
-			'name'               => esc_html__('Header/Footer', 'vlt-helper'),
-			'singular_name'      => esc_html__('Header/Footer', 'vlt-helper'),
-			'menu_name'          => esc_html__('Header/Footer', 'vlt-helper'),
+			'name'               => esc_html__('Template Parts', 'vlt-helper'),
+			'singular_name'      => esc_html__('Template Part', 'vlt-helper'),
+			'menu_name'          => esc_html__('Template Parts', 'vlt-helper'),
 			'add_new'            => esc_html__('Add New', 'vlt-helper'),
-			'add_new_item'       => esc_html__('Add New Template', 'vlt-helper'),
-			'edit_item'          => esc_html__('Edit Template', 'vlt-helper'),
-			'new_item'           => esc_html__('New Template', 'vlt-helper'),
-			'view_item'          => esc_html__('View Template', 'vlt-helper'),
-			'search_items'       => esc_html__('Search Templates', 'vlt-helper'),
-			'not_found'          => esc_html__('No templates found', 'vlt-helper'),
-			'not_found_in_trash' => esc_html__('No templates found in trash', 'vlt-helper'),
+			'add_new_item'       => esc_html__('Add New Template Part', 'vlt-helper'),
+			'edit_item'          => esc_html__('Edit Template Part', 'vlt-helper'),
+			'new_item'           => esc_html__('New Template Part', 'vlt-helper'),
+			'view_item'          => esc_html__('View Template Part', 'vlt-helper'),
+			'search_items'       => esc_html__('Search Template Parts', 'vlt-helper'),
+			'not_found'          => esc_html__('No template parts found', 'vlt-helper'),
+			'not_found_in_trash' => esc_html__('No template parts found in trash', 'vlt-helper'),
 		];
 
 		$args = [
@@ -105,7 +105,7 @@ class HeaderFooterExtension extends BaseExtension
 			'capability_type'     => 'post',
 			'hierarchical'        => false,
 			'menu_icon'           => 'dashicons-editor-kitchensink',
-			'supports'            => ['title', 'thumbnail', 'elementor'],
+			'supports'            => ['title', 'elementor'],
 			'menu_position'       => 5,
 			'capabilities'        => [
 				'edit_post'              => 'manage_options',
@@ -123,7 +123,7 @@ class HeaderFooterExtension extends BaseExtension
 			],
 		];
 
-		register_post_type('vlt_hfb', $args);
+		register_post_type('vlt_tp', $args);
 	}
 
 	/**
@@ -133,7 +133,7 @@ class HeaderFooterExtension extends BaseExtension
 	{
 		global $post;
 
-		if ('vlt_hfb' == $post->post_type) {
+		if ('vlt_tp' == $post->post_type) {
 			$elementor_canvas = ELEMENTOR_PATH . '/modules/page-templates/templates/canvas.php';
 
 			if (file_exists($elementor_canvas)) {
@@ -151,7 +151,7 @@ class HeaderFooterExtension extends BaseExtension
 	 */
 	public function block_template_frontend()
 	{
-		if (is_singular('vlt_hfb') && ! current_user_can('edit_posts')) {
+		if (is_singular('vlt_tp') && ! current_user_can('edit_posts')) {
 			wp_redirect(site_url(), 301);
 			die;
 		}
@@ -169,7 +169,7 @@ class HeaderFooterExtension extends BaseExtension
 	{
 		$atts = shortcode_atts([
 			'id' => '',
-		], $atts, 'hfb_template');
+		], $atts, 'template_part');
 
 		if (empty($atts['id'])) {
 			return '';
@@ -181,8 +181,8 @@ class HeaderFooterExtension extends BaseExtension
 
 		$template_id = intval($atts['id']);
 
-		// Verify it's a vlt_hfb post type
-		if (get_post_type($template_id) !== 'vlt_hfb') {
+		// Verify it's a vlt_tp post type
+		if (get_post_type($template_id) !== 'vlt_tp') {
 			return '';
 		}
 
@@ -194,7 +194,7 @@ class HeaderFooterExtension extends BaseExtension
 		}
 
 		return sprintf(
-			'<div class="vlt-hfb-template" data-template-id="%d">%s</div>',
+			'<div class="vlt-tp-template" data-template-id="%d">%s</div>',
 			$template_id,
 			$content
 		);
@@ -205,19 +205,19 @@ class HeaderFooterExtension extends BaseExtension
 	 */
 	public function enqueue_admin_scripts()
 	{
-		// Only load on single vlt_hfb post edit pages
+		// Only load on single vlt_tp post edit pages
 		global $pagenow;
 		$screen = get_current_screen();
 
-		// Check if we're on post.php or post-new.php for vlt_hfb post type
-		if (!$screen || $screen->post_type !== 'vlt_hfb' || !in_array($pagenow, ['post.php', 'post-new.php'])) {
+		// Check if we're on post.php or post-new.php for vlt_tp post type
+		if (!$screen || $screen->post_type !== 'vlt_tp' || !in_array($pagenow, ['post.php', 'post-new.php'])) {
 			return;
 		}
 
-		// Register and enqueue HFB admin script
+		// Register and enqueue Template Parts admin script
 		wp_enqueue_script(
-			'vlt-hfb-admin',
-			VLT_HELPER_URL . 'assets/js/hfb-admin.js',
+			'vlt-tp-admin',
+			VLT_HELPER_URL . 'assets/js/tp-admin.js',
 			[],
 			VLT_HELPER_VERSION,
 			true
@@ -225,11 +225,11 @@ class HeaderFooterExtension extends BaseExtension
 
 		// Localize script with admin data
 		wp_localize_script(
-			'vlt-hfb-admin',
-			'hfb_admin_data',
+			'vlt-tp-admin',
+			'tp_admin_data',
 			[
-				'hfb_edit_url'      => admin_url('edit.php?post_type=vlt_hfb'),
-				'hfb_view_all_text' => esc_html__('View All', 'vlt-helper'),
+				'tp_edit_url'      => admin_url('edit.php?post_type=vlt_tp'),
+				'tp_view_all_text' => esc_html__('View All', 'vlt-helper'),
 			]
 		);
 	}
@@ -244,7 +244,7 @@ class HeaderFooterExtension extends BaseExtension
 		}
 
 		acf_add_local_field_group([
-			'key'      => 'group_vlt_hfb_settings',
+			'key'      => 'group_vlt_tp_settings',
 			'title'    => esc_html__('Template Settings', 'vlt-helper'),
 			'fields'   => [
 				[
@@ -281,14 +281,14 @@ class HeaderFooterExtension extends BaseExtension
 					],
 					'sub_fields'        => [
 						[
-							'key'     => 'field_hfb_rule',
+							'key'     => 'field_tp_rule',
 							'label'   => esc_html__('Rule', 'vlt-helper'),
 							'name'    => 'rule',
 							'type'    => 'select',
 							'choices' => [], // Populated dynamically
 						],
 						[
-							'key'               => 'field_hfb_specifics',
+							'key'               => 'field_tp_specifics',
 							'label'             => esc_html__('Specific Target', 'vlt-helper'),
 							'name'              => 'specifics',
 							'type'              => 'post_object',
@@ -300,7 +300,7 @@ class HeaderFooterExtension extends BaseExtension
 							'conditional_logic' => [
 								[
 									[
-										'field'    => 'field_hfb_rule',
+										'field'    => 'field_tp_rule',
 										'operator' => '==',
 										'value'    => 'specifics',
 									],
@@ -328,14 +328,14 @@ class HeaderFooterExtension extends BaseExtension
 					],
 					'sub_fields'        => [
 						[
-							'key'     => 'field_hfb_exclude_rule',
+							'key'     => 'field_tp_exclude_rule',
 							'label'   => esc_html__('Rule', 'vlt-helper'),
 							'name'    => 'rule',
 							'type'    => 'select',
 							'choices' => [], // Populated dynamically
 						],
 						[
-							'key'               => 'field_hfb_exclude_specifics',
+							'key'               => 'field_tp_exclude_specifics',
 							'label'             => esc_html__('Specific Target', 'vlt-helper'),
 							'name'              => 'specifics',
 							'type'              => 'post_object',
@@ -347,7 +347,7 @@ class HeaderFooterExtension extends BaseExtension
 							'conditional_logic' => [
 								[
 									[
-										'field'    => 'field_hfb_exclude_rule',
+										'field'    => 'field_tp_exclude_rule',
 										'operator' => '==',
 										'value'    => 'specifics',
 									],
@@ -357,7 +357,7 @@ class HeaderFooterExtension extends BaseExtension
 					],
 				],
 				[
-					'key'          => 'field_vlt_hfb_note',
+					'key'          => 'field_vlt_tp_note',
 					'label'        => esc_html__('Note', 'vlt-helper'),
 					'name'         => 'note',
 					'type'         => 'textarea',
@@ -372,7 +372,7 @@ class HeaderFooterExtension extends BaseExtension
 					[
 						'param'    => 'post_type',
 						'operator' => '==',
-						'value'    => 'vlt_hfb',
+						'value'    => 'vlt_tp',
 					],
 				],
 			],
@@ -390,7 +390,7 @@ class HeaderFooterExtension extends BaseExtension
 		$rules = [];
 
 		foreach ($types as $type) {
-			if (in_array($type->name, ['attachment', 'vlt_hfb'])) {
+			if (in_array($type->name, ['attachment', 'vlt_tp'])) {
 				continue;
 			}
 
@@ -595,7 +595,7 @@ class HeaderFooterExtension extends BaseExtension
 	private function get_template_by_type($type)
 	{
 		$args = [
-			'post_type'      => 'vlt_hfb',
+			'post_type'      => 'vlt_tp',
 			'posts_per_page' => -1,
 			'post_status'    => 'publish',
 			'meta_query'     => [
@@ -674,7 +674,7 @@ class HeaderFooterExtension extends BaseExtension
 		}
 
 		return sprintf(
-			'<div class="vlt-template vlt-template--%s" data-template-id="%d">%s</div>',
+			'<div class="vlt-tp vlt-tp--%s" data-template-id="%d">%s</div>',
 			esc_attr($type),
 			$template_id,
 			$content
@@ -809,14 +809,14 @@ class HeaderFooterExtension extends BaseExtension
 			case 'note':
 				$note = get_field('note', $post_id);
 				if ($note) {
-					echo esc_html($note);
+					echo wp_kses_post(nl2br($note));
 				} else {
 					echo '—';
 				}
 				break;
 
 			case 'shortcode':
-				$shortcode = '[hfb_template id="' . $post_id . '"]';
+				$shortcode = '[template_part id="' . $post_id . '"]';
 				echo '<input type="text" readonly value="' . esc_attr($shortcode) . '" style="width: 100%; font-family: monospace; font-size: 12px; padding: 4px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 2px;" onclick="this.select(); document.execCommand(\'copy\'); this.style.background=\'#d4edda\'; setTimeout(() => this.style.background=\'#f0f0f1\', 1000);" title="' . esc_attr__('Click to copy', 'vlt-helper') . '" />';
 				break;
 		}
@@ -842,7 +842,7 @@ class HeaderFooterExtension extends BaseExtension
 	 */
 	public function add_template_type_state($post_states, $post)
 	{
-		if ($post->post_type !== 'vlt_hfb') {
+		if ($post->post_type !== 'vlt_tp') {
 			return $post_states;
 		}
 
@@ -855,7 +855,7 @@ class HeaderFooterExtension extends BaseExtension
 				'submenu' => esc_html__('Submenu', 'vlt-helper'),
 				'custom'  => esc_html__('Custom', 'vlt-helper'),
 			];
-			$post_states['vlt_hfb_type'] = $types[$type] ?? $type;
+			$post_states['vlt_tp_type'] = $types[$type] ?? $type;
 		}
 
 		return $post_states;
@@ -868,7 +868,7 @@ class HeaderFooterExtension extends BaseExtension
 	{
 		global $typenow;
 
-		if ($typenow !== 'vlt_hfb') {
+		if ($typenow !== 'vlt_tp') {
 			return;
 		}
 
@@ -904,7 +904,7 @@ class HeaderFooterExtension extends BaseExtension
 	{
 		global $pagenow, $typenow;
 
-		if ($pagenow !== 'edit.php' || $typenow !== 'vlt_hfb' || !is_admin()) {
+		if ($pagenow !== 'edit.php' || $typenow !== 'vlt_tp' || !is_admin()) {
 			return;
 		}
 

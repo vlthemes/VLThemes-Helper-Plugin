@@ -217,14 +217,14 @@ class Dashboard
 			array($this, 'render_status_page')
 		);
 
-		// Header / Footer - only if Elementor and ACF are active
+		// Template Parts - only if Elementor and ACF are active
 		if (defined('ELEMENTOR_VERSION') && function_exists('acf_add_local_field_group')) {
 			add_submenu_page(
 				$this->dashboard_slug,
-				esc_html__('Header / Footer Builder', 'vlt-helper'),
-				esc_html__('Header / Footer', 'vlt-helper'),
+				esc_html__('Template Parts', 'vlt-helper'),
+				esc_html__('Template Parts', 'vlt-helper'),
 				'manage_options',
-				'edit.php?post_type=vlt_hfb',
+				'edit.php?post_type=vlt_tp',
 				'',
 			);
 		}

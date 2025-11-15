@@ -185,6 +185,20 @@ if (! function_exists('vlt_acf_populate_elementor_templates')) {
 	}
 }
 
+if (! function_exists('vlt_acf_populate_vlt_tp')) {
+	/**
+	 * Populate ACF field with Template Parts
+	 *
+	 * @param array  $field ACF field array.
+	 * @param string $type  Template type to filter by (header, footer, 404, custom, submenu).
+	 * @return array Modified field with template part choices.
+	 */
+	function vlt_acf_populate_vlt_tp($field, $type = null)
+	{
+		return \VLT\Helper\Modules\Integrations\ACF::populate_vlt_tp($field, $type);
+	}
+}
+
 if (! function_exists('vlt_acf_populate_vp_saved_layouts')) {
 	/**
 	 * Populate ACF field with Visual Portfolio saved layouts

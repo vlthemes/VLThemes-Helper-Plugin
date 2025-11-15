@@ -146,4 +146,25 @@ document.addEventListener('DOMContentLoaded', function () {
 		link4.target = '_blank';
 	}
 
+	/* ========================================
+	 * Hide megamenu acf fields for sub-menu
+	 * ======================================== */
+	const menuItems = document.querySelectorAll('.menu-item');
+
+	menuItems.forEach(item => {
+		// depth class looks like: menu-item-depth-0, menu-item-depth-1, etc.
+		const depthMatch = item.className.match(/menu-item-depth-(\d+)/);
+		const depth = depthMatch ? parseInt(depthMatch[1]) : 0;
+
+		const acfFields = item.querySelectorAll('.acf-field[data-name="megamenu"]');
+
+		acfFields.forEach(field => {
+			if (depth === 0) {
+				field.style.display = '';
+			} else {
+				field.style.display = 'none';
+			}
+		});
+	});
+
 });

@@ -49,6 +49,9 @@ class TemplatePartsExtension extends BaseExtension
 		add_filter('acf/load_field/key=field_tp_rule', [$this, 'populate_rule_choices']);
 		add_filter('acf/load_field/key=field_tp_exclude_rule', [$this, 'populate_rule_choices']);
 
+		// Add shortcode meta box
+		add_action('add_meta_boxes', [$this, 'add_shortcode_meta_box']);
+
 		// Add template content filters
 		add_filter('vlt_tp_header', [$this, 'get_header_content']);
 		add_filter('vlt_tp_footer', [$this, 'get_footer_content']);
@@ -277,6 +280,16 @@ class TemplatePartsExtension extends BaseExtension
 								'operator' => '!=',
 								'value'    => '404',
 							],
+							[
+								'field'    => 'field_template_type',
+								'operator' => '!=',
+								'value'    => 'custom',
+							],
+							[
+								'field'    => 'field_template_type',
+								'operator' => '!=',
+								'value'    => 'submenu',
+							],
 						],
 					],
 					'sub_fields'        => [
@@ -323,6 +336,16 @@ class TemplatePartsExtension extends BaseExtension
 								'field'    => 'field_template_type',
 								'operator' => '!=',
 								'value'    => '404',
+							],
+							[
+								'field'    => 'field_template_type',
+								'operator' => '!=',
+								'value'    => 'custom',
+							],
+							[
+								'field'    => 'field_template_type',
+								'operator' => '!=',
+								'value'    => 'submenu',
 							],
 						],
 					],
@@ -437,6 +460,34 @@ class TemplatePartsExtension extends BaseExtension
 				'specifics' => 'Specific Pages',
 			],
 		];
+	}
+
+	/**
+	 * Add shortcode meta box
+	 */
+	public function add_shortcode_meta_box()
+	{
+		add_meta_box(
+			'vlt_tp_shortcode',
+			esc_html__('Shortcode', 'vlt-helper'),
+			[$this, 'render_shortcode_meta_box'],
+			'vlt_tp',
+			'side',
+			'high'
+		);
+	}
+
+	/**
+	 * Render shortcode meta box
+	 *
+	 * @param WP_Post $post Current post object.
+	 */
+	public function render_shortcode_meta_box($post)
+	{
+		$shortcode = '[template_part id="' . $post->ID . '"]';
+		?>
+		<input type="text" readonly value="<?php echo esc_attr($shortcode); ?>" style="width: 100%; font-family: monospace; font-size: 12px; padding: 6px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 3px; cursor: pointer;" onclick="this.select(); document.execCommand('copy'); this.style.background='#d4edda'; setTimeout(() => this.style.background='#f0f0f1', 1000);" title="<?php esc_attr_e('Click to copy', 'vlt-helper'); ?>" />
+		<?php
 	}
 
 	/**

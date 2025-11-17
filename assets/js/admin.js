@@ -149,22 +149,63 @@ document.addEventListener('DOMContentLoaded', function () {
 	/* ========================================
 	 * Hide megamenu acf fields for sub-menu
 	 * ======================================== */
-	const menuItems = document.querySelectorAll('.menu-item');
 
-	menuItems.forEach(item => {
-		// depth class looks like: menu-item-depth-0, menu-item-depth-1, etc.
-		const depthMatch = item.className.match(/menu-item-depth-(\d+)/);
-		const depth = depthMatch ? parseInt(depthMatch[1]) : 0;
+	function toggleMegamenuFields() {
+		const menuItems = document.querySelectorAll('.menu-item');
 
-		const acfFields = item.querySelectorAll('.acf-field[data-name="megamenu"]');
+		menuItems.forEach(item => {
+			// depth class looks like: menu-item-depth-0, menu-item-depth-1, etc.
+			const depthMatch = item.className.match(/menu-item-depth-(\d+)/);
+			const depth = depthMatch ? parseInt(depthMatch[1]) : 0;
 
-		acfFields.forEach(field => {
-			if (depth === 0) {
-				field.style.display = '';
-			} else {
-				field.style.display = 'none';
+			const acfFields = item.querySelectorAll('.acf-field[data-name="megamenu"]');
+
+			acfFields.forEach(field => {
+				if (depth === 0) {
+					field.style.display = '';
+				} else {
+					field.style.display = 'none';
+				}
+			});
+		});
+	}
+
+	// Listen for WordPress menu sort events using vanilla JavaScript
+	// WordPress still fires jQuery events, but we can listen for DOM mutations instead
+	const menuList = document.querySelector('#menu-to-edit');
+
+	if (menuList) {
+		// Create a MutationObserver to watch for changes in the menu structure
+		const observer = new MutationObserver(function (mutations) {
+			// Debounce the function call
+			clearTimeout(observer.timeout);
+			observer.timeout = setTimeout(toggleMegamenuFields, 50);
+		});
+
+		// Start observing the menu list for changes
+		observer.observe(menuList, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+			attributeFilter: ['class']
+		});
+	}
+
+	// Alternative: If WordPress jQuery events are still needed, you can listen to them without jQuery
+	// This works because WordPress still triggers these as custom events
+	if (typeof jQuery !== 'undefined') {
+		jQuery(document).on('sortreceive sortstop sortupdate', function () {
+			setTimeout(toggleMegamenuFields, 50);
+		});
+	} else {
+		// Fallback: Listen for drag events
+		document.addEventListener('dragend', function (e) {
+			if (e.target.closest('.menu-item')) {
+				setTimeout(toggleMegamenuFields, 50);
 			}
 		});
-	});
+	}
 
+	// Initial call
+	toggleMegamenuFields();
 });

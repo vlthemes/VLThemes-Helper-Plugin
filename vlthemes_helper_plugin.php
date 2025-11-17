@@ -30,6 +30,10 @@ require_once VLT_HELPER_PATH . 'includes/helper-functions.php';
 // Load main helper class
 require_once VLT_HELPER_PATH . 'includes/Helper.php';
 
+// Load theme activation
+require_once VLT_HELPER_PATH . 'includes/ThemeActivation/ThemeActivation.php';
+require_once VLT_HELPER_PATH . 'includes/ThemeActivation/Init.php';
+
 // Initialize on plugins_loaded
 add_action('plugins_loaded', function () {
 	VLT\Helper\Helper::instance();

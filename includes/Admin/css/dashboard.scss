@@ -32,6 +32,10 @@
 		margin: 0;
 		font-size: 14px;
 
+		&.submit {
+			padding: 0;
+		}
+
 		&.small {
 			font-size: 80%;
 			color: var(--color-gray);
@@ -133,6 +137,43 @@
 	gap: 0.5rem;
 }
 
+/* Form Group */
+.vlt-form-group {
+
+	p.small {
+		margin-top: .5rem;
+	}
+
+	label {
+		display: block;
+		margin-bottom: .5rem;
+		font-weight: 600;
+		color: var(--color-dark);
+	}
+
+	input {
+		width: 100%;
+		padding: 4px 10px;
+		background: var(--color-bg);
+		border: 1px solid var(--color-light);
+		border-radius: 2px;
+
+		&.license-key {
+			min-height: auto;
+			padding: 0;
+			margin: 0;
+			line-height: inherit;
+			color: inherit;
+			background: none;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+		}
+
+	}
+
+}
+
 /* ========================================
  Widget: Welcome
  ======================================== */
@@ -194,6 +235,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		min-height: 60px;
 		padding: 15px 20px;
 		font-size: 16px;
 		font-weight: 600;

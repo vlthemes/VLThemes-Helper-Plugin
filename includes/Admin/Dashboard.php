@@ -158,14 +158,14 @@ class Dashboard
 		$this->theme_slug    = $this->theme->get_template();
 		$this->theme_author  = $this->theme->get('Author');
 
-		// Set helper links
-		$this->docs_url = 'https://docs.vlthemes.me/docs/';
-		$this->knowledge_base_url = 'https://docs.vlthemes.me/knowbase/';
-		$this->changelog_url = 'https://docs.vlthemes.me/changelog/';
-		$this->support_url = 'https://docs.vlthemes.me/support/';
-		$this->support_policy_url = 'https://themeforest.net/page/item_support_policy';
-		$this->elementor_partner_url = 'https://be.elementor.com/visit/?bta=65732&nci=5352';
-		$this->fornex_partner_url = 'https://fornex.com/c/ffg4ni/';
+		// Set helper links with filters for customization
+		$this->docs_url = apply_filters('vlt_helper_docs_url', 'https://docs.vlthemes.me/docs/', $this->theme_slug);
+		$this->knowledge_base_url = apply_filters('vlt_helper_knowledge_base_url', 'https://docs.vlthemes.me/knowbase/');
+		$this->changelog_url = apply_filters('vlt_helper_changelog_url', 'https://docs.vlthemes.me/changelog/', $this->theme_slug);
+		$this->support_url = apply_filters('vlt_helper_support_url', 'https://docs.vlthemes.me/support/');
+		$this->support_policy_url = apply_filters('vlt_helper_support_policy_url', 'https://themeforest.net/page/item_support_policy');
+		$this->elementor_partner_url = apply_filters('vlt_helper_elementor_partner_url', 'https://be.elementor.com/visit/?bta=65732&nci=5352');
+		$this->fornex_partner_url = apply_filters('vlt_helper_fornex_partner_url', 'https://fornex.com/c/ffg4ni/');
 
 		$this->init_hooks();
 	}
@@ -256,6 +256,16 @@ class Dashboard
 			'manage_options',
 			$this->dashboard_slug,
 			array($this, 'render_welcome_page')
+		);
+
+		// Activate theme
+		add_submenu_page(
+			$this->dashboard_slug,
+			esc_html__('Activate Theme', 'vlt-helper'),
+			esc_html__('Activate Theme', 'vlt-helper'),
+			'manage_options',
+			$this->dashboard_slug . '-activate-theme',
+			array($this, 'render_activate_theme_page')
 		);
 
 		// Requirements submenu
@@ -441,6 +451,14 @@ class Dashboard
 	public function render_welcome_page()
 	{
 		$this->render_template('template-welcome');
+	}
+
+	/**
+	 * Render activate theme
+	 */
+	public function render_activate_theme_page()
+	{
+		$this->render_template('template-activate-theme');
 	}
 
 	/**

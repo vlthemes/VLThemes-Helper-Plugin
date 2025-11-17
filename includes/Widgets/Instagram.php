@@ -25,12 +25,12 @@ class Instagram extends \WP_Widget
 	{
 		$widget_options = [
 			'classname'   => 'vlt-widget-instagram',
-			'description' => esc_html__('Displays Instagram feed using Visual Portfolio.', 'vlt-helper'),
+			'description' => esc_html__('Displays Instagram feed using Visual Portfolio.', 'vlthemes-toolkit'),
 		];
 
 		parent::__construct(
 			'vlt_widget_instagram',
-			esc_html__('VLThemes: Instagram Feed', 'vlt-helper'),
+			esc_html__('VLThemes: Instagram Feed', 'vlthemes-toolkit'),
 			$widget_options
 		);
 	}
@@ -55,7 +55,7 @@ class Instagram extends \WP_Widget
 		// Check if ACF is available
 		if (! function_exists('get_field')) {
 			if (current_user_can('manage_options')) {
-				echo '<p>' . esc_html__('Advanced Custom Fields plugin is required for this widget.', 'vlt-helper') . '</p>';
+				echo '<p>' . esc_html__('Advanced Custom Fields plugin is required for this widget.', 'vlthemes-toolkit') . '</p>';
 			}
 			echo $args['after_widget'];
 			return;
@@ -89,7 +89,7 @@ class Instagram extends \WP_Widget
 ?>
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
-				<?php esc_html_e('Title:', 'vlt-helper'); ?>
+				<?php esc_html_e('Title:', 'vlthemes-toolkit'); ?>
 			</label>
 			<input
 				class="widefat"
@@ -99,7 +99,7 @@ class Instagram extends \WP_Widget
 				value="<?php echo esc_attr($title); ?>" />
 		</p>
 		<p class="description">
-			<?php esc_html_e('Configure Instagram layout using Advanced Custom Fields in the widget settings below.', 'vlt-helper'); ?>
+			<?php esc_html_e('Configure Instagram layout using Advanced Custom Fields in the widget settings below.', 'vlthemes-toolkit'); ?>
 		</p>
 <?php
 	}

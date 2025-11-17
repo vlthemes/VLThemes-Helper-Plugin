@@ -2,7 +2,7 @@
 
 namespace VLT\Helper\Modules\Integrations\Elementor;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -11,7 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Manages custom icon sets for Elementor
  */
-class IconSets {
+class IconSets
+{
 
 	/**
 	 * Assets URL
@@ -23,7 +24,8 @@ class IconSets {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		$this->assets_url = VLT_HELPER_URL . 'assets/';
 	}
 
@@ -33,18 +35,19 @@ class IconSets {
 	 * @param array $settings Icon settings.
 	 * @return array
 	 */
-	public function add_icon_tabs( $settings ) {
+	public function add_icon_tabs($settings)
+	{
 		$icon_sets = $this->get_icon_sets();
 
-		foreach ( $icon_sets as $key => $icon_set ) {
+		foreach ($icon_sets as $key => $icon_set) {
 			// Check if icon set files exist before adding
-			$css_path = str_replace( VLT_HELPER_URL, VLT_HELPER_PATH, $icon_set['url'] );
-			if ( file_exists( $css_path ) ) {
-				$settings[ $key ] = $icon_set;
+			$css_path = str_replace(VLT_HELPER_URL, VLT_HELPER_PATH, $icon_set['url']);
+			if (file_exists($css_path)) {
+				$settings[$key] = $icon_set;
 			}
 		}
 
-		return apply_filters( 'vlt_helper_elementor_icon_tabs', $settings );
+		return apply_filters('vlt_helper_elementor_icon_tabs', $settings);
 	}
 
 	/**
@@ -52,12 +55,13 @@ class IconSets {
 	 *
 	 * @return array
 	 */
-	private function get_icon_sets() {
+	private function get_icon_sets()
+	{
 		return [
 			// Socicons
 			'socicons' => [
 				'name'          => 'socicons',
-				'label'         => esc_html__( 'Socicons', 'vlt-helper' ),
+				'label'         => esc_html__('Socicons', 'vlthemes-toolkit'),
 				'url'           => $this->assets_url . 'fonts/socicons/socicons.css',
 				'enqueue'       => false, // CSS loaded globally in SocialIcons module
 				'prefix'        => 'socicon-',
@@ -70,9 +74,9 @@ class IconSets {
 			// ET-Line Icons
 			'etline' => [
 				'name'          => 'etline',
-				'label'         => esc_html__( 'ET-Line', 'vlt-helper' ),
+				'label'         => esc_html__('ET-Line', 'vlthemes-toolkit'),
 				'url'           => $this->assets_url . 'fonts/etline/etl.css',
-				'enqueue'       => [ $this->assets_url . 'fonts/etline/etl.css' ],
+				'enqueue'       => [$this->assets_url . 'fonts/etline/etl.css'],
 				'prefix'        => 'etl-',
 				'displayPrefix' => false,
 				'labelIcon'     => 'etl-desktop',
@@ -83,9 +87,9 @@ class IconSets {
 			// Icomoon
 			'icomoon' => [
 				'name'          => 'icomoon',
-				'label'         => esc_html__( 'Icomoon', 'vlt-helper' ),
+				'label'         => esc_html__('Icomoon', 'vlthemes-toolkit'),
 				'url'           => $this->assets_url . 'fonts/icomoon/icnm.css',
-				'enqueue'       => [ $this->assets_url . 'fonts/icomoon/icnm.css' ],
+				'enqueue'       => [$this->assets_url . 'fonts/icomoon/icnm.css'],
 				'prefix'        => 'icnm-',
 				'displayPrefix' => false,
 				'labelIcon'     => 'icnm-barcode',
@@ -96,9 +100,9 @@ class IconSets {
 			// Iconsmind
 			'iconsmind' => [
 				'name'          => 'iconsmind',
-				'label'         => esc_html__( 'Iconsmind', 'vlt-helper' ),
+				'label'         => esc_html__('Iconsmind', 'vlthemes-toolkit'),
 				'url'           => $this->assets_url . 'fonts/iconsmind/iconsmind.css',
-				'enqueue'       => [ $this->assets_url . 'fonts/iconsmind/iconsmind.css' ],
+				'enqueue'       => [$this->assets_url . 'fonts/iconsmind/iconsmind.css'],
 				'prefix'        => 'icnmd-',
 				'displayPrefix' => false,
 				'labelIcon'     => 'icnmd-ATM',
@@ -109,9 +113,9 @@ class IconSets {
 			// Linearicons
 			'linearicons' => [
 				'name'          => 'linearicons',
-				'label'         => esc_html__( 'Linearicons', 'vlt-helper' ),
+				'label'         => esc_html__('Linearicons', 'vlthemes-toolkit'),
 				'url'           => $this->assets_url . 'fonts/linearicons/lnr.css',
-				'enqueue'       => [ $this->assets_url . 'fonts/linearicons/lnr.css' ],
+				'enqueue'       => [$this->assets_url . 'fonts/linearicons/lnr.css'],
 				'prefix'        => 'lnr-',
 				'displayPrefix' => false,
 				'labelIcon'     => 'lnr-book',
@@ -122,9 +126,9 @@ class IconSets {
 			// Elusive Icons
 			'elusiveicons' => [
 				'name'          => 'elusiveicons',
-				'label'         => esc_html__( 'Elusive Icons', 'vlt-helper' ),
+				'label'         => esc_html__('Elusive Icons', 'vlthemes-toolkit'),
 				'url'           => $this->assets_url . 'fonts/elusiveicons/el.css',
-				'enqueue'       => [ $this->assets_url . 'fonts/elusiveicons/el.css' ],
+				'enqueue'       => [$this->assets_url . 'fonts/elusiveicons/el.css'],
 				'prefix'        => 'el-',
 				'displayPrefix' => false,
 				'labelIcon'     => 'el-address-book',
@@ -135,9 +139,9 @@ class IconSets {
 			// Icofont
 			'icofont' => [
 				'name'          => 'icofont',
-				'label'         => esc_html__( 'Icofont', 'vlt-helper' ),
+				'label'         => esc_html__('Icofont', 'vlthemes-toolkit'),
 				'url'           => $this->assets_url . 'fonts/icofont/icofont.css',
-				'enqueue'       => [ $this->assets_url . 'fonts/icofont/icofont.css' ],
+				'enqueue'       => [$this->assets_url . 'fonts/icofont/icofont.css'],
 				'prefix'        => 'icofont-',
 				'displayPrefix' => false,
 				'labelIcon'     => 'icofont-cop',

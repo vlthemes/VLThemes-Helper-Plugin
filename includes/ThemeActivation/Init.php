@@ -20,8 +20,8 @@ if (! function_exists('vlthemes_theme_activation_notice')) {
 	{
 ?>
 		<div class="notice notice-warning">
-			<p><?php esc_html_e('Want automatic updates and premium support? Simply activate your theme license.', 'vlt-helper'); ?></p>
-			<p><?php echo sprintf(__('<a href="%s" class="button button-primary">Activate Theme</a>', 'vlt-helper'), admin_url('admin.php?page=vlt-dashboard-activate-theme')); ?></p>
+			<p><?php esc_html_e('Want automatic updates and premium support? Simply activate your theme license.', 'vlthemes-toolkit'); ?></p>
+			<p><?php echo sprintf(__('<a href="%s" class="button button-primary">Activate Theme</a>', 'vlthemes-toolkit'), admin_url('admin.php?page=vlt-dashboard-activate-theme')); ?></p>
 		</div>
 		<?php
 	}
@@ -225,41 +225,41 @@ if (! class_exists('VLThemesThemeActivation')) {
 		?>
 			<div class="vlt-widget">
 				<div class="vlt-widget__title">
-					<mark class="true"><?php esc_html_e('Theme License', 'vlt-helper'); ?></mark>
-					<span class="vlt-badge true"><?php esc_html_e('Active', 'vlt-helper'); ?></span>
+					<mark class="true"><?php esc_html_e('Theme License', 'vlthemes-toolkit'); ?></mark>
+					<span class="vlt-badge true"><?php esc_html_e('Active', 'vlthemes-toolkit'); ?></span>
 				</div>
 
 				<div class="vlt-widget__content">
 					<table class="widefat" cellspacing="0">
 						<tbody>
 							<tr>
-								<td><?php esc_html_e('Status:', 'vlt-helper'); ?></td>
+								<td><?php esc_html_e('Status:', 'vlthemes-toolkit'); ?></td>
 								<td>
 									<?php
 									if ($this->responseObj->is_valid) {
-										echo '<mark class="true">✅ ' . esc_html__('Valid', 'vlt-helper') . '</mark>';
+										echo '<mark class="true">✅ ' . esc_html__('Valid', 'vlthemes-toolkit') . '</mark>';
 									} else {
-										echo '<mark class="false">❌ ' . esc_html__('Invalid', 'vlt-helper') . '</mark>';
+										echo '<mark class="false">❌ ' . esc_html__('Invalid', 'vlthemes-toolkit') . '</mark>';
 									}
 									?>
 								</td>
 							</tr>
 							<tr>
-								<td><?php esc_html_e('License Type:', 'vlt-helper'); ?></td>
+								<td><?php esc_html_e('License Type:', 'vlthemes-toolkit'); ?></td>
 								<td><?php echo esc_html($this->responseObj->license_title); ?></td>
 							</tr>
 							<tr>
-								<td><?php esc_html_e('License Expired on:', 'vlt-helper'); ?></td>
+								<td><?php esc_html_e('License Expired on:', 'vlthemes-toolkit'); ?></td>
 								<td><?php echo esc_html($this->responseObj->expire_date);
-									if (! empty($this->responseObj->expire_renew_link)) { ?> <a target="_blank" href="<?php echo esc_url($this->responseObj->expire_renew_link); ?>"><?php esc_html_e('Renew', 'vlt-helper'); ?></a><?php } ?></td>
+									if (! empty($this->responseObj->expire_renew_link)) { ?> <a target="_blank" href="<?php echo esc_url($this->responseObj->expire_renew_link); ?>"><?php esc_html_e('Renew', 'vlthemes-toolkit'); ?></a><?php } ?></td>
 							</tr>
 							<tr>
-								<td><?php esc_html_e('Support Expired on:', 'vlt-helper'); ?></td>
+								<td><?php esc_html_e('Support Expired on:', 'vlthemes-toolkit'); ?></td>
 								<td><?php echo esc_html($this->responseObj->support_end);
-									if (! empty($this->responseObj->support_renew_link)) { ?> <a target="_blank" href="<?php echo esc_url($this->responseObj->support_renew_link); ?>"><?php esc_html_e('Renew', 'vlt-helper'); ?></a><?php } ?></td>
+									if (! empty($this->responseObj->support_renew_link)) { ?> <a target="_blank" href="<?php echo esc_url($this->responseObj->support_renew_link); ?>"><?php esc_html_e('Renew', 'vlthemes-toolkit'); ?></a><?php } ?></td>
 							</tr>
 							<tr>
-								<td><?php esc_html_e('Your License Key:', 'vlt-helper'); ?></td>
+								<td><?php esc_html_e('Your License Key:', 'vlthemes-toolkit'); ?></td>
 								<td>
 									<div class="vlt-form-group">
 										<input class="license-key" type="text"
@@ -292,8 +292,8 @@ if (! class_exists('VLThemesThemeActivation')) {
 
 			<div class="vlt-widget">
 				<div class="vlt-widget__title">
-					<mark><?php esc_html_e('Theme License', 'vlt-helper'); ?></mark>
-					<span class="vlt-badge false"><?php esc_html_e('Not Active', 'vlt-helper'); ?></span>
+					<mark><?php esc_html_e('Theme License', 'vlthemes-toolkit'); ?></mark>
+					<span class="vlt-badge false"><?php esc_html_e('Not Active', 'vlthemes-toolkit'); ?></span>
 				</div>
 
 				<div class="vlt-widget__content">
@@ -301,7 +301,7 @@ if (! class_exists('VLThemesThemeActivation')) {
 
 						<input type="hidden" name="action" value="<?php echo esc_attr($this->slug); ?>_activate_license">
 
-						<p class="mb-sm"><?php printf(esc_html__('To activate your copy of %s, enter your purchase code and email address to register the theme.', 'vlt-helper'), esc_html(\VLT\Helper\Admin\Dashboard::instance()->theme_name)); ?></p>
+						<p class="mb-sm"><?php printf(esc_html__('To activate your copy of %s, enter your purchase code and email address to register the theme.', 'vlthemes-toolkit'), esc_html(\VLT\Helper\Admin\Dashboard::instance()->theme_name)); ?></p>
 
 						<?php if (! empty($this->showMessage) && ! empty($this->licenseMessage)) { ?>
 							<div class="notice notice-error is-dismissible mb-sm">
@@ -310,15 +310,15 @@ if (! class_exists('VLThemesThemeActivation')) {
 						<?php } ?>
 
 						<div class="vlt-form-group">
-							<label for="el_license_key"><?php esc_html_e('License code', 'vlt-helper'); ?></label>
+							<label for="el_license_key"><?php esc_html_e('License code', 'vlthemes-toolkit'); ?></label>
 							<input type="text" id="el_license_key" name="el_license_key" size="50" placeholder="xxxxxxxx-xxxxxxxx-xxxxxxxx-xxxxxxxx" required="required">
 						</div>
 
 						<div class="vlt-form-group mt-xs">
-							<label for="el_license_email"><?php esc_html_e('Email Address', 'vlt-helper'); ?></label>
+							<label for="el_license_email"><?php esc_html_e('Email Address', 'vlthemes-toolkit'); ?></label>
 							<?php $purchaseEmail = get_option($this->lic_email_slug, get_bloginfo('admin_email')); ?>
 							<input type="email" id="el_license_email" name="el_license_email" size="50" value="<?php echo esc_attr($purchaseEmail); ?>" placeholder required="required">
-							<p class="small"><?php esc_html_e('We will send update news of this product by this email address, don\'t worry, we hate spam.', 'vlt-helper'); ?></p>
+							<p class="small"><?php esc_html_e('We will send update news of this product by this email address, don\'t worry, we hate spam.', 'vlthemes-toolkit'); ?></p>
 						</div>
 
 						<?php wp_nonce_field('el-license'); ?>
@@ -328,13 +328,13 @@ if (! class_exists('VLThemesThemeActivation')) {
 
 					<div class="notice notice-info inline mt-sm">
 						<p>
-							<?php esc_html_e('Note that you are not required to separately register any of the plugins which came bundled with the theme.', 'vlt-helper'); ?>
+							<?php esc_html_e('Note that you are not required to separately register any of the plugins which came bundled with the theme.', 'vlthemes-toolkit'); ?>
 						</p>
 					</div>
 
 					<div class="notice notice-info inline mt-sm">
 						<p>
-							<?php esc_html_e('Please note that if you used your purchase code on one installation, you are required to Deactivate in order to use the purchase code on a different installation.', 'vlt-helper'); ?>
+							<?php esc_html_e('Please note that if you used your purchase code on one installation, you are required to Deactivate in order to use the purchase code on a different installation.', 'vlthemes-toolkit'); ?>
 						</p>
 					</div>
 				</div>

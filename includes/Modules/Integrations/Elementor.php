@@ -289,15 +289,15 @@ class Elementor extends BaseModule
 		// Default categories
 		$categories = [
 			'vlthemes-elements' => [
-				'title' => esc_html__('VLThemes Elements', 'vlt-helper'),
+				'title' => esc_html__('VLThemes Elements', 'vlthemes-toolkit'),
 				'icon'  => 'fa fa-plug',
 			],
 			'vlthemes-showcase' => [
-				'title' => esc_html__('VLThemes Showcase', 'vlt-helper'),
+				'title' => esc_html__('VLThemes Showcase', 'vlthemes-toolkit'),
 				'icon'  => 'fa fa-image',
 			],
 			'vlthemes-woo' => [
-				'title' => esc_html__('VLThemes WooCommerce', 'vlt-helper'),
+				'title' => esc_html__('VLThemes WooCommerce', 'vlthemes-toolkit'),
 				'icon'  => 'fa fa-shopping-cart',
 			],
 		];

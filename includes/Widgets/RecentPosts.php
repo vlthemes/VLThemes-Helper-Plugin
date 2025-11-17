@@ -25,12 +25,12 @@ class RecentPosts extends PostsWidget
 	{
 		$widget_options = [
 			'classname'   => 'vlt-widget-recent-posts',
-			'description' => esc_html__('Displays recent blog posts.', 'vlt-helper'),
+			'description' => esc_html__('Displays recent blog posts.', 'vlthemes-toolkit'),
 		];
 
 		parent::__construct(
 			'vlt_widget_recent_posts',
-			esc_html__('VLThemes: Recent Posts', 'vlt-helper'),
+			esc_html__('VLThemes: Recent Posts', 'vlthemes-toolkit'),
 			$widget_options
 		);
 	}
@@ -94,7 +94,7 @@ class RecentPosts extends PostsWidget
 
 			case 'slider':
 ?>
-				<div class="vlt-widget-post-slider swiper-container swiper" data-tooltip="<?php esc_attr_e('Swipe', 'vlt-helper'); ?>">
+				<div class="vlt-widget-post-slider swiper-container swiper" data-tooltip="<?php esc_attr_e('Swipe', 'vlthemes-toolkit'); ?>">
 					<div class="swiper-wrapper">
 						<?php
 						while ($query->have_posts()) {
@@ -127,7 +127,7 @@ class RecentPosts extends PostsWidget
 		?>
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
-				<?php esc_html_e('Title:', 'vlt-helper'); ?>
+				<?php esc_html_e('Title:', 'vlthemes-toolkit'); ?>
 			</label>
 			<input
 				class="widefat"
@@ -137,7 +137,7 @@ class RecentPosts extends PostsWidget
 				value="<?php echo esc_attr($title); ?>" />
 		</p>
 		<p class="description">
-			<?php esc_html_e('Configure layout and posts count using Advanced Custom Fields in the widget settings below.', 'vlt-helper'); ?>
+			<?php esc_html_e('Configure layout and posts count using Advanced Custom Fields in the widget settings below.', 'vlthemes-toolkit'); ?>
 		</p>
 <?php
 	}

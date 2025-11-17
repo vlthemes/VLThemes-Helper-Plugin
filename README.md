@@ -1,4 +1,4 @@
-# VLT Helper Plugin
+# VLThemes Toolkit
 
 A comprehensive WordPress helper plugin that provides essential functionality for VLThemes projects. This plugin includes Elementor extensions, WooCommerce integration, custom fonts, social icons, and more.
 
@@ -23,7 +23,7 @@ A comprehensive WordPress helper plugin that provides essential functionality fo
 
 ## Installation
 
-1. Upload the plugin files to `/wp-content/plugins/vlthemes_helper_plugin/`
+1. Upload the plugin files to `/wp-content/plugins/vlthemes-toolkit/`
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. The plugin will automatically register all modules
 

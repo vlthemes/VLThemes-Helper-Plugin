@@ -101,14 +101,14 @@ class VisualPortfolio extends BaseModule
 			'post_status' => 'publish',
 		]);
 
-		$options[0] = esc_html__('Select a Portfolio', 'vlt-helper');
+		$options[0] = esc_html__('Select a Portfolio', 'vlthemes-toolkit');
 
 		if (! empty($portfolios) && ! is_wp_error($portfolios)) {
 			foreach ($portfolios as $post) {
 				$options[$post->ID] = $post->post_title;
 			}
 		} else {
-			$options[0] = esc_html__('Create a Portfolio First', 'vlt-helper');
+			$options[0] = esc_html__('Create a Portfolio First', 'vlthemes-toolkit');
 		}
 
 		return $options;

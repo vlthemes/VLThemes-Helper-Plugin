@@ -25,12 +25,12 @@ class PopularPosts extends PostsWidget
 	{
 		$widget_options = [
 			'classname'   => 'vlt-widget-popular-posts',
-			'description' => esc_html__('Displays popular posts (by comment count).', 'vlt-helper'),
+			'description' => esc_html__('Displays popular posts (by comment count).', 'vlthemes-toolkit'),
 		];
 
 		parent::__construct(
 			'vlt_widget_popular_posts',
-			esc_html__('VLThemes: Popular Posts', 'vlt-helper'),
+			esc_html__('VLThemes: Popular Posts', 'vlthemes-toolkit'),
 			$widget_options
 		);
 	}
@@ -94,7 +94,7 @@ class PopularPosts extends PostsWidget
 
 			case 'slider':
 ?>
-				<div class="vlt-widget-post-slider swiper-container swiper" data-tooltip="<?php esc_attr_e('Swipe', 'vlt-helper'); ?>">
+				<div class="vlt-widget-post-slider swiper-container swiper" data-tooltip="<?php esc_attr_e('Swipe', 'vlthemes-toolkit'); ?>">
 					<div class="swiper-wrapper">
 						<?php
 						while ($query->have_posts()) {
@@ -127,7 +127,7 @@ class PopularPosts extends PostsWidget
 		?>
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
-				<?php esc_html_e('Title:', 'vlt-helper'); ?>
+				<?php esc_html_e('Title:', 'vlthemes-toolkit'); ?>
 			</label>
 			<input
 				class="widefat"
@@ -137,7 +137,7 @@ class PopularPosts extends PostsWidget
 				value="<?php echo esc_attr($title); ?>" />
 		</p>
 		<p class="description">
-			<?php esc_html_e('Configure layout and posts count using Advanced Custom Fields in the widget settings below.', 'vlt-helper'); ?>
+			<?php esc_html_e('Configure layout and posts count using Advanced Custom Fields in the widget settings below.', 'vlthemes-toolkit'); ?>
 		</p>
 <?php
 	}

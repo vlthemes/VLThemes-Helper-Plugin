@@ -197,7 +197,7 @@ class Dashboard
 
 		return sprintf(
 			/* translators: 1: theme name, 2: opening link tag, 3: closing link tag */
-			esc_html__('Enjoyed %1$s? Please leave us a %2$s★★★★★%3$s rating. We really appreciate your support!', 'vlt-helper'),
+			esc_html__('Enjoyed %1$s? Please leave us a %2$s★★★★★%3$s rating. We really appreciate your support!', 'vlthemes-toolkit'),
 			'<strong>' . esc_html($this->theme_name) . '</strong>',
 			'<a href="https://themeforest.net/downloads" target="_blank" rel="noopener">',
 			'</a>'
@@ -218,7 +218,7 @@ class Dashboard
 			return '';
 		}
 
-		return sprintf(esc_html__('Version %s', 'vlt-helper'), esc_html($this->theme_version));
+		return sprintf(esc_html__('Version %s', 'vlthemes-toolkit'), esc_html($this->theme_version));
 	}
 
 	/**
@@ -251,8 +251,8 @@ class Dashboard
 		// Welcome submenu
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__('Welcome', 'vlt-helper'),
-			esc_html__('Welcome', 'vlt-helper'),
+			esc_html__('Welcome', 'vlthemes-toolkit'),
+			esc_html__('Welcome', 'vlthemes-toolkit'),
 			'manage_options',
 			$this->dashboard_slug,
 			array($this, 'render_welcome_page')
@@ -261,8 +261,8 @@ class Dashboard
 		// Activate theme
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__('Activate Theme', 'vlt-helper'),
-			esc_html__('Activate Theme', 'vlt-helper'),
+			esc_html__('Activate Theme', 'vlthemes-toolkit'),
+			esc_html__('Activate Theme', 'vlthemes-toolkit'),
 			'manage_options',
 			$this->dashboard_slug . '-activate-theme',
 			array($this, 'render_activate_theme_page')
@@ -271,8 +271,8 @@ class Dashboard
 		// Requirements submenu
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__('Requirements', 'vlt-helper'),
-			esc_html__('Requirements', 'vlt-helper'),
+			esc_html__('Requirements', 'vlthemes-toolkit'),
+			esc_html__('Requirements', 'vlthemes-toolkit'),
 			'manage_options',
 			$this->dashboard_slug . '-requirements',
 			array($this, 'render_requirements_page')
@@ -281,8 +281,8 @@ class Dashboard
 		// Required Plugins
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__('Required Plugins', 'vlt-helper'),
-			esc_html__('Required Plugins', 'vlt-helper'),
+			esc_html__('Required Plugins', 'vlthemes-toolkit'),
+			esc_html__('Required Plugins', 'vlthemes-toolkit'),
 			'manage_options',
 			$this->dashboard_slug . '-plugins',
 			array($this, 'render_plugins_page')
@@ -291,8 +291,8 @@ class Dashboard
 		// Demo Import
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__('Demo Import', 'vlt-helper'),
-			esc_html__('Demo Import', 'vlt-helper'),
+			esc_html__('Demo Import', 'vlthemes-toolkit'),
+			esc_html__('Demo Import', 'vlthemes-toolkit'),
 			'manage_options',
 			$this->dashboard_slug . '-demo-import',
 			array($this, 'render_demo_import_page')
@@ -301,8 +301,8 @@ class Dashboard
 		// Theme Options
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__('Theme Options', 'vlt-helper'),
-			esc_html__('Theme Options', 'vlt-helper'),
+			esc_html__('Theme Options', 'vlthemes-toolkit'),
+			esc_html__('Theme Options', 'vlthemes-toolkit'),
 			'manage_options',
 			$this->dashboard_slug . '-theme-options',
 			array($this, 'render_theme_options_page')
@@ -311,8 +311,8 @@ class Dashboard
 		// System Status
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__('System Status', 'vlt-helper'),
-			esc_html__('System Status', 'vlt-helper'),
+			esc_html__('System Status', 'vlthemes-toolkit'),
+			esc_html__('System Status', 'vlthemes-toolkit'),
 			'manage_options',
 			$this->dashboard_slug . '-status',
 			array($this, 'render_status_page')
@@ -322,8 +322,8 @@ class Dashboard
 		if (defined('ELEMENTOR_VERSION') && function_exists('acf_add_local_field_group')) {
 			add_submenu_page(
 				$this->dashboard_slug,
-				esc_html__('Template Parts', 'vlt-helper'),
-				esc_html__('Template Parts', 'vlt-helper'),
+				esc_html__('Template Parts', 'vlthemes-toolkit'),
+				esc_html__('Template Parts', 'vlthemes-toolkit'),
 				'manage_options',
 				'edit.php?post_type=vlt_tp',
 				'',
@@ -333,8 +333,8 @@ class Dashboard
 		// Help Center
 		add_submenu_page(
 			$this->dashboard_slug,
-			esc_html__('Help Center', 'vlt-helper'),
-			esc_html__('Help Center', 'vlt-helper'),
+			esc_html__('Help Center', 'vlthemes-toolkit'),
+			esc_html__('Help Center', 'vlthemes-toolkit'),
 			'manage_options',
 			$this->dashboard_slug . '-helper',
 			array($this, 'render_helper_page')
@@ -435,7 +435,7 @@ class Dashboard
 		$template_file = $this->dashboard_path . 'templates/' . $template . '.php';
 
 		echo '<div class="wrap">';
-		echo '<h2>' . sprintf(esc_html__('%s Dashboard', 'vlt-helper'), esc_html($this->theme_name)) . '</h2>';
+		echo '<h2>' . sprintf(esc_html__('%s Dashboard', 'vlthemes-toolkit'), esc_html($this->theme_name)) . '</h2>';
 
 		$this->render_header();
 		echo '<div class="vlt-theme-dashboard__content vlt-theme-dashboard--' . esc_attr($template) . '">';

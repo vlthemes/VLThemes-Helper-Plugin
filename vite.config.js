@@ -127,15 +127,16 @@ export default defineConfig({
 				console.log('\n📦 Creating plugin ZIP archive...');
 
 				const zip = new AdmZip();
-				const outputPath = resolve(__dirname, 'dist/vlthemes_helper_plugin.zip');
+				const outputPath = resolve(__dirname, 'dist/vlthemes-toolkit.zip');
 
 				// Add directories
-				zip.addLocalFolder(resolve(__dirname, 'assets'), 'vlthemes_helper_plugin/assets');
-				zip.addLocalFolder(resolve(__dirname, 'includes'), 'vlthemes_helper_plugin/includes');
-				zip.addLocalFolder(resolve(__dirname, 'languages'), 'vlthemes_helper_plugin/languages');
+				zip.addLocalFolder(resolve(__dirname, 'assets'), 'vlthemes-toolkit/assets');
+				zip.addLocalFolder(resolve(__dirname, 'includes'), 'vlthemes-toolkit/includes');
+				zip.addLocalFolder(resolve(__dirname, 'languages'), 'vlthemes-toolkit/languages');
 
 				// Add main plugin file
-				zip.addLocalFile(resolve(__dirname, 'vlthemes_helper_plugin.php'), 'vlthemes_helper_plugin');
+				zip.addLocalFile(resolve(__dirname, 'vlthemes-toolkit.php'), 'vlthemes-toolkit');
+				zip.addLocalFile(resolve(__dirname, 'README.md'), 'vlthemes-toolkit');
 
 				// Write the ZIP file
 				zip.writeZip(outputPath);

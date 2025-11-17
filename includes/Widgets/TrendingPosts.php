@@ -25,12 +25,12 @@ class TrendingPosts extends PostsWidget
 	{
 		$widget_options = [
 			'classname'   => 'vlt-widget-trending-posts',
-			'description' => esc_html__('Displays trending posts (by views from last 30 days).', 'vlt-helper'),
+			'description' => esc_html__('Displays trending posts (by views from last 30 days).', 'vlthemes-toolkit'),
 		];
 
 		parent::__construct(
 			'vlt_widget_trending_posts',
-			esc_html__('VLThemes: Trending Posts', 'vlt-helper'),
+			esc_html__('VLThemes: Trending Posts', 'vlthemes-toolkit'),
 			$widget_options
 		);
 	}
@@ -102,7 +102,7 @@ class TrendingPosts extends PostsWidget
 
 			case 'slider':
 ?>
-				<div class="vlt-widget-post-slider swiper-container swiper" data-tooltip="<?php esc_attr_e('Swipe', 'vlt-helper'); ?>">
+				<div class="vlt-widget-post-slider swiper-container swiper" data-tooltip="<?php esc_attr_e('Swipe', 'vlthemes-toolkit'); ?>">
 					<div class="swiper-wrapper">
 						<?php
 						while ($query->have_posts()) {
@@ -135,7 +135,7 @@ class TrendingPosts extends PostsWidget
 		?>
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
-				<?php esc_html_e('Title:', 'vlt-helper'); ?>
+				<?php esc_html_e('Title:', 'vlthemes-toolkit'); ?>
 			</label>
 			<input
 				class="widefat"
@@ -145,7 +145,7 @@ class TrendingPosts extends PostsWidget
 				value="<?php echo esc_attr($title); ?>" />
 		</p>
 		<p class="description">
-			<?php esc_html_e('Displays posts from the last 30 days sorted by views count. Configure layout and posts count using Advanced Custom Fields below.', 'vlt-helper'); ?>
+			<?php esc_html_e('Displays posts from the last 30 days sorted by views count. Configure layout and posts count using Advanced Custom Fields below.', 'vlthemes-toolkit'); ?>
 		</p>
 <?php
 	}

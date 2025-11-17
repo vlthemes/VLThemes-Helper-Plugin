@@ -32,14 +32,14 @@ if (! defined('ABSPATH')) {
 		<div class="vlt-widget">
 
 			<div class="vlt-widget__title">
-				<mark class="elements"><?php echo esc_html_e('Envato Elements Customer?', 'vlt-helper'); ?></mark>
+				<mark class="elements"><?php echo esc_html_e('Envato Elements Customer?', 'vlthemes-toolkit'); ?></mark>
 			</div>
 
 			<div class="vlt-widget__content">
 				<p>
 					<?php
 					echo wp_kses(
-						__('The theme activation is possible only for items purchased from <strong>Themeforest</strong> when you have the purchase code.', 'vlt-helper'),
+						__('The theme activation is possible only for items purchased from <strong>Themeforest</strong> when you have the purchase code.', 'vlthemes-toolkit'),
 						array(
 							'strong' => array() // разрешаем только <strong>
 						)
@@ -50,7 +50,7 @@ if (! defined('ABSPATH')) {
 				<p class="mt-sm">
 					<?php
 					echo wp_kses(
-						__('You can <strong>skip the activation</strong> step if you don\'t have a purchase code. The core features of the theme are fully functional without activation.', 'vlt-helper'),
+						__('You can <strong>skip the activation</strong> step if you don\'t have a purchase code. The core features of the theme are fully functional without activation.', 'vlthemes-toolkit'),
 						array(
 							'strong' => array()
 						)
@@ -59,7 +59,7 @@ if (! defined('ABSPATH')) {
 				</p>
 				<div class="notice notice-info inline mt-sm">
 					<p>
-						<?php echo esc_html_e('Please be aware that item support is not provided for products obtained through Envato Elements.', 'vlt-helper'); ?>
+						<?php echo esc_html_e('Please be aware that item support is not provided for products obtained through Envato Elements.', 'vlthemes-toolkit'); ?>
 					</p>
 				</div>
 

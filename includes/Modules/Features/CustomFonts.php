@@ -126,7 +126,7 @@ class CustomFonts extends BaseModule
 
 		// Add custom fonts group
 		$fonts['families']['custom_fonts'] = [
-			'text'     => esc_html__('Custom Fonts', 'vlt-helper'),
+			'text'     => esc_html__('Custom Fonts', 'vlthemes-toolkit'),
 			'children' => [],
 		];
 
@@ -169,7 +169,7 @@ class CustomFonts extends BaseModule
 
 		// Add TypeKit fonts group
 		$fonts['families']['typekit_fonts'] = [
-			'text'     => esc_html__('Adobe Fonts', 'vlt-helper'),
+			'text'     => esc_html__('Adobe Fonts', 'vlthemes-toolkit'),
 			'children' => [],
 		];
 
@@ -217,7 +217,7 @@ class CustomFonts extends BaseModule
 		$categories = [];
 		foreach ($theme_fonts as $font_id => $font_data) {
 			$category = isset($font_data['category']) ? $font_data['category'] : 'theme_fonts';
-			$category_label = isset($font_data['category_label']) ? $font_data['category_label'] : esc_html__('Theme Fonts', 'vlt-helper');
+			$category_label = isset($font_data['category_label']) ? $font_data['category_label'] : esc_html__('Theme Fonts', 'vlthemes-toolkit');
 
 			if (! isset($categories[$category])) {
 				$categories[$category] = [

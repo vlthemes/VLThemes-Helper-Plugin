@@ -61,7 +61,7 @@ class DemoImport extends BaseModule
 	{
 		// Default demo structure
 		$demo = [
-			'import_file_name'             => esc_html__('Demo Import', 'vlt-helper'),
+			'import_file_name'             => esc_html__('Demo Import', 'vlthemes-toolkit'),
 			'local_import_file'            => '',
 			'local_import_widget_file'     => '',
 			'local_import_customizer_file' => '',

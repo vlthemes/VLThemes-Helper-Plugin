@@ -1,14 +1,15 @@
 <?php
 
 /**
- * Plugin Name: VLThemes Helper Plugin
+ * Plugin Name: VLThemes Toolkit
  * Plugin URI: https://vlthemes.me/
- * Description: VLThemes Helper Plugin expands the functionality of the theme. Adds new icons, widgets and much more.
+ * Description: VLThemes Toolkit expands the functionality of the theme. Adds new icons, widgets and much more.
  * Version: 1.0.0
  * Author: VLThemes
  * Author URI: https://themeforest.net/user/vlthemes
  * License: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: vlt-helper
+ * Text Domain: vlthemes-toolkit
+ * Domain Path: /languages
  */
 
 if (! defined('ABSPATH')) {
@@ -22,7 +23,7 @@ define('VLT_HELPER_URL', plugin_dir_url(__FILE__));
 define('VLT_HELPER_BASENAME', plugin_basename(__FILE__));
 
 // Define update URL
-define('VLT_HELPER_UPDATE_URL', 'https://vlthemes.me/plugins/updates/vlthemes-helper-plugin.json');
+define('VLT_HELPER_UPDATE_URL', 'https://vlthemes.me/plugins/updates/vlthemes-toolkit.json');
 
 // Load helper functions
 require_once VLT_HELPER_PATH . 'includes/helper-functions.php';

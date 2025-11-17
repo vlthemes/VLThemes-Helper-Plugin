@@ -85,17 +85,17 @@ class TemplatePartsExtension extends BaseExtension
 	public function register_post_type()
 	{
 		$labels = [
-			'name'               => esc_html__('Template Parts', 'vlt-helper'),
-			'singular_name'      => esc_html__('Template Part', 'vlt-helper'),
-			'menu_name'          => esc_html__('Template Parts', 'vlt-helper'),
-			'add_new'            => esc_html__('Add New', 'vlt-helper'),
-			'add_new_item'       => esc_html__('Add New Template Part', 'vlt-helper'),
-			'edit_item'          => esc_html__('Edit Template Part', 'vlt-helper'),
-			'new_item'           => esc_html__('New Template Part', 'vlt-helper'),
-			'view_item'          => esc_html__('View Template Part', 'vlt-helper'),
-			'search_items'       => esc_html__('Search Template Parts', 'vlt-helper'),
-			'not_found'          => esc_html__('No template parts found', 'vlt-helper'),
-			'not_found_in_trash' => esc_html__('No template parts found in trash', 'vlt-helper'),
+			'name'               => esc_html__('Template Parts', 'vlthemes-toolkit'),
+			'singular_name'      => esc_html__('Template Part', 'vlthemes-toolkit'),
+			'menu_name'          => esc_html__('Template Parts', 'vlthemes-toolkit'),
+			'add_new'            => esc_html__('Add New', 'vlthemes-toolkit'),
+			'add_new_item'       => esc_html__('Add New Template Part', 'vlthemes-toolkit'),
+			'edit_item'          => esc_html__('Edit Template Part', 'vlthemes-toolkit'),
+			'new_item'           => esc_html__('New Template Part', 'vlthemes-toolkit'),
+			'view_item'          => esc_html__('View Template Part', 'vlthemes-toolkit'),
+			'search_items'       => esc_html__('Search Template Parts', 'vlthemes-toolkit'),
+			'not_found'          => esc_html__('No template parts found', 'vlthemes-toolkit'),
+			'not_found_in_trash' => esc_html__('No template parts found in trash', 'vlthemes-toolkit'),
 		];
 
 		$args = [
@@ -232,7 +232,7 @@ class TemplatePartsExtension extends BaseExtension
 			'tp_admin_data',
 			[
 				'tp_edit_url'      => admin_url('edit.php?post_type=vlt_tp'),
-				'tp_view_all_text' => esc_html__('View All', 'vlt-helper'),
+				'tp_view_all_text' => esc_html__('View All', 'vlthemes-toolkit'),
 			]
 		);
 	}
@@ -248,31 +248,31 @@ class TemplatePartsExtension extends BaseExtension
 
 		acf_add_local_field_group([
 			'key'      => 'group_vlt_tp_settings',
-			'title'    => esc_html__('Template Settings', 'vlt-helper'),
+			'title'    => esc_html__('Template Settings', 'vlthemes-toolkit'),
 			'fields'   => [
 				[
 					'key'           => 'field_template_type',
-					'label'         => esc_html__('Template Type', 'vlt-helper'),
+					'label'         => esc_html__('Template Type', 'vlthemes-toolkit'),
 					'name'          => 'template_type',
 					'type'          => 'select',
 					'required'      => 1,
 					'choices'       => [
-						'header'  => esc_html__('Header', 'vlt-helper'),
-						'footer'  => esc_html__('Footer', 'vlt-helper'),
-						'404'     => esc_html__('404 Page', 'vlt-helper'),
-						'submenu' => esc_html__('Submenu', 'vlt-helper'),
-						'custom'  => esc_html__('Custom', 'vlt-helper'),
+						'header'  => esc_html__('Header', 'vlthemes-toolkit'),
+						'footer'  => esc_html__('Footer', 'vlthemes-toolkit'),
+						'404'     => esc_html__('404 Page', 'vlthemes-toolkit'),
+						'submenu' => esc_html__('Submenu', 'vlthemes-toolkit'),
+						'custom'  => esc_html__('Custom', 'vlthemes-toolkit'),
 					],
 					'default_value' => 'header',
 				],
 				[
 					'key'               => 'field_display_rules',
-					'label'             => esc_html__('Display Rules', 'vlt-helper'),
-					'instructions'      => esc_html__('Add locations for where this template should appear.', 'vlt-helper'),
+					'label'             => esc_html__('Display Rules', 'vlthemes-toolkit'),
+					'instructions'      => esc_html__('Add locations for where this template should appear.', 'vlthemes-toolkit'),
 					'name'              => 'display_rules',
 					'type'              => 'repeater',
 					'layout'            => 'block',
-					'button_label'      => esc_html__('Add Rule', 'vlt-helper'),
+					'button_label'      => esc_html__('Add Rule', 'vlthemes-toolkit'),
 					'conditional_logic' => [
 						[
 							[
@@ -295,14 +295,14 @@ class TemplatePartsExtension extends BaseExtension
 					'sub_fields'        => [
 						[
 							'key'     => 'field_tp_rule',
-							'label'   => esc_html__('Rule', 'vlt-helper'),
+							'label'   => esc_html__('Rule', 'vlthemes-toolkit'),
 							'name'    => 'rule',
 							'type'    => 'select',
 							'choices' => [], // Populated dynamically
 						],
 						[
 							'key'               => 'field_tp_specifics',
-							'label'             => esc_html__('Specific Target', 'vlt-helper'),
+							'label'             => esc_html__('Specific Target', 'vlthemes-toolkit'),
 							'name'              => 'specifics',
 							'type'              => 'post_object',
 							'post_type'         => [], // All post types
@@ -324,12 +324,12 @@ class TemplatePartsExtension extends BaseExtension
 				],
 				[
 					'key'               => 'field_exclude_rules',
-					'label'             => esc_html__('Exclude Rules', 'vlt-helper'),
-					'instructions'      => esc_html__('Add locations for where this template should not appear.', 'vlt-helper'),
+					'label'             => esc_html__('Exclude Rules', 'vlthemes-toolkit'),
+					'instructions'      => esc_html__('Add locations for where this template should not appear.', 'vlthemes-toolkit'),
 					'name'              => 'exclude_rules',
 					'type'              => 'repeater',
 					'layout'            => 'block',
-					'button_label'      => esc_html__('Add Exclusion', 'vlt-helper'),
+					'button_label'      => esc_html__('Add Exclusion', 'vlthemes-toolkit'),
 					'conditional_logic' => [
 						[
 							[
@@ -352,14 +352,14 @@ class TemplatePartsExtension extends BaseExtension
 					'sub_fields'        => [
 						[
 							'key'     => 'field_tp_exclude_rule',
-							'label'   => esc_html__('Rule', 'vlt-helper'),
+							'label'   => esc_html__('Rule', 'vlthemes-toolkit'),
 							'name'    => 'rule',
 							'type'    => 'select',
 							'choices' => [], // Populated dynamically
 						],
 						[
 							'key'               => 'field_tp_exclude_specifics',
-							'label'             => esc_html__('Specific Target', 'vlt-helper'),
+							'label'             => esc_html__('Specific Target', 'vlthemes-toolkit'),
 							'name'              => 'specifics',
 							'type'              => 'post_object',
 							'post_type'         => [], // All post types
@@ -381,13 +381,13 @@ class TemplatePartsExtension extends BaseExtension
 				],
 				[
 					'key'          => 'field_vlt_tp_note',
-					'label'        => esc_html__('Note', 'vlt-helper'),
+					'label'        => esc_html__('Note', 'vlthemes-toolkit'),
 					'name'         => 'note',
 					'type'         => 'textarea',
-					'instructions' => esc_html__('This note is only visible in the admin area.', 'vlt-helper'),
+					'instructions' => esc_html__('This note is only visible in the admin area.', 'vlthemes-toolkit'),
 					'required'     => 0,
 					'rows'         => 4,
-					'placeholder'  => esc_html__('Add a note for this template...', 'vlt-helper'),
+					'placeholder'  => esc_html__('Add a note for this template...', 'vlthemes-toolkit'),
 				],
 			],
 			'location' => [
@@ -469,7 +469,7 @@ class TemplatePartsExtension extends BaseExtension
 	{
 		add_meta_box(
 			'vlt_tp_shortcode',
-			esc_html__('Shortcode', 'vlt-helper'),
+			esc_html__('Shortcode', 'vlthemes-toolkit'),
 			[$this, 'render_shortcode_meta_box'],
 			'vlt_tp',
 			'side',
@@ -486,7 +486,7 @@ class TemplatePartsExtension extends BaseExtension
 	{
 		$shortcode = '[vlt_template_part id="' . $post->ID . '"]';
 ?>
-		<input type="text" readonly value="<?php echo esc_attr($shortcode); ?>" style="width: 100%; font-family: monospace; font-size: 12px; padding: 6px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 3px; cursor: pointer;" onclick="this.select(); document.execCommand('copy'); this.style.background='#d4edda'; setTimeout(() => this.style.background='#f0f0f1', 1000);" title="<?php esc_attr_e('Click to copy', 'vlt-helper'); ?>" />
+		<input type="text" readonly value="<?php echo esc_attr($shortcode); ?>" style="width: 100%; font-family: monospace; font-size: 12px; padding: 6px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 3px; cursor: pointer;" onclick="this.select(); document.execCommand('copy'); this.style.background='#d4edda'; setTimeout(() => this.style.background='#f0f0f1', 1000);" title="<?php esc_attr_e('Click to copy', 'vlthemes-toolkit'); ?>" />
 <?php
 	}
 
@@ -746,9 +746,9 @@ class TemplatePartsExtension extends BaseExtension
 			$new_columns[$key] = $value;
 
 			if ($key === 'title') {
-				$new_columns['display_rules'] = esc_html__('Display Rules', 'vlt-helper');
-				$new_columns['note']          = esc_html__('Note', 'vlt-helper');
-				$new_columns['shortcode']     = esc_html__('Shortcode', 'vlt-helper');
+				$new_columns['display_rules'] = esc_html__('Display Rules', 'vlthemes-toolkit');
+				$new_columns['note']          = esc_html__('Note', 'vlthemes-toolkit');
+				$new_columns['shortcode']     = esc_html__('Shortcode', 'vlthemes-toolkit');
 			}
 		}
 
@@ -807,7 +807,7 @@ class TemplatePartsExtension extends BaseExtension
 					}
 
 					if (!empty($rule_labels)) {
-						$output[] = '<strong>' . esc_html__('Display:', 'vlt-helper') . '</strong> ' . esc_html(implode(', ', $rule_labels));
+						$output[] = '<strong>' . esc_html__('Display:', 'vlthemes-toolkit') . '</strong> ' . esc_html(implode(', ', $rule_labels));
 					}
 				}
 
@@ -846,7 +846,7 @@ class TemplatePartsExtension extends BaseExtension
 					}
 
 					if (!empty($rule_labels)) {
-						$output[] = '<strong>' . esc_html__('Exclusion:', 'vlt-helper') . '</strong> ' . esc_html(implode(', ', $rule_labels));
+						$output[] = '<strong>' . esc_html__('Exclusion:', 'vlthemes-toolkit') . '</strong> ' . esc_html(implode(', ', $rule_labels));
 					}
 				}
 
@@ -868,7 +868,7 @@ class TemplatePartsExtension extends BaseExtension
 
 			case 'shortcode':
 				$shortcode = '[vlt_template_part id="' . $post_id . '"]';
-				echo '<input type="text" readonly value="' . esc_attr($shortcode) . '" style="width: 100%; font-family: monospace; font-size: 12px; padding: 4px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 2px;" onclick="this.select(); document.execCommand(\'copy\'); this.style.background=\'#d4edda\'; setTimeout(() => this.style.background=\'#f0f0f1\', 1000);" title="' . esc_attr__('Click to copy', 'vlt-helper') . '" />';
+				echo '<input type="text" readonly value="' . esc_attr($shortcode) . '" style="width: 100%; font-family: monospace; font-size: 12px; padding: 4px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 2px;" onclick="this.select(); document.execCommand(\'copy\'); this.style.background=\'#d4edda\'; setTimeout(() => this.style.background=\'#f0f0f1\', 1000);" title="' . esc_attr__('Click to copy', 'vlthemes-toolkit') . '" />';
 				break;
 		}
 	}
@@ -900,11 +900,11 @@ class TemplatePartsExtension extends BaseExtension
 		$type = get_field('template_type', $post->ID);
 		if ($type) {
 			$types = [
-				'header'  => esc_html__('Header', 'vlt-helper'),
-				'footer'  => esc_html__('Footer', 'vlt-helper'),
-				'404'     => esc_html__('404 Page', 'vlt-helper'),
-				'submenu' => esc_html__('Submenu', 'vlt-helper'),
-				'custom'  => esc_html__('Custom', 'vlt-helper'),
+				'header'  => esc_html__('Header', 'vlthemes-toolkit'),
+				'footer'  => esc_html__('Footer', 'vlthemes-toolkit'),
+				'404'     => esc_html__('404 Page', 'vlthemes-toolkit'),
+				'submenu' => esc_html__('Submenu', 'vlthemes-toolkit'),
+				'custom'  => esc_html__('Custom', 'vlthemes-toolkit'),
 			];
 			$post_states['vlt_tp_type'] = $types[$type] ?? $type;
 		}
@@ -926,12 +926,12 @@ class TemplatePartsExtension extends BaseExtension
 		$current_type = isset($_GET['template_type_filter']) ? sanitize_text_field($_GET['template_type_filter']) : '';
 
 		$types = [
-			''        => esc_html__('All Types', 'vlt-helper'),
-			'header'  => esc_html__('Header', 'vlt-helper'),
-			'footer'  => esc_html__('Footer', 'vlt-helper'),
-			'404'     => esc_html__('404 Page', 'vlt-helper'),
-			'submenu' => esc_html__('Submenu', 'vlt-helper'),
-			'custom'  => esc_html__('Custom', 'vlt-helper'),
+			''        => esc_html__('All Types', 'vlthemes-toolkit'),
+			'header'  => esc_html__('Header', 'vlthemes-toolkit'),
+			'footer'  => esc_html__('Footer', 'vlthemes-toolkit'),
+			'404'     => esc_html__('404 Page', 'vlthemes-toolkit'),
+			'submenu' => esc_html__('Submenu', 'vlthemes-toolkit'),
+			'custom'  => esc_html__('Custom', 'vlthemes-toolkit'),
 		];
 
 		echo '<select name="template_type_filter" id="template_type_filter">';

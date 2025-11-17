@@ -78,7 +78,7 @@ abstract class PostsWidget extends \WP_Widget
 				<div class="vlt-widget-post__meta-comments">
 					<?php
 					printf(
-						esc_html(_n('%s Comment', '%s Comments', get_comments_number($post_id), 'vlt-helper')),
+						esc_html(_n('%s Comment', '%s Comments', get_comments_number($post_id), 'vlthemes-toolkit')),
 						number_format_i18n(get_comments_number($post_id))
 					);
 					?>
@@ -177,7 +177,7 @@ abstract class PostsWidget extends \WP_Widget
 
 		if (current_user_can('manage_options')) {
 			echo $args['before_widget'];
-			echo '<p>' . esc_html__('Advanced Custom Fields plugin is required for this widget.', 'vlt-helper') . '</p>';
+			echo '<p>' . esc_html__('Advanced Custom Fields plugin is required for this widget.', 'vlthemes-toolkit') . '</p>';
 			echo $args['after_widget'];
 		}
 

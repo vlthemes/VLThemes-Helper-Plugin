@@ -25,12 +25,12 @@ class Socials extends \WP_Widget
 	{
 		$widget_options = [
 			'classname'   => 'vlt-widget-socials',
-			'description' => esc_html__('Displays social media links with icons.', 'vlt-helper'),
+			'description' => esc_html__('Displays social media links with icons.', 'vlthemes-toolkit'),
 		];
 
 		parent::__construct(
 			'vlt_widget_socials',
-			esc_html__('VLThemes: Social Links', 'vlt-helper'),
+			esc_html__('VLThemes: Social Links', 'vlthemes-toolkit'),
 			$widget_options
 		);
 	}
@@ -55,7 +55,7 @@ class Socials extends \WP_Widget
 		// Check if ACF is available
 		if (! function_exists('get_field')) {
 			if (current_user_can('manage_options')) {
-				echo '<p>' . esc_html__('Advanced Custom Fields plugin is required for this widget.', 'vlt-helper') . '</p>';
+				echo '<p>' . esc_html__('Advanced Custom Fields plugin is required for this widget.', 'vlthemes-toolkit') . '</p>';
 			}
 			echo $args['after_widget'];
 			return;
@@ -108,7 +108,7 @@ class Socials extends \WP_Widget
 ?>
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id('title')); ?>">
-				<?php esc_html_e('Title:', 'vlt-helper'); ?>
+				<?php esc_html_e('Title:', 'vlthemes-toolkit'); ?>
 			</label>
 			<input
 				class="widefat"
@@ -118,7 +118,7 @@ class Socials extends \WP_Widget
 				value="<?php echo esc_attr($title); ?>" />
 		</p>
 		<p class="description">
-			<?php esc_html_e('Configure social links and style using Advanced Custom Fields in the widget settings below.', 'vlt-helper'); ?>
+			<?php esc_html_e('Configure social links and style using Advanced Custom Fields in the widget settings below.', 'vlthemes-toolkit'); ?>
 		</p>
 <?php
 	}

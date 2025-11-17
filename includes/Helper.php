@@ -139,7 +139,7 @@ class Helper
 	private function load_textdomain()
 	{
 		load_plugin_textdomain(
-			'vlt-helper',
+			'vlthemes-toolkit',
 			false,
 			dirname(plugin_basename(VLT_HELPER_FILE)) . '/languages/'
 		);

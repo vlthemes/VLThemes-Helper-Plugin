@@ -106,7 +106,7 @@ class ACF extends BaseModule
 			return apply_filters('vlt_helper_acf_elementor_templates', $field, $type);
 		}
 
-		$field['choices'][0] = esc_html__('Elementor not available', 'vlt-helper');
+		$field['choices'][0] = esc_html__('Elementor not available', 'vlthemes-toolkit');
 		return $field;
 	}
 
@@ -148,7 +148,7 @@ class ACF extends BaseModule
 				$field['choices'][$template->ID] = $template->post_title;
 			}
 		} else {
-			$field['choices'][0] = esc_html__('No template parts found', 'vlt-helper');
+			$field['choices'][0] = esc_html__('No template parts found', 'vlthemes-toolkit');
 		}
 
 		return apply_filters('vlt_helper_acf_vlt_tp', $field, $type);
@@ -170,7 +170,7 @@ class ACF extends BaseModule
 			$portfolios = vlt_get_vp_portfolios();
 
 			// Add default option with proper text
-			$field['choices'][0] = esc_html__('Select a Layout', 'vlt-helper');
+			$field['choices'][0] = esc_html__('Select a Layout', 'vlthemes-toolkit');
 
 			// Format with ID prefix
 			foreach ($portfolios as $id => $title) {
@@ -182,7 +182,7 @@ class ACF extends BaseModule
 			return apply_filters('vlt_helper_acf_vp_layouts', $field);
 		}
 
-		$field['choices'][0] = esc_html__('Visual Portfolio not available', 'vlt-helper');
+		$field['choices'][0] = esc_html__('Visual Portfolio not available', 'vlthemes-toolkit');
 		return $field;
 	}
 
@@ -199,7 +199,7 @@ class ACF extends BaseModule
 
 		// Check if social icons function exists
 		if (! function_exists('vlt_get_social_icons')) {
-			$field['choices'][0] = esc_html__('No social icons available', 'vlt-helper');
+			$field['choices'][0] = esc_html__('No social icons available', 'vlthemes-toolkit');
 			return $field;
 		}
 
@@ -211,7 +211,7 @@ class ACF extends BaseModule
 				$field['choices'][$icon_class] = $icon_label;
 			}
 		} else {
-			$field['choices'][0] = esc_html__('No social icons available', 'vlt-helper');
+			$field['choices'][0] = esc_html__('No social icons available', 'vlthemes-toolkit');
 		}
 
 		return apply_filters('vlt_helper_acf_social_icons', $field);

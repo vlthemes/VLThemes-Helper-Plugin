@@ -73,14 +73,14 @@ class ContactForm7 extends BaseModule
 			'numberposts' => -1,
 		]);
 
-		$options[0] = esc_html__('Select a Contact Form', 'vlt-helper');
+		$options[0] = esc_html__('Select a Contact Form', 'vlthemes-toolkit');
 
 		if (! empty($wpcf7_form_list) && ! is_wp_error($wpcf7_form_list)) {
 			foreach ($wpcf7_form_list as $post) {
 				$options[$post->ID] = $post->post_title;
 			}
 		} else {
-			$options[0] = esc_html__('Create a Form First', 'vlt-helper');
+			$options[0] = esc_html__('Create a Form First', 'vlthemes-toolkit');
 		}
 
 		return $options;

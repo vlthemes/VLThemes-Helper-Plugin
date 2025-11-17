@@ -84,7 +84,7 @@ class Breadcrumbs extends BaseModule
 		$defaults = array(
 			'show_home'       => true,
 			'show_on_home'    => false,
-			'home_label'      => __('Home', 'vlt-helper'),
+			'home_label'      => __('Home', 'vlthemes-toolkit'),
 			'separator'       => '<span class="sep">-</span>',
 			'active_class'    => 'current',
 			'container_tag'   => 'nav',
@@ -234,7 +234,7 @@ class Breadcrumbs extends BaseModule
 		} elseif (is_search()) {
 			// Search results
 			$q              = get_search_query();
-			$label          = sprintf( /* translators: %s: search term */__('Search results for: %s', 'vlt-helper'), $q);
+			$label          = sprintf( /* translators: %s: search term */__('Search results for: %s', 'vlthemes-toolkit'), $q);
 			$breadcrumbs[]  = '<span class="' . esc_attr($args['active_class']) . '">' . esc_html($label) . '</span>';
 			$schema_items[] = array(
 				'@type'    => 'ListItem',
@@ -243,7 +243,7 @@ class Breadcrumbs extends BaseModule
 			);
 		} elseif (is_404()) {
 			// 404
-			$label          = __('404 Not Found', 'vlt-helper');
+			$label          = __('404 Not Found', 'vlthemes-toolkit');
 			$breadcrumbs[]  = '<span class="' . esc_attr($args['active_class']) . '">' . esc_html($label) . '</span>';
 			$schema_items[] = array(
 				'@type'    => 'ListItem',
@@ -283,7 +283,7 @@ class Breadcrumbs extends BaseModule
 				'<%1$s class="%2$s" aria-label="%3$s">%4$s</%1$s>',
 				esc_html($container_tag),
 				esc_attr($args['container_class']),
-				esc_attr__('Breadcrumb', 'vlt-helper'),
+				esc_attr__('Breadcrumb', 'vlthemes-toolkit'),
 				implode(wp_kses_post($args['separator']), $breadcrumbs)
 			);
 

@@ -20,7 +20,7 @@ wp_clean_plugins_cache(false);
 <div class="notice notice-info">
 	<p><?php
 		// translators: %s - theme name.
-		printf(esc_html__('These plugins comes with %s theme. If you want full functionality from demo page, you should activate all of these plugins.', 'vlt-helper'), esc_html($this->theme_name));
+		printf(esc_html__('These plugins comes with %s theme. If you want full functionality from demo page, you should activate all of these plugins.', 'vlthemes-toolkit'), esc_html($this->theme_name));
 		?></p>
 </div>
 

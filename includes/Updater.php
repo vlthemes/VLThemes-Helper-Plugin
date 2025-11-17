@@ -119,13 +119,13 @@ class Updater
 			<p>
 				<strong><?php echo esc_html($plugin_name); ?></strong> —
 				<?php printf(
-					esc_html__('version %s is available.', 'vlt-helper'),
+					esc_html__('version %s is available.', 'vlthemes-toolkit'),
 					'<strong>' . esc_html($new_version) . '</strong>'
 				); ?>
 			</p>
 			<p>
 				<a href="<?php echo esc_url($update_url); ?>" class="button button-primary">
-					<?php esc_html_e('Update now', 'vlt-helper'); ?>
+					<?php esc_html_e('Update now', 'vlthemes-toolkit'); ?>
 				</a>
 			</p>
 		</div>

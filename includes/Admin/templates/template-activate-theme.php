@@ -50,7 +50,7 @@ if (! defined('ABSPATH')) {
 				<p class="mt-sm">
 					<?php
 					echo wp_kses(
-						__('You can <strong>skip the activation</strong> step if you don\'t have a purchase code. The core features of the theme are fully functional without activation, except for automatic updates.', 'vlt-helper'),
+						__('You can <strong>skip the activation</strong> step if you don\'t have a purchase code. The core features of the theme are fully functional without activation.', 'vlt-helper'),
 						array(
 							'strong' => array()
 						)

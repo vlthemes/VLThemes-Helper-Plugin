@@ -52,6 +52,11 @@ class ACFProUpdater extends BaseModule
 	 */
 	public function register()
 	{
+		// For active themes only.
+		if (function_exists('vlt_is_theme_activated') && ! vlt_is_theme_activated()) {
+			return;
+		}
+
 		// Don't run on ACF Settings page to prevent conflicts
 		if (isset($_GET['post_type']) && 'acf-field-group' === $_GET['post_type']) {
 			return;

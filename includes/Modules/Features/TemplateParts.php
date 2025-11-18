@@ -773,6 +773,15 @@ class TemplateParts extends BaseModule
 			return '';
 		}
 
+		// Подключаем CSS файл
+		if (class_exists('\Elementor\Core\Files\CSS\Post')) {
+			$css_file = new \Elementor\Core\Files\CSS\Post($template_id);
+			$css_file->enqueue();
+		} elseif (class_exists('\Elementor\Post_CSS_File')) {
+			$css_file = new \Elementor\Post_CSS_File($template_id);
+			$css_file->enqueue();
+		}
+
 		$content = \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($template_id);
 
 		if (empty($content)) {

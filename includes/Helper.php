@@ -90,13 +90,6 @@ class Helper
 			VLT_HELPER_VERSION,
 			true
 		);
-
-		wp_enqueue_style(
-			'vlt-helper-admin',
-			$this->plugin_assets_dir . 'css/admin.css',
-			[],
-			VLT_HELPER_VERSION
-		);
 	}
 
 	/**

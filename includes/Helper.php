@@ -165,6 +165,7 @@ class Helper
 			'Features\\CustomFonts',
 			'Features\\DemoImport',
 			'Features\\SocialIcons',
+			'Features\\TemplateParts',
 			'Features\\PostViews',
 			'Features\\AOS',
 			'Features\\Breadcrumbs',

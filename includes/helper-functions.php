@@ -315,6 +315,19 @@ if (! function_exists('vlt_get_elementor_templates')) {
 	}
 }
 
+if (! function_exists('vlt_get_vlt_templates')) {
+	/**
+	 * Get list of VLT templates
+	 *
+	 * @param string|null $type Template type (page, section, widget, etc.).
+	 * @return array Array of template IDs and titles.
+	 */
+	function vlt_get_vlt_templates($type = null)
+	{
+		return \VLT\Helper\Modules\Features\TemplateParts::get_vlt_templates($type);
+	}
+}
+
 if (! function_exists('vlt_render_elementor_template')) {
 	/**
 	 * Render Elementor template

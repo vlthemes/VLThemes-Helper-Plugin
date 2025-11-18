@@ -122,36 +122,14 @@ class ACF extends BaseModule
 		// Reset choices
 		$field['choices'] = [];
 
-		$args = [
-			'post_type'      => 'vlt_tp',
-			'posts_per_page' => -1,
-			'post_status'    => 'publish',
-			'orderby'        => 'title',
-			'order'          => 'ASC',
-		];
-
-		// Filter by template type if specified
-		if ($type) {
-			$args['meta_query'] = [
-				[
-					'key'     => 'template_type',
-					'value'   => $type,
-					'compare' => '=',
-				],
-			];
+		if (function_exists('vlt_get_vlt_templates')) {
+			$field['choices'] = vlt_get_vlt_templates($type);
+			return apply_filters('vlt_helper_acf_vlt_templates', $field, $type);
 		}
 
-		$templates = get_posts($args);
+		$field['choices'][0] = esc_html__('Template Parts not available', 'vlthemes-toolkit');
 
-		if (!empty($templates)) {
-			foreach ($templates as $template) {
-				$field['choices'][$template->ID] = $template->post_title;
-			}
-		} else {
-			$field['choices'][0] = esc_html__('No template parts found', 'vlthemes-toolkit');
-		}
-
-		return apply_filters('vlt_helper_acf_vlt_tp', $field, $type);
+		return $field;
 	}
 
 	/**

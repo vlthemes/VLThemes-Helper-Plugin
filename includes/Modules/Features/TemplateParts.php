@@ -1,8 +1,14 @@
 <?php
 
-namespace VLT\Helper\Modules\Integrations\Elementor\Extensions;
+/**
+ * Social Icons Module
+ *
+ * @package VLT Helper
+ */
 
-use VLT\Helper\Modules\Integrations\Elementor\BaseExtension;
+namespace VLT\Helper\Modules\Features;
+
+use VLT\Helper\Modules\BaseModule;
 
 if (! defined('ABSPATH')) {
 	exit;
@@ -16,28 +22,27 @@ if (! defined('ABSPATH')) {
  *
  * @package VLT Helper
  */
-class TemplatePartsExtension extends BaseExtension
+class TemplateParts extends BaseModule
 {
 
 	/**
-	 * Extension name
+	 * Module name
 	 *
 	 * @var string
 	 */
 	protected $name = 'template_parts';
 
 	/**
-	 * Initialize extension
+	 * Module version
+	 *
+	 * @var string
 	 */
-	protected function init()
-	{
-		// No initialization needed for this extension
-	}
+	protected $version = '1.0.0';
 
 	/**
-	 * Register extension hooks
+	 * Register module
 	 */
-	protected function register_hooks()
+	public function register()
 	{
 		// Register custom post type
 		add_action('init', [$this, 'register_post_type']);
@@ -308,8 +313,8 @@ class TemplatePartsExtension extends BaseExtension
 							'post_type'         => [], // All post types
 							'taxonomy'          => [], // All taxonomies
 							'allow_null'        => 0,
-							'multiple'          => 0,
-							'return_format'     => 'id',
+							'multiple'          => 1,
+							'return_format'     => 'object',
 							'conditional_logic' => [
 								[
 									[
@@ -365,8 +370,8 @@ class TemplatePartsExtension extends BaseExtension
 							'post_type'         => [], // All post types
 							'taxonomy'          => [], // All taxonomies
 							'allow_null'        => 0,
-							'multiple'          => 0,
-							'return_format'     => 'id',
+							'multiple'          => 1,
+							'return_format'     => 'object',
 							'conditional_logic' => [
 								[
 									[
@@ -491,6 +496,49 @@ class TemplatePartsExtension extends BaseExtension
 	}
 
 	/**
+	 * Get vlt_template_part templates
+	 *
+	 * @param string|null $type Template type.
+	 * @return array Templates list.
+	 */
+	public static function get_vlt_templates($type = null)
+	{
+
+		$args = [
+			'post_type'      => 'vlt_tp',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		];
+
+		// Filter by template type if specified
+		if ($type) {
+			$args['meta_query'] = [
+				[
+					'key'     => 'template_type',
+					'value'   => $type,
+					'compare' => '=',
+				],
+			];
+		}
+
+		$templates = get_posts($args);
+
+		$options[0] = esc_html__('Select a Template', 'vlthemes-toolkit');
+
+		if (!empty($templates)) {
+			foreach ($templates as $template) {
+				$options[$template->ID] = $template->post_title;
+			}
+		} else {
+			$options[0] = esc_html__('No template parts found', 'vlthemes-toolkit');
+		}
+
+		return $options;
+	}
+
+	/**
 	 * Populate rule choices dynamically
 	 *
 	 * @param array $field ACF field array.
@@ -566,14 +614,21 @@ class TemplatePartsExtension extends BaseExtension
 				return false;
 			}
 
-			// Check if it's a post/page
-			if (isset($queried_object->ID) && $queried_object->ID == $specifics) {
-				return true;
-			}
+			// Ensure specifics is an array
+			$specifics_array = is_array($specifics) ? $specifics : [$specifics];
 
-			// Check if it's a term
-			if (isset($queried_object->term_id) && $queried_object->term_id == $specifics) {
-				return true;
+			foreach ($specifics_array as $specific_item) {
+				$specific_id = is_object($specific_item) ? $specific_item->ID : $specific_item;
+
+				// Check if it's a post/page
+				if (isset($queried_object->ID) && $queried_object->ID == $specific_id) {
+					return true;
+				}
+
+				// Check if it's a term
+				if (isset($queried_object->term_id) && $queried_object->term_id == $specific_id) {
+					return true;
+				}
 			}
 
 			return false;
@@ -790,14 +845,26 @@ class TemplatePartsExtension extends BaseExtension
 						}
 
 						if ($rule_value === 'specifics' && !empty($rule['specifics'])) {
-							$specific_id = $rule['specifics'];
-							$queried_object = get_post($specific_id);
-							if (!$queried_object) {
-								$queried_object = get_term($specific_id);
+							$specifics = $rule['specifics'];
+							$specifics_array = is_array($specifics) ? $specifics : [$specifics];
+							$names = [];
+
+							foreach ($specifics_array as $specific_item) {
+								$specific_id = is_object($specific_item) ? $specific_item->ID : $specific_item;
+								$queried_object = get_post($specific_id);
+
+								if (!$queried_object) {
+									$queried_object = get_term($specific_id);
+								}
+
+								if ($queried_object) {
+									$name = isset($queried_object->post_title) ? $queried_object->post_title : $queried_object->name;
+									$names[] = $name;
+								}
 							}
-							if ($queried_object) {
-								$name = isset($queried_object->post_title) ? $queried_object->post_title : $queried_object->name;
-								$label .= ': ' . $name;
+
+							if (!empty($names)) {
+								$label .= ': ' . implode(', ', $names);
 							}
 						}
 
@@ -829,14 +896,26 @@ class TemplatePartsExtension extends BaseExtension
 						}
 
 						if ($rule_value === 'specifics' && !empty($rule['specifics'])) {
-							$specific_id = $rule['specifics'];
-							$queried_object = get_post($specific_id);
-							if (!$queried_object) {
-								$queried_object = get_term($specific_id);
+							$specifics = $rule['specifics'];
+							$specifics_array = is_array($specifics) ? $specifics : [$specifics];
+							$names = [];
+
+							foreach ($specifics_array as $specific_item) {
+								$specific_id = is_object($specific_item) ? $specific_item->ID : $specific_item;
+								$queried_object = get_post($specific_id);
+
+								if (!$queried_object) {
+									$queried_object = get_term($specific_id);
+								}
+
+								if ($queried_object) {
+									$name = isset($queried_object->post_title) ? $queried_object->post_title : $queried_object->name;
+									$names[] = $name;
+								}
 							}
-							if ($queried_object) {
-								$name = isset($queried_object->post_title) ? $queried_object->post_title : $queried_object->name;
-								$label .= ': ' . $name;
+
+							if (!empty($names)) {
+								$label .= ': ' . implode(', ', $names);
 							}
 						}
 

@@ -715,13 +715,108 @@ class TemplateParts extends BaseModule
 
 		$templates = get_posts($args);
 
+		$matching_templates = [];
+
+		// Collect all matching templates with their priority
 		foreach ($templates as $template) {
 			if ($this->should_display_template($template->ID)) {
-				return $template->ID;
+				$priority = $this->get_template_priority($template->ID);
+				$matching_templates[] = [
+					'id' => $template->ID,
+					'priority' => $priority
+				];
 			}
 		}
 
-		return null;
+		if (empty($matching_templates)) {
+			return null;
+		}
+
+		// Sort by priority (highest first) - more specific rules win
+		usort($matching_templates, function ($a, $b) {
+			return $b['priority'] - $a['priority'];
+		});
+
+		// Return the template with highest priority
+		return $matching_templates[0]['id'];
+	}
+
+	/**
+	 * Get template priority based on rule specificity
+	 *
+	 * @param int $template_id Template post ID.
+	 * @return int Priority value (higher = more specific)
+	 */
+	private function get_template_priority($template_id)
+	{
+		$display_rules = get_field('display_rules', $template_id);
+
+		if (!$display_rules || !is_array($display_rules)) {
+			return 0;
+		}
+
+		$max_priority = 0;
+
+		// Get the highest priority from all display rules
+		foreach ($display_rules as $rule) {
+			$rule_value = $rule['rule'] ?? '';
+			$priority = $this->get_rule_priority($rule_value);
+
+			if ($priority > $max_priority) {
+				$max_priority = $priority;
+			}
+		}
+
+		return $max_priority;
+	}
+
+	/**
+	 * Get priority for a specific rule
+	 *
+	 * @param string $rule_value Rule value.
+	 * @return int Priority value (higher = more specific).
+	 */
+	private function get_rule_priority($rule_value)
+	{
+		// Specific pages have highest priority
+		if ($rule_value === 'specifics') {
+			return 100;
+		}
+
+		// Special pages (404, search, shop, etc.)
+		if (str_starts_with($rule_value, 'special-')) {
+			return 50;
+		}
+
+		// Post type specific rules
+		if (str_starts_with($rule_value, 'post_type|')) {
+			$parts = explode('|', $rule_value);
+
+			// Taxonomy archives (most specific)
+			if (count($parts) === 4) {
+				return 40;
+			}
+
+			// Post type archives
+			if (count($parts) === 3) {
+				return 30;
+			}
+
+			// All posts of a type
+			return 20;
+		}
+
+		// Basic rules (singulars, archives)
+		if ($rule_value === 'basic-singulars' || $rule_value === 'basic-archives') {
+			return 10;
+		}
+
+		// Global (lowest priority)
+		if ($rule_value === 'basic-global') {
+			return 1;
+		}
+
+		return 0;
 	}
 
 	/**

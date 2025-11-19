@@ -13,8 +13,10 @@
 			$(window).on('resize orientationchange load', () => this.triggerResize());
 			$(() => {
 				this.setupHandlers();
-				$(window).on('vlt.site-loaded', () => this.initAOS());
+				this.initAOS();
 			});
+
+			$(window).on('vlt.site-loaded', () => this.initAOS());
 		}
 
 		triggerResize() {

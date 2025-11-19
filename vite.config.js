@@ -6,16 +6,6 @@ import * as sass from 'sass';
 import AdmZip from 'adm-zip';
 
 export default defineConfig({
-	// Убираем вообще всё, что связано с JS-сборкой
-	build: {
-		// Отключаем сборку JS полностью
-		rollupOptions: {
-			input: {}, // пустой input = Vite ничего не будет собирать как entry
-		},
-		outDir: './dist',           // важно: иначе он попытается писать в dist
-		emptyOutDir: false,         // не трогаем папки с нашими вручную написанными JS
-		write: false,               // КЛЮЧ: Vite НЕ будет только выполнять плагины, но ничего не запишет
-	},
 	css: {
 		preprocessorOptions: {
 			scss: {

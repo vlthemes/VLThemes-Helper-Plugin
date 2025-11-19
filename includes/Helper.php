@@ -84,9 +84,9 @@ class Helper
 	public function enqueue_admin_scripts()
 	{
 		wp_enqueue_script(
-			'vlt-helper-admin',
-			$this->plugin_assets_dir . 'js/admin.js',
-			[], // 'customize-controls'
+			'vlt-entire-admin',
+			$this->plugin_assets_dir . 'js/entire-admin.js',
+			[],
 			VLT_HELPER_VERSION,
 			true
 		);

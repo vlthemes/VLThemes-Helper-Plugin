@@ -32,6 +32,20 @@ class LayoutExtensions extends BaseExtension
 	}
 
 	/**
+	 * Register extension scripts
+	 */
+	protected function register_scripts()
+	{
+		wp_enqueue_script(
+			'vlt-layout-extension',
+			plugin_dir_url(__FILE__) . 'js/LayoutExtensions.js',
+			['gsap'],
+			VLT_HELPER_VERSION,
+			true
+		);
+	}
+
+	/**
 	 * Register WordPress hooks
 	 */
 	protected function register_hooks()

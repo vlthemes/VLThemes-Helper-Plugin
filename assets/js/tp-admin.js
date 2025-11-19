@@ -1,6 +1,3 @@
-/* ========================================
- * Template Parts Admin Scripts
- * ======================================== */
 document.addEventListener('DOMContentLoaded', function () {
 	'use strict';
 

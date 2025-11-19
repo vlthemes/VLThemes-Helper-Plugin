@@ -32,6 +32,21 @@ class AosExtension extends BaseExtension
 	}
 
 	/**
+	 * Register extension scripts
+	 */
+	protected function register_scripts()
+	{
+		wp_enqueue_style('aos');
+		wp_enqueue_script(
+			'vlt-aos-extension',
+			plugin_dir_url(__FILE__) . 'js/AosExtension.js',
+			['aos'],
+			VLT_HELPER_VERSION,
+			true
+		);
+	}
+
+	/**
 	 * Register WordPress hooks
 	 */
 	protected function register_hooks()

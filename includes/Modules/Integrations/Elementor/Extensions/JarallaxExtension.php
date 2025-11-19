@@ -32,6 +32,21 @@ class JarallaxExtension extends BaseExtension
 	}
 
 	/**
+	 * Register extension scripts
+	 */
+	protected function register_scripts()
+	{
+		wp_enqueue_style('jarallax');
+		wp_enqueue_script(
+			'vlt-jarallax-extension',
+			plugin_dir_url(__FILE__) . 'js/JarallaxExtension.js',
+			['jarallax', 'jarallax-video'],
+			VLT_HELPER_VERSION,
+			true
+		);
+	}
+
+	/**
 	 * Register WordPress hooks
 	 */
 	protected function register_hooks()

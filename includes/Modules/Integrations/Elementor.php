@@ -85,10 +85,7 @@ class Elementor extends BaseModule
 	 */
 	protected function init()
 	{
-		$this->assets_url = VLT_HELPER_URL . 'assets/';
-
-		// Enqueue all assets
-		add_action('wp_enqueue_scripts', [$this, 'enqueue_assets'], 1);
+		$this->assets_url = VLT_HELPER_URL . 'includes/Modules/Integrations/Elementor/';
 
 		// Initialize extensions and icon sets
 		$this->init_extensions();
@@ -106,7 +103,7 @@ class Elementor extends BaseModule
 			'element_parallax' => new ElementParallaxExtension(),
 			'layout'           => new LayoutExtensions(),
 			'custom_attrs'     => new CustomAttributesExtension(),
-			'custom_css'       => new CustomCssExtension()
+			'custom_css'       => new CustomCssExtension(),
 		];
 	}
 
@@ -127,43 +124,14 @@ class Elementor extends BaseModule
 	}
 
 	/**
-	 * Enqueue all elementor assets
-	 */
-	public function enqueue_assets()
-	{
-		// ===================================
-		// SCRIPTS
-		// ===================================
-		wp_enqueue_script(
-			'vlt-extension-elementor',
-			$this->assets_url . 'extensions/elementor/elementor-bundle.js',
-			[
-				'aos',
-				'gsap',
-				'scrolltrigger',
-				'jarallax',
-				'jarallax-video'
-			],
-			VLT_HELPER_VERSION,
-			true
-		);
-
-		// ===================================
-		// STYLES
-		// ===================================
-		wp_enqueue_style('aos');
-		wp_enqueue_style('jarallax');
-	}
-
-	/**
 	 * Enqueue editor styles
 	 */
 	public function editor_styles()
 	{
 		// Enqueue main editor CSS
 		wp_enqueue_style(
-			'vlt-elementor-editor',
-			$this->assets_url . 'extensions/elementor/elementor-editor.css',
+			'vlt-editor-styles',
+			$this->assets_url . 'css/editor-styles.css',
 			[],
 			VLT_HELPER_VERSION
 		);

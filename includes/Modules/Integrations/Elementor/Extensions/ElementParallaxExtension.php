@@ -32,6 +32,20 @@ class ElementParallaxExtension extends BaseExtension
 	}
 
 	/**
+	 * Register extension scripts
+	 */
+	protected function register_scripts()
+	{
+		wp_enqueue_script(
+			'vlt-element-parallax-extension',
+			plugin_dir_url(__FILE__) . 'js/ElementParallaxExtension.js',
+			['gsap', 'scrolltrigger'],
+			VLT_HELPER_VERSION,
+			true
+		);
+	}
+
+	/**
 	 * Register WordPress hooks
 	 */
 	protected function register_hooks()

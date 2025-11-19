@@ -67,7 +67,7 @@ class CustomCssExtension extends BaseExtension
 	{
 		wp_enqueue_script(
 			'vlt-custom-css',
-			$this->assets_url . 'extensions/elementor/elementor-custom-css.js',
+			plugin_dir_url(__FILE__) . 'js/CustomCssExtension.js',
 			['elementor-editor'],
 			VLT_HELPER_VERSION,
 			true

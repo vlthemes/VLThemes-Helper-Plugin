@@ -34,6 +34,16 @@ abstract class BaseExtension {
 		$this->assets_url = VLT_HELPER_URL . 'assets/';
 		$this->init();
 		$this->register_hooks();
+		$this->register_scripts();
+	}
+
+	/**
+	 * Register extension scripts
+	 *
+	 * Override this method in child classes to register extension-specific scripts
+	 */
+	protected function register_scripts() {
+		// Can be overridden in child classes
 	}
 
 	/**

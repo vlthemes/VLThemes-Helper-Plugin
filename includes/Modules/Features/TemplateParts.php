@@ -855,7 +855,6 @@ class TemplateParts extends BaseModule {
 			return '';
 		}
 
-		// Подключаем CSS файл
 		if ( class_exists( '\Elementor\Core\Files\CSS\Post' ) ) {
 			$css_file = new \Elementor\Core\Files\CSS\Post( $template_id );
 			$css_file->enqueue();

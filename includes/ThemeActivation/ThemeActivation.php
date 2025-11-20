@@ -97,7 +97,42 @@ class ThemeActivation {
 
 		$this->version = $this->getCurrentVersion();
 
-		// Theme updates disabled - only license activation/validation
+		// Setup theme update checks
+		$this->setupUpdateChecks();
+	}
+
+	/**
+	 * Setup theme update checks
+	 *
+	 * Initializes WordPress hooks for automatic theme updates.
+	 * Registers filters to check for updates and provide update information.
+	 */
+	private function setupUpdateChecks() {
+		if ( ! function_exists( 'add_action' ) || ! function_exists( 'add_filter' ) ) {
+			return;
+		}
+
+		// Add action to force update check - accessible via admin-post.php?action=vlt_force_update_check
+		add_action(
+			'admin_post_vlt_force_update_check',
+			function () {
+				// Clear all cached update data
+				update_option( '_site_transient_update_themes', '' );
+				set_site_transient( 'update_themes', null );
+				delete_transient( $this->product_base . '_up' );
+
+				// Redirect back to themes page
+				wp_redirect( admin_url( 'themes.php' ) );
+				exit;
+			}
+		);
+
+		// Hook into WordPress theme update system
+		// This filter is called when WordPress checks for theme updates
+		add_filter( 'pre_set_site_transient_update_themes', array( $this, 'checkThemeUpdate' ) );
+
+		// This filter provides detailed information about available updates
+		add_filter( 'themes_api', array( $this, 'themeUpdateInfo' ), 10, 3 );
 	}
 
 	/**
@@ -135,8 +170,171 @@ class ThemeActivation {
 		return '0';
 	}
 
+	/**
+	 * Clean update info cache
+	 *
+	 * Removes all cached update information to force a fresh check.
+	 * Called when license is deactivated or manual refresh is needed.
+	 */
+	public function cleanUpdateInfo() {
+		update_option( '_site_transient_update_themes', '' );
+		delete_transient( $this->product_base . '_up' );
+	}
 
+	/**
+	 * Get theme update information from server
+	 *
+	 * Fetches update information from the license server.
+	 * Uses cached data if available (1 day cache).
+	 * Sends license key and current version to get download URL if available.
+	 *
+	 * @return object|null Update information object or null if no update available.
+	 */
+	private function getThemeUpdateInfo() {
+		if ( ! function_exists( 'wp_remote_get' ) ) {
+			return null;
+		}
 
+		// Try to get cached response (prevents too many requests to license server)
+		$response = get_transient( $this->product_base . '_up' );
+		$oldFound = false;
+
+		if ( ! empty( $response['data'] ) ) {
+			$response = unserialize( $this->decrypt( $response['data'] ) );
+			if ( is_array( $response ) ) {
+				$oldFound = true;
+			}
+		}
+
+		// If no cached response, fetch from server
+		if ( ! $oldFound ) {
+			$licenseInfo = self::GetRegisterInfo();
+			$url         = $this->server_host . 'product/update/' . $this->product_id;
+
+			// Append license key and version to URL if license is active
+			// Format: /product/update/{product_id}/{license_key}/{current_version}
+			if ( ! empty( $licenseInfo->license_key ) ) {
+				$url .= '/' . $licenseInfo->license_key . '/' . $this->version;
+			}
+
+			$args = array(
+				'sslverify'   => true,
+				'timeout'     => 120,
+				'redirection' => 5,
+				'cookies'     => array(),
+			);
+
+			$response = wp_remote_get( $url, $args );
+
+			// Retry without SSL verification if first attempt fails
+			if ( is_wp_error( $response ) ) {
+				$args['sslverify'] = false;
+				$response          = wp_remote_get( $url, $args );
+			}
+		}
+
+		if ( is_wp_error( $response ) ) {
+			return null;
+		}
+
+		$body         = $response['body'];
+		$responseJson = @json_decode( $body );
+
+		// Cache the response for 1 day to reduce server load
+		if ( ! $oldFound ) {
+			set_transient(
+				$this->product_base . '_up',
+				array( 'data' => $this->encrypt( serialize( array( 'body' => $body ) ) ) ),
+				DAY_IN_SECONDS
+			);
+		}
+
+		// Decrypt if response is encrypted (determined by checking if JSON decode fails)
+		if ( ! ( is_object( $responseJson ) && isset( $responseJson->status ) ) ) {
+			$body         = $this->decrypt( $body, $this->key );
+			$responseJson = json_decode( $body );
+		}
+
+		// Process valid response with update information
+		if ( is_object( $responseJson ) && ! empty( $responseJson->status ) && ! empty( $responseJson->data->new_version ) ) {
+			$theme_data = wp_get_theme();
+
+			// Set required fields for WordPress update system
+			$responseJson->data->theme              = $theme_data->get_template();
+			$responseJson->data->new_version        = ! empty( $responseJson->data->new_version ) ? $responseJson->data->new_version : '';
+			$responseJson->data->url                = ! empty( $responseJson->data->url ) ? $responseJson->data->url : '';
+			$responseJson->data->package            = ! empty( $responseJson->data->download_link ) ? $responseJson->data->download_link : '';
+			$responseJson->data->update_denied_type = ! empty( $responseJson->data->update_denied_type ) ? $responseJson->data->update_denied_type : '';
+
+			return $responseJson->data;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Check for theme updates
+	 *
+	 * WordPress filter callback that runs when checking for theme updates.
+	 * Compares current version with server version and adds update to transient if newer version exists.
+	 *
+	 * @param object $transient Update transient object from WordPress.
+	 * @return object Modified transient with update information added.
+	 */
+	public function checkThemeUpdate( $transient ) {
+		// Fetch update info from license server
+		$response = $this->getThemeUpdateInfo();
+
+		if ( ! empty( $response->theme ) ) {
+			$theme_data = wp_get_theme();
+			$index_name = $theme_data->get_template();
+
+			// Check if server version is newer than current version
+			if ( ! empty( $response ) && version_compare( $this->version, $response->new_version, '<' ) ) {
+				// Remove download_link field (we use 'package' field instead)
+				unset( $response->download_link );
+
+				// Add theme to update response (must be array for themes)
+				$transient->response[ $index_name ] = (array) $response;
+			} elseif ( isset( $transient->response[ $index_name ] ) ) {
+					// Remove from updates if no newer version available
+					unset( $transient->response[ $index_name ] );
+			}
+		}
+
+		return $transient;
+	}
+
+	/**
+	 * Get theme update information for WordPress API
+	 *
+	 * WordPress filter callback for 'themes_api' filter.
+	 * Provides detailed information about the theme update when user clicks "View details".
+	 * Returns update data including changelog, version info, and download package.
+	 *
+	 * @param mixed  $false Default false value.
+	 * @param string $action Action being performed (theme_information, etc).
+	 * @param object $arg Action arguments containing theme slug.
+	 * @return mixed Theme info object or false if not our theme.
+	 */
+	public function themeUpdateInfo( $false, $action, $arg ) {
+		// Validate that slug is provided
+		if ( empty( $arg->slug ) ) {
+			return $false;
+		}
+
+		// Check if this is our theme being queried
+		if ( ! empty( $arg->slug ) && $arg->slug === $this->product_base ) {
+			$response = $this->getThemeUpdateInfo();
+			if ( ! empty( $response ) ) {
+				// Return detailed theme information
+				return $response;
+			}
+		}
+
+		// Not our theme, return default
+		return $false;
+	}
 
 	/**
 	 * Get instance
@@ -270,17 +468,17 @@ class ThemeActivation {
 	 * @return string Domain URL.
 	 */
 	private function getDomain() {
-		// Попробуем использовать site_url() если функция доступна
+		// Try to use site_url() if function is available
 		if ( function_exists( 'site_url' ) ) {
 			return site_url();
 		}
 
-		// Попробуем использовать bloginfo() если определён WP
+		// Try to use bloginfo() if WordPress is defined
 		if ( defined( 'WPINC' ) && function_exists( 'get_bloginfo' ) ) {
 			return get_bloginfo( 'url' );
 		}
 
-		// Фолбек на $_SERVER
+		// Fallback to $_SERVER
 		$scheme = 'http';
 		if ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] === 'on' ) {
 			$scheme = 'https';
@@ -553,7 +751,7 @@ class ThemeActivation {
 	 */
 	public static function RemoveLicenseKey( $plugin_base_file, &$message = '', $product_id = '', $product_base = '' ) {
 		$obj = self::getInstance( $plugin_base_file, $product_id, $product_base );
-		// No need to clean update info since we don't handle theme updates
+		$obj->cleanUpdateInfo();
 		return $obj->_removeWPPluginLicense( $message );
 	}
 

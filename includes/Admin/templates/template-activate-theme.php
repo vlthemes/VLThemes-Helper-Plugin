@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					echo wp_kses(
 						__( 'The theme activation is possible only for items purchased from <strong>Themeforest</strong> when you have the purchase code.', 'vlthemes-toolkit' ),
 						array(
-							'strong' => array(), // разрешаем только <strong>
+							'strong' => array(),
 						)
 					);
 					?>

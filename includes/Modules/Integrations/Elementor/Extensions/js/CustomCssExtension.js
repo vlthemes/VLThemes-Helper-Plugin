@@ -16,7 +16,6 @@
 
 			elementor.hooks.addFilter('editor/style/styleText', (css, context) => this.addElementCss(css, context));
 
-			// ← Убираем стрелочки здесь:
 			elementor.settings.page.model.on('change:vlt_custom_css', this.addPageCss.bind(this));
 			elementor.on('preview:loaded', this.addPageCss.bind(this));
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace VLT\Helper\Modules\Integrations\Elementor\Extensions;
+namespace VLT\Toolkit\Modules\Integrations\Elementor\Extensions;
 
-use VLT\Helper\Modules\Integrations\Elementor\BaseExtension;
+use VLT\Toolkit\Modules\Integrations\Elementor\BaseExtension;
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -13,8 +13,8 @@ if (! defined('ABSPATH')) {
  *
  * Handles Jarallax parallax background effects
  */
-class JarallaxExtension extends BaseExtension
-{
+class JarallaxExtension extends BaseExtension {
+
 
 	/**
 	 * Extension name
@@ -26,22 +26,20 @@ class JarallaxExtension extends BaseExtension
 	/**
 	 * Initialize extension
 	 */
-	protected function init()
-	{
+	protected function init() {
 		// Extension initialization
 	}
 
 	/**
 	 * Register extension scripts
 	 */
-	protected function register_scripts()
-	{
-		wp_enqueue_style('jarallax');
+	protected function register_scripts() {
+		wp_enqueue_style( 'jarallax' );
 		wp_enqueue_script(
 			'vlt-jarallax-extension',
-			plugin_dir_url(__FILE__) . 'js/JarallaxExtension.js',
-			['jarallax', 'jarallax-video'],
-			VLT_HELPER_VERSION,
+			plugin_dir_url( __FILE__ ) . 'js/JarallaxExtension.js',
+			array( 'jarallax', 'jarallax-video' ),
+			VLT_TOOLKIT_VERSION,
 			true
 		);
 	}
@@ -49,13 +47,12 @@ class JarallaxExtension extends BaseExtension
 	/**
 	 * Register WordPress hooks
 	 */
-	protected function register_hooks()
-	{
+	protected function register_hooks() {
 		// Register controls for containers only (background section)
-		add_action('elementor/element/container/section_background/after_section_end', [$this, 'register_controls'], 10, 2);
+		add_action( 'elementor/element/container/section_background/after_section_end', array( $this, 'register_controls' ), 10, 2 );
 
 		// Render for containers
-		add_action('elementor/frontend/container/before_render', [$this, 'render_attributes']);
+		add_action( 'elementor/frontend/container/before_render', array( $this, 'render_attributes' ) );
 	}
 
 	/**
@@ -64,126 +61,125 @@ class JarallaxExtension extends BaseExtension
 	 * @param object $element Elementor element.
 	 * @param array  $args    Element arguments.
 	 */
-	public function register_controls($element, $args)
-	{
+	public function register_controls( $element, $args ) {
 		$element->start_controls_section(
 			'vlt_section_jarallax',
-			[
-				'label' => esc_html__('VLT Jarallax Background', 'vlthemes-toolkit'),
+			array(
+				'label' => esc_html__( 'VLT Jarallax Background', 'vlthemes-toolkit' ),
 				'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
-			]
+			)
 		);
 
 		$element->add_control(
 			'vlt_jarallax_enabled',
-			[
-				'label'        => esc_html__('Enable', 'vlthemes-toolkit'),
+			array(
+				'label'        => esc_html__( 'Enable', 'vlthemes-toolkit' ),
 				'type'         => \Elementor\Controls_Manager::SWITCHER,
 				'return_value' => 'jarallax',
 				'prefix_class' => '',
-			]
+			)
 		);
 
 		$element->add_control(
 			'vlt_jarallax_settings_popover',
-			[
-				'label'     => esc_html__('Jarallax Settings', 'vlthemes-toolkit'),
+			array(
+				'label'     => esc_html__( 'Jarallax Settings', 'vlthemes-toolkit' ),
 				'type'      => \Elementor\Controls_Manager::POPOVER_TOGGLE,
-				'condition' => ['vlt_jarallax_enabled' => 'jarallax'],
-			]
+				'condition' => array( 'vlt_jarallax_enabled' => 'jarallax' ),
+			)
 		);
 
 		$element->start_popover();
 
 		$element->add_control(
 			'vlt_jarallax_speed',
-			[
-				'label'      => esc_html__('Speed', 'vlthemes-toolkit'),
+			array(
+				'label'      => esc_html__( 'Speed', 'vlthemes-toolkit' ),
 				'type'       => \Elementor\Controls_Manager::SLIDER,
-				'size_units' => ['px'],
-				'range'      => [
-					'px' => [
+				'size_units' => array( 'px' ),
+				'range'      => array(
+					'px' => array(
 						'min'  => -1,
 						'max'  => 2,
 						'step' => 0.1,
-					],
-				],
-				'default' => [
+					),
+				),
+				'default'    => array(
 					'size' => 0.9,
-				],
-			]
+				),
+			)
 		);
 
 		$element->add_control(
 			'vlt_jarallax_type',
-			[
-				'label'   => esc_html__('Type', 'vlthemes-toolkit'),
+			array(
+				'label'   => esc_html__( 'Type', 'vlthemes-toolkit' ),
 				'type'    => \Elementor\Controls_Manager::SELECT,
-				'options' => [
-					''               => esc_html__('Scroll', 'vlthemes-toolkit'),
-					'scale'          => esc_html__('Scale', 'vlthemes-toolkit'),
-					'opacity'        => esc_html__('Opacity', 'vlthemes-toolkit'),
-					'scroll-opacity' => esc_html__('Scroll + Opacity', 'vlthemes-toolkit'),
-					'scale-opacity'  => esc_html__('Scale + Opacity', 'vlthemes-toolkit'),
-				],
-			]
+				'options' => array(
+					''               => esc_html__( 'Scroll', 'vlthemes-toolkit' ),
+					'scale'          => esc_html__( 'Scale', 'vlthemes-toolkit' ),
+					'opacity'        => esc_html__( 'Opacity', 'vlthemes-toolkit' ),
+					'scroll-opacity' => esc_html__( 'Scroll + Opacity', 'vlthemes-toolkit' ),
+					'scale-opacity'  => esc_html__( 'Scale + Opacity', 'vlthemes-toolkit' ),
+				),
+			)
 		);
 
 		$element->add_control(
 			'vlt_jarallax_img_size',
-			[
-				'label'   => esc_html__('Image Size', 'vlthemes-toolkit'),
+			array(
+				'label'   => esc_html__( 'Image Size', 'vlthemes-toolkit' ),
 				'type'    => \Elementor\Controls_Manager::SELECT,
-				'options' => [
-					''        => esc_html__('Default', 'vlthemes-toolkit'),
-					'auto'    => esc_html__('Auto', 'vlthemes-toolkit'),
-					'cover'   => esc_html__('Cover', 'vlthemes-toolkit'),
-					'contain' => esc_html__('Contain', 'vlthemes-toolkit'),
-				],
-			]
+				'options' => array(
+					''        => esc_html__( 'Default', 'vlthemes-toolkit' ),
+					'auto'    => esc_html__( 'Auto', 'vlthemes-toolkit' ),
+					'cover'   => esc_html__( 'Cover', 'vlthemes-toolkit' ),
+					'contain' => esc_html__( 'Contain', 'vlthemes-toolkit' ),
+				),
+			)
 		);
 
 		$element->add_control(
 			'vlt_jarallax_img_position',
-			[
-				'label'   => esc_html__('Image Position', 'vlthemes-toolkit'),
+			array(
+				'label'   => esc_html__( 'Image Position', 'vlthemes-toolkit' ),
 				'type'    => \Elementor\Controls_Manager::SELECT,
-				'options' => [
-					''              => esc_html__('Default', 'vlthemes-toolkit'),
-					'center center' => esc_html__('Center Center', 'vlthemes-toolkit'),
-					'center left'   => esc_html__('Center Left', 'vlthemes-toolkit'),
-					'center right'  => esc_html__('Center Right', 'vlthemes-toolkit'),
-					'top center'    => esc_html__('Top Center', 'vlthemes-toolkit'),
-					'top left'      => esc_html__('Top Left', 'vlthemes-toolkit'),
-					'top right'     => esc_html__('Top Right', 'vlthemes-toolkit'),
-					'bottom center' => esc_html__('Bottom Center', 'vlthemes-toolkit'),
-					'bottom left'   => esc_html__('Bottom Left', 'vlthemes-toolkit'),
-					'bottom right'  => esc_html__('Bottom Right', 'vlthemes-toolkit'),
-					'custom'        => esc_html__('Custom', 'vlthemes-toolkit'),
-				],
-			]
+				'options' => array(
+					''              => esc_html__( 'Default', 'vlthemes-toolkit' ),
+					'center center' => esc_html__( 'Center Center', 'vlthemes-toolkit' ),
+					'center left'   => esc_html__( 'Center Left', 'vlthemes-toolkit' ),
+					'center right'  => esc_html__( 'Center Right', 'vlthemes-toolkit' ),
+					'top center'    => esc_html__( 'Top Center', 'vlthemes-toolkit' ),
+					'top left'      => esc_html__( 'Top Left', 'vlthemes-toolkit' ),
+					'top right'     => esc_html__( 'Top Right', 'vlthemes-toolkit' ),
+					'bottom center' => esc_html__( 'Bottom Center', 'vlthemes-toolkit' ),
+					'bottom left'   => esc_html__( 'Bottom Left', 'vlthemes-toolkit' ),
+					'bottom right'  => esc_html__( 'Bottom Right', 'vlthemes-toolkit' ),
+					'custom'        => esc_html__( 'Custom', 'vlthemes-toolkit' ),
+				),
+			)
 		);
 
 		$element->add_control(
 			'vlt_jarallax_img_position_custom',
-			[
-				'label'       => esc_html__('Custom Position', 'vlthemes-toolkit'),
+			array(
+				'label'       => esc_html__( 'Custom Position', 'vlthemes-toolkit' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
 				'placeholder' => '50% 50%',
-				'condition'   => [
+				'condition'   => array(
 					'vlt_jarallax_img_position' => 'custom',
-				],
-			]
+				),
+			)
 		);
 
 		$element->add_control(
 			'vlt_jarallax_video_url',
-			[
-				'label'       => esc_html__('Video URL', 'vlthemes-toolkit'),
-				'description' => esc_html__('YouTube, Vimeo or local video. Use "mp4:" prefix for self-hosted.', 'vlthemes-toolkit'),
+			array(
+				'label'       => esc_html__( 'Video URL', 'vlthemes-toolkit' ),
+				'description' => esc_html__( 'YouTube, Vimeo or local video. Use "mp4:" prefix for self-hosted.', 'vlthemes-toolkit' ),
 				'type'        => \Elementor\Controls_Manager::TEXT,
 				'placeholder' => 'https://www.youtube.com/watch?v=...',
-			]
+			)
 		);
 
 		$element->end_popover();
@@ -191,7 +187,7 @@ class JarallaxExtension extends BaseExtension
 		$element->end_controls_section();
 
 		// Allow themes to add custom Jarallax controls
-		do_action('vlt_helper_elementor_jarallax_controls', $element, $args);
+		do_action( 'vlt_toolkit_elementor_jarallax_controls', $element, $args );
 	}
 
 	/**
@@ -199,43 +195,42 @@ class JarallaxExtension extends BaseExtension
 	 *
 	 * @param object $widget Elementor widget instance.
 	 */
-	public function render_attributes($widget)
-	{
+	public function render_attributes( $widget ) {
 		$settings = $widget->get_settings_for_display();
 
-		if (empty($settings['vlt_jarallax_enabled']) || $settings['vlt_jarallax_enabled'] !== 'jarallax') {
+		if ( empty( $settings['vlt_jarallax_enabled'] ) || $settings['vlt_jarallax_enabled'] !== 'jarallax' ) {
 			return;
 		}
 
 		// Add jarallax class and speed
-		if (! empty($settings['vlt_jarallax_speed']['size'])) {
-			$widget->add_render_attribute('_wrapper', 'data-jarallax', '');
-			$widget->add_render_attribute('_wrapper', 'data-speed', $settings['vlt_jarallax_speed']['size']);
+		if ( ! empty( $settings['vlt_jarallax_speed']['size'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-jarallax', '' );
+			$widget->add_render_attribute( '_wrapper', 'data-speed', $settings['vlt_jarallax_speed']['size'] );
 		}
 
 		// Add video URL
-		if (! empty($settings['vlt_jarallax_video_url'])) {
-			$widget->add_render_attribute('_wrapper', 'data-jarallax-video', $settings['vlt_jarallax_video_url']);
+		if ( ! empty( $settings['vlt_jarallax_video_url'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-jarallax-video', $settings['vlt_jarallax_video_url'] );
 		}
 
 		// Add type
-		if (! empty($settings['vlt_jarallax_type'])) {
-			$widget->add_render_attribute('_wrapper', 'data-type', $settings['vlt_jarallax_type']);
+		if ( ! empty( $settings['vlt_jarallax_type'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-type', $settings['vlt_jarallax_type'] );
 		}
 
 		// Add image size
-		if (! empty($settings['vlt_jarallax_img_size'])) {
-			$widget->add_render_attribute('_wrapper', 'data-img-size', $settings['vlt_jarallax_img_size']);
+		if ( ! empty( $settings['vlt_jarallax_img_size'] ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-img-size', $settings['vlt_jarallax_img_size'] );
 		}
 
 		// Add image position
 		$position = $settings['vlt_jarallax_img_position'] ?? '';
-		if ($position === 'custom') {
+		if ( $position === 'custom' ) {
 			$position = $settings['vlt_jarallax_img_position_custom'] ?? '';
 		}
 
-		if (! empty($position)) {
-			$widget->add_render_attribute('_wrapper', 'data-img-position', $position);
+		if ( ! empty( $position ) ) {
+			$widget->add_render_attribute( '_wrapper', 'data-img-position', $position );
 		}
 	}
 }

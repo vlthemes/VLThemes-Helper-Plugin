@@ -1,10 +1,10 @@
 <?php
 
-namespace VLT\Helper\Modules\Features;
+namespace VLT\Toolkit\Modules\Features;
 
-use VLT\Helper\Modules\BaseModule;
+use VLT\Toolkit\Modules\BaseModule;
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -13,8 +13,8 @@ if (! defined('ABSPATH')) {
  *
  * Registers custom WordPress widgets
  */
-class Widgets extends BaseModule
-{
+class Widgets extends BaseModule {
+
 
 	/**
 	 * Module name
@@ -42,18 +42,17 @@ class Widgets extends BaseModule
 	 *
 	 * @var array
 	 */
-	private $widgets = [
-		'RecentPosts'    => 'VLT\Helper\Widgets\RecentPosts',
-		'PopularPosts'   => 'VLT\Helper\Widgets\PopularPosts',
-		'TrendingPosts'  => 'VLT\Helper\Widgets\TrendingPosts',
-	];
+	private $widgets = array(
+		'RecentPosts'   => 'VLT\Toolkit\Widgets\RecentPosts',
+		'PopularPosts'  => 'VLT\Toolkit\Widgets\PopularPosts',
+		'TrendingPosts' => 'VLT\Toolkit\Widgets\TrendingPosts',
+	);
 
 	/**
 	 * Initialize module
 	 */
-	protected function init()
-	{
-		$this->widgets_path = VLT_HELPER_PATH . 'includes/Widgets/';
+	protected function init() {
+		$this->widgets_path = VLT_TOOLKIT_PATH . 'includes/Widgets/';
 
 		// Load base widget class first
 		require_once $this->widgets_path . 'PostsWidget.php';
@@ -62,21 +61,19 @@ class Widgets extends BaseModule
 	/**
 	 * Register module
 	 */
-	public function register()
-	{
-		add_action('widgets_init', [$this, 'register_widgets']);
+	public function register() {
+		add_action( 'widgets_init', array( $this, 'register_widgets' ) );
 	}
 
 	/**
 	 * Register widgets
 	 */
-	public function register_widgets()
-	{
+	public function register_widgets() {
 		// Allow themes/plugins to modify the widgets list
-		$widgets = apply_filters('vlt_helper_widgets', $this->widgets);
+		$widgets = apply_filters( 'vlt_toolkit_widgets', $this->widgets );
 
-		foreach ($widgets as $file => $class) {
-			$this->register_single_widget($file, $class);
+		foreach ( $widgets as $file => $class ) {
+			$this->register_single_widget( $file, $class );
 		}
 	}
 
@@ -86,12 +83,11 @@ class Widgets extends BaseModule
 	 * @param string $file Widget file name (without .php extension).
 	 * @param string $class Widget class name.
 	 */
-	private function register_single_widget($file, $class)
-	{
-		$file_path = $this->widgets_path . sanitize_file_name($file) . '.php';
+	private function register_single_widget( $file, $class ) {
+		$file_path = $this->widgets_path . sanitize_file_name( $file ) . '.php';
 
 		// Check if file exists
-		if (! file_exists($file_path)) {
+		if ( ! file_exists( $file_path ) ) {
 			return;
 		}
 
@@ -99,10 +95,10 @@ class Widgets extends BaseModule
 		require_once $file_path;
 
 		// Register widget if class exists
-		if (class_exists($class)) {
-			register_widget($class);
+		if ( class_exists( $class ) ) {
+			register_widget( $class );
 
-			do_action('vlt_helper_widget_registered', $class, $file);
+			do_action( 'vlt_toolkit_widget_registered', $class, $file );
 		}
 	}
 
@@ -111,8 +107,7 @@ class Widgets extends BaseModule
 	 *
 	 * @return array
 	 */
-	public function get_widgets()
-	{
+	public function get_widgets() {
 		return $this->widgets;
 	}
 }

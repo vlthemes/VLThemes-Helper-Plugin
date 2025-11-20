@@ -1,10 +1,10 @@
 <?php
 
-namespace VLT\Helper\Modules\Integrations;
+namespace VLT\Toolkit\Modules\Integrations;
 
-use VLT\Helper\Modules\BaseModule;
+use VLT\Toolkit\Modules\BaseModule;
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -14,8 +14,8 @@ if (! defined('ABSPATH')) {
  * Provides hooks for Visual Portfolio plugin customization
  * Handles items styles, tiles, and FontAwesome disabling
  */
-class VisualPortfolio extends BaseModule
-{
+class VisualPortfolio extends BaseModule {
+
 
 	/**
 	 * Module name
@@ -36,22 +36,20 @@ class VisualPortfolio extends BaseModule
 	 *
 	 * @return bool
 	 */
-	protected function can_register()
-	{
-		return class_exists('Visual_Portfolio');
+	protected function can_register() {
+		return class_exists( 'Visual_Portfolio' );
 	}
 
 	/**
 	 * Register module
 	 */
-	public function register()
-	{
+	public function register() {
 		// Disable FontAwesome 5 from Visual Portfolio
-		add_filter('vpf_enqueue_plugin_font_awesome', '__return_false');
+		add_filter( 'vpf_enqueue_plugin_font_awesome', '__return_false' );
 
 		// Hooks for theme extension
-		add_filter('vpf_extend_items_styles', [$this, 'extend_items_styles'], 10, 1);
-		add_filter('vpf_extend_tiles', [$this, 'extend_tiles'], 10, 1);
+		add_filter( 'vpf_extend_items_styles', array( $this, 'extend_items_styles' ), 10, 1 );
+		add_filter( 'vpf_extend_tiles', array( $this, 'extend_tiles' ), 10, 1 );
 	}
 
 	/**
@@ -62,9 +60,8 @@ class VisualPortfolio extends BaseModule
 	 * @param array $items_styles Current items styles.
 	 * @return array Modified items styles.
 	 */
-	public function extend_items_styles($items_styles)
-	{
-		return apply_filters('vlt_helper_vp_items_styles', $items_styles);
+	public function extend_items_styles( $items_styles ) {
+		return apply_filters( 'vlt_toolkit_vp_items_styles', $items_styles );
 	}
 
 	/**
@@ -75,9 +72,8 @@ class VisualPortfolio extends BaseModule
 	 * @param array $tiles Current tiles.
 	 * @return array Modified tiles.
 	 */
-	public function extend_tiles($tiles)
-	{
-		return apply_filters('vlt_helper_vp_tiles', $tiles);
+	public function extend_tiles( $tiles ) {
+		return apply_filters( 'vlt_toolkit_vp_tiles', $tiles );
 	}
 
 	/**
@@ -87,28 +83,29 @@ class VisualPortfolio extends BaseModule
 	 *
 	 * @return array Array of portfolio IDs and titles.
 	 */
-	public static function get_portfolios()
-	{
-		$options = [];
+	public static function get_portfolios() {
+		$options = array();
 
-		if (! class_exists('Visual_Portfolio')) {
+		if ( ! class_exists( 'Visual_Portfolio' ) ) {
 			return $options;
 		}
 
-		$portfolios = get_posts([
-			'post_type'   => 'vp_lists',
-			'numberposts' => -1,
-			'post_status' => 'publish',
-		]);
+		$portfolios = get_posts(
+			array(
+				'post_type'   => 'vp_lists',
+				'numberposts' => -1,
+				'post_status' => 'publish',
+			)
+		);
 
-		$options[0] = esc_html__('Select a Portfolio', 'vlthemes-toolkit');
+		$options[0] = esc_html__( 'Select a Portfolio', 'vlthemes-toolkit' );
 
-		if (! empty($portfolios) && ! is_wp_error($portfolios)) {
-			foreach ($portfolios as $post) {
-				$options[$post->ID] = $post->post_title;
+		if ( ! empty( $portfolios ) && ! is_wp_error( $portfolios ) ) {
+			foreach ( $portfolios as $post ) {
+				$options[ $post->ID ] = $post->post_title;
 			}
 		} else {
-			$options[0] = esc_html__('Create a Portfolio First', 'vlthemes-toolkit');
+			$options[0] = esc_html__( 'Create a Portfolio First', 'vlthemes-toolkit' );
 		}
 
 		return $options;
@@ -121,23 +118,22 @@ class VisualPortfolio extends BaseModule
 	 * @param array $args         Additional arguments.
 	 * @return string Portfolio HTML.
 	 */
-	public static function render_portfolio($portfolio_id, $args = [])
-	{
-		if (! class_exists('Visual_Portfolio') || ! $portfolio_id) {
+	public static function render_portfolio( $portfolio_id, $args = array() ) {
+		if ( ! class_exists( 'Visual_Portfolio' ) || ! $portfolio_id ) {
 			return '';
 		}
 
-		$portfolio_id = absint($portfolio_id);
+		$portfolio_id = absint( $portfolio_id );
 
 		// Build shortcode attributes
-		$atts = ['id="' . $portfolio_id . '"'];
+		$atts = array( 'id="' . $portfolio_id . '"' );
 
-		if (! empty($args)) {
-			foreach ($args as $key => $value) {
-				$atts[] = sanitize_key($key) . '="' . esc_attr($value) . '"';
+		if ( ! empty( $args ) ) {
+			foreach ( $args as $key => $value ) {
+				$atts[] = sanitize_key( $key ) . '="' . esc_attr( $value ) . '"';
 			}
 		}
 
-		return do_shortcode('[visual_portfolio ' . implode(' ', $atts) . ']');
+		return do_shortcode( '[visual_portfolio ' . implode( ' ', $atts ) . ']' );
 	}
 }

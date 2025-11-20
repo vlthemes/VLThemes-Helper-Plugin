@@ -1,10 +1,10 @@
 <?php
 
-namespace VLT\Helper\Modules\Integrations;
+namespace VLT\Toolkit\Modules\Integrations;
 
-use VLT\Helper\Modules\BaseModule;
+use VLT\Toolkit\Modules\BaseModule;
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -13,8 +13,8 @@ if (! defined('ABSPATH')) {
  *
  * Handles ACF Pro plugin updates via TGM source
  */
-class ACFProUpdater extends BaseModule
-{
+class ACFProUpdater extends BaseModule {
+
 
 	/**
 	 * Module name
@@ -42,37 +42,35 @@ class ACFProUpdater extends BaseModule
 	 *
 	 * @return bool
 	 */
-	protected function can_register()
-	{
-		return class_exists('ACF');
+	protected function can_register() {
+		return class_exists( 'ACF' );
 	}
 
 	/**
 	 * Register module
 	 */
-	public function register()
-	{
+	public function register() {
 		// For active themes only.
-		if (function_exists('vlt_is_theme_activated') && ! vlt_is_theme_activated()) {
+		if ( function_exists( 'vlt_is_theme_activated' ) && ! vlt_is_theme_activated() ) {
 			return;
 		}
 
 		// Don't run on ACF Settings page to prevent conflicts
-		if (isset($_GET['post_type']) && 'acf-field-group' === $_GET['post_type']) {
+		if ( isset( $_GET['post_type'] ) && 'acf-field-group' === $_GET['post_type'] ) {
 			return;
 		}
 
 		// Already active
-		if (get_option('acf_pro_license')) {
+		if ( get_option( 'acf_pro_license' ) ) {
 			return;
 		}
 
 		// Return ACF pro fake license to prevent notices
-		add_filter('option_acf_pro_license', [$this, 'acf_pro_license'], 20, 1);
-		add_filter('pre_option_acf_pro_license', [$this, 'acf_pro_license'], 20, 1);
+		add_filter( 'option_acf_pro_license', array( $this, 'acf_pro_license' ), 20, 1 );
+		add_filter( 'pre_option_acf_pro_license', array( $this, 'acf_pro_license' ), 20, 1 );
 
 		// Modify update information for plugin
-		add_filter('pre_set_site_transient_update_plugins', [$this, 'modify_plugin_transient'], 20, 1);
+		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'modify_plugin_transient' ), 20, 1 );
 	}
 
 	/**
@@ -80,16 +78,15 @@ class ACFProUpdater extends BaseModule
 	 *
 	 * @return array|false
 	 */
-	private function get_tgm_plugin_data()
-	{
-		if (! class_exists('TGM_Plugin_Activation')) {
+	private function get_tgm_plugin_data() {
+		if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 			return false;
 		}
 
 		$plugins = \TGM_Plugin_Activation::$instance->plugins;
 
-		if (isset($plugins[$this->plugin_name])) {
-			return $plugins[$this->plugin_name];
+		if ( isset( $plugins[ $this->plugin_name ] ) ) {
+			return $plugins[ $this->plugin_name ];
 		}
 
 		return false;
@@ -101,15 +98,14 @@ class ACFProUpdater extends BaseModule
 	 * @param mixed $license License.
 	 * @return mixed
 	 */
-	public function acf_pro_license($license)
-	{
-		if (! $license) {
+	public function acf_pro_license( $license ) {
+		if ( ! $license ) {
 			return base64_encode(
 				maybe_serialize(
-					[
+					array(
 						'key' => 'fake',
 						'url' => home_url(),
-					]
+					)
 				)
 			);
 		}
@@ -123,31 +119,30 @@ class ACFProUpdater extends BaseModule
 	 * @param object $transient Plugin data.
 	 * @return object
 	 */
-	public function modify_plugin_transient($transient)
-	{
+	public function modify_plugin_transient( $transient ) {
 		// Bail early if no response (error)
-		if (! isset($transient->response)) {
+		if ( ! isset( $transient->response ) ) {
 			return $transient;
 		}
 
 		// Get TGM plugin data
 		$plugin = $this->get_tgm_plugin_data();
 
-		if (! $plugin || empty($plugin)) {
+		if ( ! $plugin || empty( $plugin ) ) {
 			return $transient;
 		}
 
 		// Only for external source type
-		if ('external' !== $plugin['source_type']) {
+		if ( 'external' !== $plugin['source_type'] ) {
 			return $transient;
 		}
 
 		// Check if available transient for this plugin
-		if (! isset($transient->response[$plugin['file_path']])) {
+		if ( ! isset( $transient->response[ $plugin['file_path'] ] ) ) {
 			return $transient;
 		}
 
-		$transient->response[$plugin['file_path']]->package = $plugin['source'];
+		$transient->response[ $plugin['file_path'] ]->package = $plugin['source'];
 
 		return $transient;
 	}

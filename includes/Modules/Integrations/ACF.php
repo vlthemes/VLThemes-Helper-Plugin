@@ -1,10 +1,10 @@
 <?php
 
-namespace VLT\Helper\Modules\Integrations;
+namespace VLT\Toolkit\Modules\Integrations;
 
-use VLT\Helper\Modules\BaseModule;
+use VLT\Toolkit\Modules\BaseModule;
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -15,8 +15,8 @@ if (! defined('ABSPATH')) {
  * Handles JSON save/load paths and admin visibility
  * Provides static helper methods for dynamic field population (used in themes)
  */
-class ACF extends BaseModule
-{
+class ACF extends BaseModule {
+
 
 	/**
 	 * Module name
@@ -37,22 +37,20 @@ class ACF extends BaseModule
 	 *
 	 * @return bool
 	 */
-	protected function can_register()
-	{
-		return class_exists('ACF');
+	protected function can_register() {
+		return class_exists( 'ACF' );
 	}
 
 	/**
 	 * Register module
 	 */
-	public function register()
-	{
+	public function register() {
 		// Hide ACF in admin if needed
-		add_filter('acf/settings/show_admin', [$this, 'show_admin']);
+		add_filter( 'acf/settings/show_admin', array( $this, 'show_admin' ) );
 
 		// Set save/load points for JSON
-		add_filter('acf/settings/save_json', [$this, 'save_json']);
-		add_filter('acf/settings/load_json', [$this, 'load_json']);
+		add_filter( 'acf/settings/save_json', array( $this, 'save_json' ) );
+		add_filter( 'acf/settings/load_json', array( $this, 'load_json' ) );
 	}
 
 	/**
@@ -61,9 +59,8 @@ class ACF extends BaseModule
 	 * @param bool $show Whether to show ACF in admin.
 	 * @return bool Filtered value.
 	 */
-	public function show_admin($show)
-	{
-		return apply_filters('vlt_helper_acf_show_admin', $show);
+	public function show_admin( $show ) {
+		return apply_filters( 'vlt_toolkit_acf_show_admin', $show );
 	}
 
 	/**
@@ -72,9 +69,8 @@ class ACF extends BaseModule
 	 * @param string $path Default save path.
 	 * @return string Filtered save path.
 	 */
-	public function save_json($path)
-	{
-		return apply_filters('vlt_helper_acf_save_json', $path);
+	public function save_json( $path ) {
+		return apply_filters( 'vlt_toolkit_acf_save_json', $path );
 	}
 
 	/**
@@ -83,9 +79,8 @@ class ACF extends BaseModule
 	 * @param array $paths Default load paths.
 	 * @return array Filtered load paths.
 	 */
-	public function load_json($paths)
-	{
-		return apply_filters('vlt_helper_acf_load_json', $paths);
+	public function load_json( $paths ) {
+		return apply_filters( 'vlt_toolkit_acf_load_json', $paths );
 	}
 
 	/**
@@ -95,18 +90,17 @@ class ACF extends BaseModule
 	 * @param string|null $type  Template type (page, section, widget, etc.).
 	 * @return array Modified field with template choices.
 	 */
-	public static function populate_elementor_templates($field, $type = null)
-	{
+	public static function populate_elementor_templates( $field, $type = null ) {
 		// Reset choices
-		$field['choices'] = [];
+		$field['choices'] = array();
 
 		// Use helper function if available
-		if (function_exists('vlt_get_elementor_templates')) {
-			$field['choices'] = vlt_get_elementor_templates($type);
-			return apply_filters('vlt_helper_acf_elementor_templates', $field, $type);
+		if ( function_exists( 'vlt_get_elementor_templates' ) ) {
+			$field['choices'] = vlt_get_elementor_templates( $type );
+			return apply_filters( 'vlt_toolkit_acf_elementor_templates', $field, $type );
 		}
 
-		$field['choices'][0] = esc_html__('Elementor not available', 'vlthemes-toolkit');
+		$field['choices'][0] = esc_html__( 'Elementor not available', 'vlthemes-toolkit' );
 		return $field;
 	}
 
@@ -117,17 +111,16 @@ class ACF extends BaseModule
 	 * @param string $type  Template type to filter by (header, footer, 404, custom, submenu).
 	 * @return array Modified field with template part choices.
 	 */
-	public static function populate_vlt_tp($field, $type = null)
-	{
+	public static function populate_vlt_tp( $field, $type = null ) {
 		// Reset choices
-		$field['choices'] = [];
+		$field['choices'] = array();
 
-		if (function_exists('vlt_get_vlt_templates')) {
-			$field['choices'] = vlt_get_vlt_templates($type);
-			return apply_filters('vlt_helper_acf_vlt_templates', $field, $type);
+		if ( function_exists( 'vlt_get_vlt_templates' ) ) {
+			$field['choices'] = vlt_get_vlt_templates( $type );
+			return apply_filters( 'vlt_toolkit_acf_vlt_templates', $field, $type );
 		}
 
-		$field['choices'][0] = esc_html__('Template Parts not available', 'vlthemes-toolkit');
+		$field['choices'][0] = esc_html__( 'Template Parts not available', 'vlthemes-toolkit' );
 
 		return $field;
 	}
@@ -138,29 +131,28 @@ class ACF extends BaseModule
 	 * @param array $field ACF field array.
 	 * @return array Modified field with layout choices.
 	 */
-	public static function populate_vp_saved_layouts($field)
-	{
+	public static function populate_vp_saved_layouts( $field ) {
 		// Reset choices
-		$field['choices'] = [];
+		$field['choices'] = array();
 
 		// Use helper function if available
-		if (function_exists('vlt_get_vp_portfolios')) {
+		if ( function_exists( 'vlt_get_vp_portfolios' ) ) {
 			$portfolios = vlt_get_vp_portfolios();
 
 			// Add default option with proper text
-			$field['choices'][0] = esc_html__('Select a Layout', 'vlthemes-toolkit');
+			$field['choices'][0] = esc_html__( 'Select a Layout', 'vlthemes-toolkit' );
 
 			// Format with ID prefix
-			foreach ($portfolios as $id => $title) {
-				if ($id > 0) { // Skip the default option from helper
-					$field['choices'][$id] = '#' . $id . ' - ' . $title;
+			foreach ( $portfolios as $id => $title ) {
+				if ( $id > 0 ) { // Skip the default option from helper
+					$field['choices'][ $id ] = '#' . $id . ' - ' . $title;
 				}
 			}
 
-			return apply_filters('vlt_helper_acf_vp_layouts', $field);
+			return apply_filters( 'vlt_toolkit_acf_vp_layouts', $field );
 		}
 
-		$field['choices'][0] = esc_html__('Visual Portfolio not available', 'vlthemes-toolkit');
+		$field['choices'][0] = esc_html__( 'Visual Portfolio not available', 'vlthemes-toolkit' );
 		return $field;
 	}
 
@@ -170,28 +162,27 @@ class ACF extends BaseModule
 	 * @param array $field ACF field array.
 	 * @return array Modified field with icon choices.
 	 */
-	public static function populate_social_icons($field)
-	{
+	public static function populate_social_icons( $field ) {
 		// Reset choices
-		$field['choices'] = [];
+		$field['choices'] = array();
 
 		// Check if social icons function exists
-		if (! function_exists('vlt_get_social_icons')) {
-			$field['choices'][0] = esc_html__('No social icons available', 'vlthemes-toolkit');
+		if ( ! function_exists( 'vlt_get_social_icons' ) ) {
+			$field['choices'][0] = esc_html__( 'No social icons available', 'vlthemes-toolkit' );
 			return $field;
 		}
 
 		$social_icons = vlt_get_social_icons();
 
 		// Populate choices
-		if (! empty($social_icons)) {
-			foreach ($social_icons as $icon_class => $icon_label) {
-				$field['choices'][$icon_class] = $icon_label;
+		if ( ! empty( $social_icons ) ) {
+			foreach ( $social_icons as $icon_class => $icon_label ) {
+				$field['choices'][ $icon_class ] = $icon_label;
 			}
 		} else {
-			$field['choices'][0] = esc_html__('No social icons available', 'vlthemes-toolkit');
+			$field['choices'][0] = esc_html__( 'No social icons available', 'vlthemes-toolkit' );
 		}
 
-		return apply_filters('vlt_helper_acf_social_icons', $field);
+		return apply_filters( 'vlt_toolkit_acf_social_icons', $field );
 	}
 }

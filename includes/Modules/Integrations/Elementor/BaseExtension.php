@@ -1,6 +1,6 @@
 <?php
 
-namespace VLT\Helper\Modules\Integrations\Elementor;
+namespace VLT\Toolkit\Modules\Integrations\Elementor;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -31,7 +31,7 @@ abstract class BaseExtension {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->assets_url = VLT_HELPER_URL . 'assets/';
+		$this->assets_url = VLT_TOOLKIT_URL . 'assets/';
 		$this->init();
 		$this->register_hooks();
 		$this->register_scripts();
@@ -78,9 +78,9 @@ abstract class BaseExtension {
 	 */
 	protected function get_elementor_breakpoints() {
 		$breakpoints_manager = \Elementor\Plugin::$instance->breakpoints;
-		$breakpoints = $breakpoints_manager->get_active_breakpoints();
+		$breakpoints         = $breakpoints_manager->get_active_breakpoints();
 
-		$options = [];
+		$options = array();
 		foreach ( $breakpoints as $breakpoint_key => $breakpoint ) {
 			$options[ $breakpoint_key ] = $breakpoint->get_label();
 		}
@@ -96,7 +96,7 @@ abstract class BaseExtension {
 	protected function get_default_reset_devices() {
 		$breakpoints = $this->get_elementor_breakpoints();
 
-		$default_reset_devices = [ 'mobile' ];
+		$default_reset_devices = array( 'mobile' );
 		if ( isset( $breakpoints['mobile_extra'] ) ) {
 			$default_reset_devices[] = 'mobile_extra';
 		}

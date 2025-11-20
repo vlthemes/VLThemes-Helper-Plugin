@@ -1,8 +1,8 @@
 <?php
 
-namespace VLT\Helper\Modules\Integrations\Elementor;
+namespace VLT\Toolkit\Modules\Integrations\Elementor;
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -11,8 +11,8 @@ if (! defined('ABSPATH')) {
  *
  * Static helper methods for Elementor widgets
  */
-class Helpers
-{
+class Helpers {
+
 
 	/**
 	 * Get post names by post type
@@ -20,20 +20,19 @@ class Helpers
 	 * @param string $post_type Post type.
 	 * @return array Posts list.
 	 */
-	public static function get_post_name($post_type = 'post')
-	{
-		$options = [];
+	public static function get_post_name( $post_type = 'post' ) {
+		$options = array();
 
-		$all_post = [
+		$all_post = array(
 			'posts_per_page' => -1,
 			'post_type'      => $post_type,
-		];
+		);
 
-		$post_terms = get_posts($all_post);
+		$post_terms = get_posts( $all_post );
 
-		if (! empty($post_terms) && ! is_wp_error($post_terms)) {
-			foreach ($post_terms as $term) {
-				$options[$term->ID] = $term->post_title;
+		if ( ! empty( $post_terms ) && ! is_wp_error( $post_terms ) ) {
+			foreach ( $post_terms as $term ) {
+				$options[ $term->ID ] = $term->post_title;
 			}
 		}
 
@@ -46,21 +45,20 @@ class Helpers
 	 * @param array $args Arguments.
 	 * @return array Post types list.
 	 */
-	public static function get_post_types($args = [])
-	{
-		$post_type_args = [
+	public static function get_post_types( $args = array() ) {
+		$post_type_args = array(
 			'show_in_nav_menus' => true,
-		];
+		);
 
-		if (! empty($args['post_type'])) {
+		if ( ! empty( $args['post_type'] ) ) {
 			$post_type_args['name'] = $args['post_type'];
 		}
 
-		$_post_types = get_post_types($post_type_args, 'objects');
+		$_post_types = get_post_types( $post_type_args, 'objects' );
 
-		$post_types = [];
-		foreach ($_post_types as $post_type => $object) {
-			$post_types[$post_type] = $object->label;
+		$post_types = array();
+		foreach ( $_post_types as $post_type => $object ) {
+			$post_types[ $post_type ] = $object->label;
 		}
 
 		return $post_types;
@@ -71,19 +69,18 @@ class Helpers
 	 *
 	 * @return array Sidebars list.
 	 */
-	public static function get_all_sidebars()
-	{
+	public static function get_all_sidebars() {
 		global $wp_registered_sidebars;
 
-		$options = [];
+		$options = array();
 
-		if (! $wp_registered_sidebars) {
-			$options[''] = esc_html__('No sidebars were found', 'vlthemes-toolkit');
+		if ( ! $wp_registered_sidebars ) {
+			$options[''] = esc_html__( 'No sidebars were found', 'vlthemes-toolkit' );
 		} else {
-			$options[''] = esc_html__('Choose Sidebar', 'vlthemes-toolkit');
+			$options[''] = esc_html__( 'Choose Sidebar', 'vlthemes-toolkit' );
 
-			foreach ($wp_registered_sidebars as $sidebar_id => $sidebar) {
-				$options[$sidebar_id] = $sidebar['name'];
+			foreach ( $wp_registered_sidebars as $sidebar_id => $sidebar ) {
+				$options[ $sidebar_id ] = $sidebar['name'];
 			}
 		}
 
@@ -95,20 +92,21 @@ class Helpers
 	 *
 	 * @return array Posts list.
 	 */
-	public static function get_all_types_post()
-	{
-		$posts = get_posts([
-			'post_type'      => 'any',
-			'post_style'     => 'all_types',
-			'post_status'    => 'publish',
-			'posts_per_page' => '-1',
-		]);
+	public static function get_all_types_post() {
+		$posts = get_posts(
+			array(
+				'post_type'      => 'any',
+				'post_style'     => 'all_types',
+				'post_status'    => 'publish',
+				'posts_per_page' => '-1',
+			)
+		);
 
-		if (! empty($posts)) {
-			return wp_list_pluck($posts, 'post_title', 'ID');
+		if ( ! empty( $posts ) ) {
+			return wp_list_pluck( $posts, 'post_title', 'ID' );
 		}
 
-		return [];
+		return array();
 	}
 
 	/**
@@ -117,18 +115,19 @@ class Helpers
 	 * @param string $type Type of value to return (term_id, slug, etc).
 	 * @return array Categories list.
 	 */
-	public static function get_post_type_categories($type = 'term_id')
-	{
-		$options = [];
+	public static function get_post_type_categories( $type = 'term_id' ) {
+		$options = array();
 
-		$terms = get_terms([
-			'taxonomy'   => 'category',
-			'hide_empty' => true,
-		]);
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'category',
+				'hide_empty' => true,
+			)
+		);
 
-		if (! empty($terms) && ! is_wp_error($terms)) {
-			foreach ($terms as $term) {
-				$options[$term->{$type}] = $term->name;
+		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$options[ $term->{$type} ] = $term->name;
 			}
 		}
 
@@ -141,18 +140,19 @@ class Helpers
 	 * @param string $taxonomy Taxonomy name.
 	 * @return array Taxonomies list.
 	 */
-	public static function get_taxonomies($taxonomy = 'category')
-	{
-		$options = [];
+	public static function get_taxonomies( $taxonomy = 'category' ) {
+		$options = array();
 
-		$terms = get_terms([
-			'taxonomy'   => $taxonomy,
-			'hide_empty' => true,
-		]);
+		$terms = get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => true,
+			)
+		);
 
-		if (! empty($terms) && ! is_wp_error($terms)) {
-			foreach ($terms as $term) {
-				$options[$term->slug] = $term->name;
+		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$options[ $term->slug ] = $term->name;
 			}
 		}
 
@@ -164,13 +164,12 @@ class Helpers
 	 *
 	 * @return array Menus list.
 	 */
-	public static function get_available_menus()
-	{
-		$options = [];
+	public static function get_available_menus() {
+		$options = array();
 		$menus   = wp_get_nav_menus();
 
-		foreach ($menus as $menu) {
-			$options[$menu->slug] = $menu->name;
+		foreach ( $menus as $menu ) {
+			$options[ $menu->slug ] = $menu->name;
 		}
 
 		return $options;
@@ -182,33 +181,32 @@ class Helpers
 	 * @param string|null $type Template type.
 	 * @return array Templates list.
 	 */
-	public static function get_elementor_templates($type = null)
-	{
-		$args = [
+	public static function get_elementor_templates( $type = null ) {
+		$args = array(
 			'post_type'      => 'elementor_library',
 			'posts_per_page' => -1,
-		];
+		);
 
-		if ($type) {
-			$args['tax_query'] = [
-				[
+		if ( $type ) {
+			$args['tax_query'] = array(
+				array(
 					'taxonomy' => 'elementor_library_type',
 					'field'    => 'slug',
 					'terms'    => $type,
-				],
-			];
+				),
+			);
 		}
 
-		$page_templates = get_posts($args);
+		$page_templates = get_posts( $args );
 
-		$options[0] = esc_html__('Select a Template', 'vlthemes-toolkit');
+		$options[0] = esc_html__( 'Select a Template', 'vlthemes-toolkit' );
 
-		if (! empty($page_templates) && ! is_wp_error($page_templates)) {
-			foreach ($page_templates as $post) {
-				$options[$post->ID] = $post->post_title;
+		if ( ! empty( $page_templates ) && ! is_wp_error( $page_templates ) ) {
+			foreach ( $page_templates as $post ) {
+				$options[ $post->ID ] = $post->post_title;
 			}
 		} else {
-			$options[0] = esc_html__('Create a Template First', 'vlthemes-toolkit');
+			$options[0] = esc_html__( 'Create a Template First', 'vlthemes-toolkit' );
 		}
 
 		return $options;

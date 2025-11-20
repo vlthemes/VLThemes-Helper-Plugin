@@ -12,47 +12,59 @@
  * Domain Path: /languages
  */
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define('VLT_HELPER_VERSION', '1.0.0');
-define('VLT_HELPER_FILE', __FILE__);
-define('VLT_HELPER_PATH', plugin_dir_path(__FILE__));
-define('VLT_HELPER_URL', plugin_dir_url(__FILE__));
-define('VLT_HELPER_BASENAME', plugin_basename(__FILE__));
+define( 'VLT_TOOLKIT_VERSION', '1.0.0' );
+define( 'VLT_TOOLKIT_FILE', __FILE__ );
+define( 'VLT_TOOLKIT_PATH', plugin_dir_path( __FILE__ ) );
+define( 'VLT_TOOLKIT_URL', plugin_dir_url( __FILE__ ) );
+define( 'VLT_TOOLKIT_BASENAME', plugin_basename( __FILE__ ) );
 
 // Define update URL
-define('VLT_HELPER_UPDATE_URL', 'https://vlthemes.me/plugins/updates/vlthemes-toolkit.json');
+define( 'VLT_TOOLKIT_UPDATE_URL', 'https://vlthemes.me/plugins/updates/vlthemes-toolkit.json' );
 
 // Load helper functions
-require_once VLT_HELPER_PATH . 'includes/helper-functions.php';
+require_once VLT_TOOLKIT_PATH . 'includes/helper-functions.php';
 
 // Load main helper class
-require_once VLT_HELPER_PATH . 'includes/Helper.php';
+require_once VLT_TOOLKIT_PATH . 'includes/Toolkit.php';
 
 // Load theme activation
-require_once VLT_HELPER_PATH . 'includes/ThemeActivation/ThemeActivation.php';
-require_once VLT_HELPER_PATH . 'includes/ThemeActivation/Init.php';
+require_once VLT_TOOLKIT_PATH . 'includes/ThemeActivation/ThemeActivation.php';
+require_once VLT_TOOLKIT_PATH . 'includes/ThemeActivation/Init.php';
 
 // Initialize on plugins_loaded
-add_action('plugins_loaded', function () {
-	VLT\Helper\Helper::instance();
-}, 15);
+add_action(
+	'plugins_loaded',
+	function () {
+		VLT\Toolkit\Toolkit::instance();
+	},
+	15
+);
 
 // Initialize updater
-add_action('plugins_loaded', function () {
-	// Only initialize updater if a remote URL is defined
-	if (defined('VLT_HELPER_UPDATE_URL') && VLT_HELPER_UPDATE_URL) {
-		require_once VLT_HELPER_PATH . 'includes/Updater.php';
-		new VLT\Helper\Updater(VLT_HELPER_FILE, VLT_HELPER_UPDATE_URL);
-	}
-}, 20);
+add_action(
+	'plugins_loaded',
+	function () {
+		// Only initialize updater if a remote URL is defined
+		if ( defined( 'VLT_TOOLKIT_UPDATE_URL' ) && VLT_TOOLKIT_UPDATE_URL ) {
+			require_once VLT_TOOLKIT_PATH . 'includes/Updater.php';
+			new VLT\Toolkit\Updater( VLT_TOOLKIT_FILE, VLT_TOOLKIT_UPDATE_URL );
+		}
+	},
+	20
+);
 
 // Initialize dashboard
-add_action('plugins_loaded', function () {
-	if (is_admin()) {
-		require_once VLT_HELPER_PATH . 'includes/Admin/Dashboard.php';
-		VLT\Helper\Admin\Dashboard::instance();
-	}
-}, 25);
+add_action(
+	'plugins_loaded',
+	function () {
+		if ( is_admin() ) {
+			require_once VLT_TOOLKIT_PATH . 'includes/Admin/Dashboard.php';
+			VLT\Toolkit\Admin\Dashboard::instance();
+		}
+	},
+	25
+);

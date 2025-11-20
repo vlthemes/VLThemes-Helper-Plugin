@@ -1,10 +1,10 @@
 <?php
 
-namespace VLT\Helper\Modules\Features;
+namespace VLT\Toolkit\Modules\Features;
 
-use VLT\Helper\Modules\BaseModule;
+use VLT\Toolkit\Modules\BaseModule;
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -15,8 +15,8 @@ if (! defined('ABSPATH')) {
  * Integrates with One Click Demo Import plugin
  * Sets up menus, pages, Elementor, Revolution Slider after import
  */
-class DemoImport extends BaseModule
-{
+class DemoImport extends BaseModule {
+
 
 	/**
 	 * Module name
@@ -35,24 +35,23 @@ class DemoImport extends BaseModule
 	/**
 	 * Register module
 	 */
-	public function register()
-	{
+	public function register() {
 		// Check if One Click Demo Import plugin is active
-		if (! class_exists('OCDI_Plugin')) {
+		if ( ! class_exists( 'OCDI_Plugin' ) ) {
 			return;
 		}
 
 		// Register import files
-		add_filter('ocdi/import_files', [$this, 'import_files']);
+		add_filter( 'ocdi/import_files', array( $this, 'import_files' ) );
 
 		// Disable regenerate thumbnails for performance
-		add_filter('ocdi/regenerate_thumbnails_in_content_import', '__return_false');
+		add_filter( 'ocdi/regenerate_thumbnails_in_content_import', '__return_false' );
 
 		// Before content import setup
-		add_action('ocdi/before_content_import', [$this, 'before_content_import']);
+		add_action( 'ocdi/before_content_import', array( $this, 'before_content_import' ) );
 
 		// After import setup
-		add_action('ocdi/after_import', [$this, 'after_import_setup']);
+		add_action( 'ocdi/after_import', array( $this, 'after_import_setup' ) );
 	}
 
 	/**
@@ -60,29 +59,28 @@ class DemoImport extends BaseModule
 	 *
 	 * @return array Demo import configuration (array of demos).
 	 */
-	public function import_files()
-	{
+	public function import_files() {
 		// Allow theme to define demo files (single demo or array of demos)
-		$demos = apply_filters('vlt_helper_demo_import_files', []);
+		$demos = apply_filters( 'vlt_toolkit_demo_import_files', array() );
 
 		// If empty, return empty array
-		if (empty($demos)) {
-			return [];
+		if ( empty( $demos ) ) {
+			return array();
 		}
 
 		// If single demo (associative array), wrap in array
-		if (isset($demos['import_file_name']) || isset($demos['local_import_file'])) {
-			$demos = [$demos];
+		if ( isset( $demos['import_file_name'] ) || isset( $demos['local_import_file'] ) ) {
+			$demos = array( $demos );
 		}
 
 		// Filter and validate demos
-		$valid_demos = [];
-		foreach ($demos as $demo) {
+		$valid_demos = array();
+		foreach ( $demos as $demo ) {
 			// Remove empty values
-			$demo = array_filter($demo);
+			$demo = array_filter( $demo );
 
 			// Must have at least content file
-			if (! empty($demo['local_import_file'])) {
+			if ( ! empty( $demo['local_import_file'] ) ) {
 				$valid_demos[] = $demo;
 			}
 		}
@@ -97,8 +95,7 @@ class DemoImport extends BaseModule
 	 *
 	 * @param array $selected_import Selected demo data.
 	 */
-	public function before_content_import($selected_import)
-	{
+	public function before_content_import( $selected_import ) {
 		// Delete default "Hello World" post
 		$this->delete_default_content();
 
@@ -106,18 +103,18 @@ class DemoImport extends BaseModule
 		$this->delete_sidebar_widgets();
 
 		// Update Elementor options before content import
-		$elementor_options = [
+		$elementor_options = array(
 			'elementor_unfiltered_files_upload'    => true,
 			'elementor_disable_color_schemes'      => 'yes',
 			'elementor_disable_typography_schemes' => 'yes',
-		];
+		);
 
-		foreach ($elementor_options as $key => $value) {
-			update_option($key, $value);
+		foreach ( $elementor_options as $key => $value ) {
+			update_option( $key, $value );
 		}
 
 		// Action hook for themes to add custom setup before content import
-		do_action('vlt_helper_before_content_import', $selected_import);
+		do_action( 'vlt_toolkit_before_content_import', $selected_import );
 	}
 
 	/**
@@ -126,27 +123,26 @@ class DemoImport extends BaseModule
 	 * Clears all widgets from all registered sidebars before import
 	 * to prevent conflicts with demo content
 	 */
-	private function delete_sidebar_widgets()
-	{
+	private function delete_sidebar_widgets() {
 		// Get all registered sidebars
 		global $wp_registered_sidebars;
 
-		if (empty($wp_registered_sidebars)) {
+		if ( empty( $wp_registered_sidebars ) ) {
 			return;
 		}
 
 		// Get current widgets
-		$sidebars_widgets = get_option('sidebars_widgets', array());
+		$sidebars_widgets = get_option( 'sidebars_widgets', array() );
 
 		// Clear all sidebars except wp_inactive_widgets
-		foreach (array_keys($wp_registered_sidebars) as $sidebar_id) {
-			if (isset($sidebars_widgets[$sidebar_id])) {
-				$sidebars_widgets[$sidebar_id] = array();
+		foreach ( array_keys( $wp_registered_sidebars ) as $sidebar_id ) {
+			if ( isset( $sidebars_widgets[ $sidebar_id ] ) ) {
+				$sidebars_widgets[ $sidebar_id ] = array();
 			}
 		}
 
 		// Update the option
-		update_option('sidebars_widgets', $sidebars_widgets);
+		update_option( 'sidebars_widgets', $sidebars_widgets );
 	}
 
 	/**
@@ -157,8 +153,7 @@ class DemoImport extends BaseModule
 	 *
 	 * @param array $selected_import Selected demo data.
 	 */
-	public function after_import_setup($selected_import)
-	{
+	public function after_import_setup( $selected_import ) {
 		global $wp_rewrite;
 
 		// Setup navigation menus
@@ -171,7 +166,7 @@ class DemoImport extends BaseModule
 		$this->update_date_format();
 
 		// Update permalink structure
-		$this->update_permalink_structure($wp_rewrite);
+		$this->update_permalink_structure( $wp_rewrite );
 
 		// Import Revolution Slider
 		$this->import_revolution_sliders();
@@ -183,55 +178,52 @@ class DemoImport extends BaseModule
 		$this->import_elementor_kit();
 
 		// Action hook for themes to add custom setup
-		do_action('vlt_helper_after_demo_import', $selected_import);
+		do_action( 'vlt_toolkit_after_demo_import', $selected_import );
 	}
 
 	/**
 	 * Setup navigation menus
 	 */
-	private function setup_menus()
-	{
-		$menus_to_find = apply_filters('vlt_helper_demo_menus', []);
+	private function setup_menus() {
+		$menus_to_find = apply_filters( 'vlt_toolkit_demo_menus', array() );
 
-		$locations = [];
+		$locations = array();
 
-		foreach ($menus_to_find as $location => $names) {
-			foreach ((array) $names as $name) {
-				$term = get_term_by('name', $name, 'nav_menu');
-				if ($term && ! is_wp_error($term)) {
-					$locations[$location] = (int) $term->term_id;
+		foreach ( $menus_to_find as $location => $names ) {
+			foreach ( (array) $names as $name ) {
+				$term = get_term_by( 'name', $name, 'nav_menu' );
+				if ( $term && ! is_wp_error( $term ) ) {
+					$locations[ $location ] = (int) $term->term_id;
 					break;
 				}
 			}
 		}
 
-		if (! empty($locations)) {
-			$locations = apply_filters('vlt_helper_demo_nav_menu_locations', $locations);
-			set_theme_mod('nav_menu_locations', $locations);
+		if ( ! empty( $locations ) ) {
+			$locations = apply_filters( 'vlt_toolkit_demo_nav_menu_locations', $locations );
+			set_theme_mod( 'nav_menu_locations', $locations );
 		}
 	}
 
 	/**
 	 * Setup front page
 	 */
-	private function setup_front_page()
-	{
-		$front_page_title = apply_filters('vlt_helper_demo_front_page_title', 'Home');
-		$front_page       = get_page_by_title($front_page_title);
+	private function setup_front_page() {
+		$front_page_title = apply_filters( 'vlt_toolkit_demo_front_page_title', 'Home' );
+		$front_page       = get_page_by_title( $front_page_title );
 
-		if ($front_page && isset($front_page->ID)) {
-			update_option('show_on_front', 'page');
-			update_option('page_on_front', (int) $front_page->ID);
+		if ( $front_page && isset( $front_page->ID ) ) {
+			update_option( 'show_on_front', 'page' );
+			update_option( 'page_on_front', (int) $front_page->ID );
 		}
 	}
 
 	/**
 	 * Update date format
 	 */
-	private function update_date_format()
-	{
-		$date_format = apply_filters('vlt_helper_demo_date_format', 'M j, Y');
-		update_option('date_format', $date_format);
+	private function update_date_format() {
+		$date_format = apply_filters( 'vlt_toolkit_demo_date_format', 'M j, Y' );
+		update_option( 'date_format', $date_format );
 	}
 
 	/**
@@ -239,22 +231,20 @@ class DemoImport extends BaseModule
 	 *
 	 * @param object $wp_rewrite WordPress rewrite object.
 	 */
-	private function update_permalink_structure($wp_rewrite)
-	{
-		$permalink = apply_filters('vlt_helper_demo_permalink_structure', '/%postname%/');
+	private function update_permalink_structure( $wp_rewrite ) {
+		$permalink = apply_filters( 'vlt_toolkit_demo_permalink_structure', '/%postname%/' );
 
-		if ($wp_rewrite && method_exists($wp_rewrite, 'set_permalink_structure')) {
-			$wp_rewrite->set_permalink_structure($permalink);
-			flush_rewrite_rules(false);
+		if ( $wp_rewrite && method_exists( $wp_rewrite, 'set_permalink_structure' ) ) {
+			$wp_rewrite->set_permalink_structure( $permalink );
+			flush_rewrite_rules( false );
 		}
 	}
 
 	/**
 	 * Import Revolution Slider sliders
 	 */
-	private function import_revolution_sliders()
-	{
-		if (! class_exists('RevSlider')) {
+	private function import_revolution_sliders() {
+		if ( ! class_exists( 'RevSlider' ) ) {
 			return;
 		}
 
@@ -262,38 +252,37 @@ class DemoImport extends BaseModule
 			$revo_slider = new \RevSlider();
 
 			// Get existing slider aliases
-			$existing_aliases = method_exists($revo_slider, 'getAllSliderAliases')
+			$existing_aliases = method_exists( $revo_slider, 'getAllSliderAliases' )
 				? (array) $revo_slider->getAllSliderAliases()
-				: [];
+				: array();
 
 			// Get sliders from theme filter
-			$slider_array = apply_filters('vlt_helper_demo_revsliders', []);
+			$slider_array = apply_filters( 'vlt_toolkit_demo_revsliders', array() );
 
-			foreach ($slider_array as $slider_path) {
+			foreach ( $slider_array as $slider_path ) {
 				// Extract alias from path
-				$slider_alias = basename($slider_path, '.zip');
+				$slider_alias = basename( $slider_path, '.zip' );
 
 				// Skip if slider already exists
-				if (in_array($slider_alias, $existing_aliases, true)) {
+				if ( in_array( $slider_alias, $existing_aliases, true ) ) {
 					continue;
 				}
 
-				if (file_exists($slider_path) && method_exists($revo_slider, 'importSliderFromPost')) {
-					$revo_slider->importSliderFromPost(true, true, $slider_path);
+				if ( file_exists( $slider_path ) && method_exists( $revo_slider, 'importSliderFromPost' ) ) {
+					$revo_slider->importSliderFromPost( true, true, $slider_path );
 				}
 			}
-		} catch (\Exception $e) {
+		} catch ( \Exception $e ) {
 			// Fail silently - don't break import if RevSlider fails
-			error_log('VLT Helper: RevSlider import failed - ' . $e->getMessage());
+			error_log( 'VLT Toolkit: RevSlider import failed - ' . $e->getMessage() );
 		}
 	}
 
 	/**
 	 * Setup Elementor settings
 	 */
-	private function setup_elementor()
-	{
-		if (! class_exists('\Elementor\Plugin')) {
+	private function setup_elementor() {
+		if ( ! class_exists( '\Elementor\Plugin' ) ) {
 			return;
 		}
 
@@ -307,70 +296,68 @@ class DemoImport extends BaseModule
 	/**
 	 * Update Elementor kit settings
 	 */
-	private function update_elementor_kit()
-	{
+	private function update_elementor_kit() {
 		try {
-			if (! \Elementor\Plugin::$instance) {
+			if ( ! \Elementor\Plugin::$instance ) {
 				return;
 			}
 
-			$kits_manager = \Elementor\Plugin::$instance->kits_manager ?? null;
+			$kits_manager  = \Elementor\Plugin::$instance->kits_manager ?? null;
 			$files_manager = \Elementor\Plugin::$instance->files_manager ?? null;
 
 			// Update active kit settings
-			if ($kits_manager && method_exists($kits_manager, 'get_active_kit_for_frontend')) {
+			if ( $kits_manager && method_exists( $kits_manager, 'get_active_kit_for_frontend' ) ) {
 				$kit = $kits_manager->get_active_kit_for_frontend();
 
-				if ($kit && method_exists($kit, 'update_settings')) {
+				if ( $kit && method_exists( $kit, 'update_settings' ) ) {
 					// Default settings
-					$settings = [
-						'container_width'       => [
+					$settings = array(
+						'container_width'       => array(
 							'size' => '1170',
 							'unit' => 'px',
-						],
-						'space_between_widgets' => [
+						),
+						'space_between_widgets' => array(
 							'column' => '0',
 							'row'    => '0',
 							'unit'   => 'px',
-						],
+						),
 						'global_image_lightbox' => '',
-					];
+					);
 
 					// Allow theme to override
-					$settings = apply_filters('vlt_helper_demo_elementor_kit_settings', $settings);
+					$settings = apply_filters( 'vlt_toolkit_demo_elementor_kit_settings', $settings );
 
-					$kit->update_settings($settings);
+					$kit->update_settings( $settings );
 				}
 			}
 
 			// Clear Elementor cache
-			if ($files_manager && method_exists($files_manager, 'clear_cache')) {
+			if ( $files_manager && method_exists( $files_manager, 'clear_cache' ) ) {
 				$files_manager->clear_cache();
 			}
-		} catch (\Exception $e) {
-			error_log('VLT Helper: Elementor kit setup failed - ' . $e->getMessage());
+		} catch ( \Exception $e ) {
+			error_log( 'VLT Toolkit: Elementor kit setup failed - ' . $e->getMessage() );
 		}
 	}
 
 	/**
 	 * Update Elementor CPT support
 	 */
-	private function update_elementor_cpt_support()
-	{
-		$cpt_support = get_option('elementor_cpt_support', false);
+	private function update_elementor_cpt_support() {
+		$cpt_support = get_option( 'elementor_cpt_support', false );
 
 		// Default CPT support
-		$default_cpts = ['page', 'post'];
+		$default_cpts = array( 'page', 'post' );
 
 		// Allow theme to override
-		$default_cpts = apply_filters('vlt_helper_demo_elementor_cpt_support', $default_cpts);
+		$default_cpts = apply_filters( 'vlt_toolkit_demo_elementor_cpt_support', $default_cpts );
 
-		if (! $cpt_support) {
-			update_option('elementor_cpt_support', $default_cpts);
+		if ( ! $cpt_support ) {
+			update_option( 'elementor_cpt_support', $default_cpts );
 		} else {
 			// Merge with existing
-			$cpt_support = array_unique(array_merge((array) $cpt_support, $default_cpts));
-			update_option('elementor_cpt_support', $cpt_support);
+			$cpt_support = array_unique( array_merge( (array) $cpt_support, $default_cpts ) );
+			update_option( 'elementor_cpt_support', $cpt_support );
 		}
 	}
 
@@ -379,51 +366,50 @@ class DemoImport extends BaseModule
 	 *
 	 * Imports Elementor kit data (templates, global colors, fonts, settings)
 	 */
-	private function import_elementor_kit()
-	{
-		if (! class_exists('\Elementor\Plugin')) {
+	private function import_elementor_kit() {
+		if ( ! class_exists( '\Elementor\Plugin' ) ) {
 			return;
 		}
 
 		try {
 			// Get kit file path from filter
-			$kit_path = apply_filters('vlt_helper_demo_elementor_kit_path', '');
+			$kit_path = apply_filters( 'vlt_toolkit_demo_elementor_kit_path', '' );
 
 			// Skip if no kit path provided
-			if (empty($kit_path) || ! file_exists($kit_path)) {
+			if ( empty( $kit_path ) || ! file_exists( $kit_path ) ) {
 				return;
 			}
 
 			// Check if import-export module exists
-			if (! isset(\Elementor\Plugin::$instance->app)) {
-				error_log('VLT Helper: Elementor app not available for kit import');
+			if ( ! isset( \Elementor\Plugin::$instance->app ) ) {
+				error_log( 'VLT Toolkit: Elementor app not available for kit import' );
 				return;
 			}
 
-			$import_export_module = \Elementor\Plugin::$instance->app->get_component('import-export');
+			$import_export_module = \Elementor\Plugin::$instance->app->get_component( 'import-export' );
 
-			if (! $import_export_module || ! method_exists($import_export_module, 'import_kit')) {
-				error_log('VLT Helper: Elementor import-export module not available');
+			if ( ! $import_export_module || ! method_exists( $import_export_module, 'import_kit' ) ) {
+				error_log( 'VLT Toolkit: Elementor import-export module not available' );
 				return;
 			}
 
 			// Import settings
-			$import_settings = [
+			$import_settings = array(
 				'referrer' => 'remote',
-			];
+			);
 
 			// Allow theme to override import settings
-			$import_settings = apply_filters('vlt_helper_demo_elementor_kit_import_settings', $import_settings);
+			$import_settings = apply_filters( 'vlt_toolkit_demo_elementor_kit_import_settings', $import_settings );
 
 			// Import the kit
-			$import_export_module->import_kit($kit_path, $import_settings);
+			$import_export_module->import_kit( $kit_path, $import_settings );
 
 			// Clear cache after import
-			if (isset(\Elementor\Plugin::$instance->files_manager)) {
+			if ( isset( \Elementor\Plugin::$instance->files_manager ) ) {
 				\Elementor\Plugin::$instance->files_manager->clear_cache();
 			}
-		} catch (\Exception $e) {
-			error_log('VLT Helper: Elementor kit import failed - ' . $e->getMessage());
+		} catch ( \Exception $e ) {
+			error_log( 'VLT Toolkit: Elementor kit import failed - ' . $e->getMessage() );
 		}
 	}
 
@@ -432,26 +418,25 @@ class DemoImport extends BaseModule
 	 *
 	 * Removes default "Hello World" post, "Sample Page", and default comment
 	 */
-	private function delete_default_content()
-	{
+	private function delete_default_content() {
 		// Delete "Hello World" post
-		$default_post = get_page_by_title('Hello World', OBJECT, 'post');
-		if ($default_post) {
-			wp_delete_post($default_post->ID, true);
+		$default_post = get_page_by_title( 'Hello World', OBJECT, 'post' );
+		if ( $default_post ) {
+			wp_delete_post( $default_post->ID, true );
 		}
 
 		// Delete "Sample Page"
-		$sample_page = get_page_by_title('Sample Page');
-		if ($sample_page) {
-			wp_delete_post($sample_page->ID, true);
+		$sample_page = get_page_by_title( 'Sample Page' );
+		if ( $sample_page ) {
+			wp_delete_post( $sample_page->ID, true );
 		}
 
 		// Delete default comment
-		wp_delete_comment(1, true);
+		wp_delete_comment( 1, true );
 
 		// Delete auto-draft posts
 		global $wpdb;
-		$wpdb->query("DELETE FROM {$wpdb->posts} WHERE post_status = 'auto-draft'");
+		$wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_status = 'auto-draft'" );
 	}
 }
 
@@ -463,7 +448,7 @@ class DemoImport extends BaseModule
  * ======================================
  *
  * // Single demo
- * add_filter( 'vlt_helper_demo_import_files', function() {
+ * add_filter( 'vlt_toolkit_demo_import_files', function() {
  *     return [
  *         'import_file_name'             => 'VLT Studio - Main Demo',
  *         'local_import_file'            => get_template_directory() . '/inc/demo/content.xml',
@@ -475,7 +460,7 @@ class DemoImport extends BaseModule
  * } );
  *
  * // Multiple demos
- * add_filter( 'vlt_helper_demo_import_files', function() {
+ * add_filter( 'vlt_toolkit_demo_import_files', function() {
  *     return [
  *         [
  *             'import_file_name'             => 'Demo 1 - Creative Agency',
@@ -501,7 +486,7 @@ class DemoImport extends BaseModule
  * 2. REVOLUTION SLIDER IMPORT
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_revsliders', function( $sliders ) {
+ * add_filter( 'vlt_toolkit_demo_revsliders', function( $sliders ) {
  *     return [
  *         get_template_directory() . '/inc/demo/sliders/hero-slider.zip',
  *         get_template_directory() . '/inc/demo/sliders/portfolio-slider.zip',
@@ -513,7 +498,7 @@ class DemoImport extends BaseModule
  * 3. NAVIGATION MENUS SETUP
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_menus', function( $menus ) {
+ * add_filter( 'vlt_toolkit_demo_menus', function( $menus ) {
  *     return [
  *         'primary' => [ 'Main Menu', 'Primary Menu' ],  // Try "Main Menu" first, then "Primary Menu"
  *         'footer'  => [ 'Footer Menu' ],
@@ -522,7 +507,7 @@ class DemoImport extends BaseModule
  * } );
  *
  * // Single menu name per location
- * add_filter( 'vlt_helper_demo_menus', function( $menus ) {
+ * add_filter( 'vlt_toolkit_demo_menus', function( $menus ) {
  *     return [
  *         'primary' => 'Main Menu',
  *         'footer'  => 'Footer Links',
@@ -533,11 +518,11 @@ class DemoImport extends BaseModule
  * 4. FRONT PAGE SETUP
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_front_page_title', function( $title ) {
+ * add_filter( 'vlt_toolkit_demo_front_page_title', function( $title ) {
  *     return 'Home'; // Exact title of imported page
  * } );
  *
- * add_filter( 'vlt_helper_demo_front_page_title', function( $title ) {
+ * add_filter( 'vlt_toolkit_demo_front_page_title', function( $title ) {
  *     return 'Landing Page';
  * } );
  *
@@ -545,15 +530,15 @@ class DemoImport extends BaseModule
  * 5. PERMALINK STRUCTURE
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_permalink_structure', function( $structure ) {
+ * add_filter( 'vlt_toolkit_demo_permalink_structure', function( $structure ) {
  *     return '/%postname%/'; // Post name only
  * } );
  *
- * add_filter( 'vlt_helper_demo_permalink_structure', function( $structure ) {
+ * add_filter( 'vlt_toolkit_demo_permalink_structure', function( $structure ) {
  *     return '/blog/%postname%/'; // With blog prefix
  * } );
  *
- * add_filter( 'vlt_helper_demo_permalink_structure', function( $structure ) {
+ * add_filter( 'vlt_toolkit_demo_permalink_structure', function( $structure ) {
  *     return '/%year%/%monthnum%/%postname%/'; // Date-based
  * } );
  *
@@ -561,15 +546,15 @@ class DemoImport extends BaseModule
  * 6. DATE FORMAT
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_date_format', function( $format ) {
+ * add_filter( 'vlt_toolkit_demo_date_format', function( $format ) {
  *     return 'M j, Y'; // Nov 10, 2025
  * } );
  *
- * add_filter( 'vlt_helper_demo_date_format', function( $format ) {
+ * add_filter( 'vlt_toolkit_demo_date_format', function( $format ) {
  *     return 'F j, Y'; // November 10, 2025
  * } );
  *
- * add_filter( 'vlt_helper_demo_date_format', function( $format ) {
+ * add_filter( 'vlt_toolkit_demo_date_format', function( $format ) {
  *     return 'd.m.Y'; // 10.11.2025
  * } );
  *
@@ -577,7 +562,7 @@ class DemoImport extends BaseModule
  * 7. ELEMENTOR KIT SETTINGS
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_elementor_kit_settings', function( $settings ) {
+ * add_filter( 'vlt_toolkit_demo_elementor_kit_settings', function( $settings ) {
  *     return [
  *         'container_width'       => [
  *             'size' => '1200',
@@ -593,7 +578,7 @@ class DemoImport extends BaseModule
  * } );
  *
  * // Boxed layout
- * add_filter( 'vlt_helper_demo_elementor_kit_settings', function( $settings ) {
+ * add_filter( 'vlt_toolkit_demo_elementor_kit_settings', function( $settings ) {
  *     return [
  *         'container_width' => [
  *             'size' => '1170',
@@ -606,7 +591,7 @@ class DemoImport extends BaseModule
  * 8. ELEMENTOR GLOBAL OPTIONS
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_elementor_options', function( $options ) {
+ * add_filter( 'vlt_toolkit_demo_elementor_options', function( $options ) {
  *     return [
  *         'elementor_experiment-container'               => 'active',  // Enable containers
  *         'elementor_experiment-container_grid'          => 'active',  // Enable grid containers
@@ -620,7 +605,7 @@ class DemoImport extends BaseModule
  * } );
  *
  * // Minimal setup
- * add_filter( 'vlt_helper_demo_elementor_options', function( $options ) {
+ * add_filter( 'vlt_toolkit_demo_elementor_options', function( $options ) {
  *     return [
  *         'elementor_disable_color_schemes'      => 'yes',
  *         'elementor_disable_typography_schemes' => 'yes',
@@ -631,7 +616,7 @@ class DemoImport extends BaseModule
  * 9. ELEMENTOR CPT SUPPORT
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_elementor_cpt_support', function( $cpts ) {
+ * add_filter( 'vlt_toolkit_demo_elementor_cpt_support', function( $cpts ) {
  *     return [
  *         'page',
  *         'post',
@@ -642,7 +627,7 @@ class DemoImport extends BaseModule
  * } );
  *
  * // Only pages
- * add_filter( 'vlt_helper_demo_elementor_cpt_support', function( $cpts ) {
+ * add_filter( 'vlt_toolkit_demo_elementor_cpt_support', function( $cpts ) {
  *     return [ 'page' ];
  * } );
  *
@@ -650,7 +635,7 @@ class DemoImport extends BaseModule
  * 10. ELEMENTOR KIT IMPORT
  * ======================================
  *
- * add_filter( 'vlt_helper_demo_elementor_kit_path', function( $path ) {
+ * add_filter( 'vlt_toolkit_demo_elementor_kit_path', function( $path ) {
  *     return get_template_directory() . '/inc/demo/elementor-kit.zip';
  * } );
  *
@@ -658,7 +643,7 @@ class DemoImport extends BaseModule
  * 11. CUSTOM POST-IMPORT ACTIONS
  * ======================================
  *
- * add_action( 'vlt_helper_after_demo_import', function() {
+ * add_action( 'vlt_toolkit_after_demo_import', function() {
  *     // Mark demo as imported
  *     update_option( 'my_theme_demo_imported', true );
  *     update_option( 'my_theme_demo_import_date', current_time( 'mysql' ) );
